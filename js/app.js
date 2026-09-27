@@ -278,7 +278,9 @@
     els.sound.setAttribute('aria-pressed', RobotAudio.enabled);
   };
 
-  let zoom = 0.9;
+  let zoom = window.matchMedia('(max-width: 820px)').matches ? 0.75 : 0.9;
+  els.blocks.style.zoom = zoom;
+  $('zoomVal').textContent = Math.round(zoom * 100) + '%';
   const setZoom = (z) => {
     zoom = Math.min(1.4, Math.max(0.6, Math.round(z * 10) / 10));
     els.blocks.style.zoom = zoom;
@@ -367,7 +369,9 @@
   const CARD_MM = 85.6; // ISO ID-1 card (bank card / most student ID cards)
 
   function renderRuler(body) {
-    let px = 96 / 25.4;
+    // default: phones ≈ 6 CSS px per mm (iPhone 460 ppi at 3×), desktops 96 dpi
+    const phone = window.matchMedia('(max-width: 820px)').matches && 'ontouchstart' in window;
+    let px = phone ? 6.0 : 96 / 25.4;
     try { px = parseFloat(localStorage.getItem('mbot2-mm-px')) || px; } catch (e) { /* ignore */ }
     body.innerHTML = `
       <p class="bg-lead"><b>Which screw is which?</b> Lay a screw flat on the screen: put the bottom of the head on the
@@ -375,9 +379,12 @@
       <div class="ruler-wrap"><svg id="rulerSvg"></svg></div>
       <details class="calib" ${localStorage.getItem('mbot2-mm-px') ? '' : 'open'}>
         <summary>Make the ruler real size (do this once per screen)</summary>
-        <p>Hold a bank card or student ID card against the screen. Move the slider until the blue box is exactly as wide as the card.</p>
-        <input type="range" id="calib" min="2" max="12" step="0.01" value="${px}">
-        <div class="card-box" id="cardBox">85.6 mm card</div>
+        <p>Stand a bank card or student ID card <b>upright</b> on the screen (long side up/down). Move the slider until
+        the blue box is exactly as <b>tall</b> as the card.</p>
+        <div class="calib-row"><button class="rm-btn" id="calibMinus" aria-label="Smaller">−</button>
+          <input type="range" id="calib" min="2" max="9" step="0.01" value="${px}">
+          <button class="rm-btn" id="calibPlus" aria-label="Bigger">+</button></div>
+        <div class="card-box" id="cardBox"><span>85.6 mm<br>card<br>height</span></div>
       </details>`;
     const svg = body.querySelector('#rulerSvg'), slider = body.querySelector('#calib'), box = body.querySelector('#cardBox');
     const draw = () => {
@@ -407,14 +414,18 @@
       svg.setAttribute('width', W + 90); svg.setAttribute('height', H);
       svg.setAttribute('viewBox', `0 0 ${W + 90} ${H}`);
       svg.innerHTML = g;
-      box.style.width = CARD_MM * k + 'px';
-      box.style.height = 53.98 * k + 'px';
+      box.style.height = CARD_MM * k + 'px';   // upright card: 85.6 mm tall
+      box.style.width = 53.98 * k + 'px';
     };
-    slider.oninput = () => {
-      px = parseFloat(slider.value);
+    const setPx = (v) => {
+      px = Math.min(9, Math.max(2, v));
+      slider.value = px;
       try { localStorage.setItem('mbot2-mm-px', String(px)); } catch (e) { /* ignore */ }
       draw();
     };
+    slider.oninput = () => setPx(parseFloat(slider.value));
+    body.querySelector('#calibMinus').onclick = () => setPx(px - 0.02);
+    body.querySelector('#calibPlus').onclick = () => setPx(px + 0.02);
     draw();
   }
 

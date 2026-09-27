@@ -50,7 +50,7 @@ Note: in the encoder-motor block, EM2 is mirrored, so driving forward means EM2 
 
 ## Export (toolbar → Export)
 - **mBlock 5 project (.mblock)** – opens in mBlock 5 with real blocks (IDs verified from files saved by mBlock 5.6.0).
-  Works now for Sessions 2, 3, 6, 7, 8. Sessions 4, 5, 9, 10, 11 list the blocks whose IDs are still needed.
+  Works for Sessions 2–9 and 11. Session 10 needs the AI Camera 2.0 "identify result of the tag" block ID.
 - **mBlock Python (.py)** – for the Python tab in mBlock 5 (AI Camera 2.0 calls are left as helper stubs).
 - **Block sheet (.png)** – printable picture of the blocks
 - **Program data (.json)**

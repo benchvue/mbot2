@@ -23,7 +23,7 @@ def label(e):
     k = e["k"]
     fixed = {
         "distance": "{mbuild|ultrasonic 2 [1] distance to an object \\(cm\\)}",
-        "blob_count": "{cam_color|Number of [#e11d2e|Red] color blocks}",
+        "blob_count": "{cam_color|Number of [color 1] color blocks}",
         "blob_x": "{cam_color|The [X Coordinate] of the blob with [Middle position]}",
         "blob_w": "{cam_color|The [Width] of the blob with [Middle position]}",
         "tag_id": "{cam_tag|The identify result of the tag with [Middle position]}",
@@ -219,7 +219,7 @@ FLOOR_HEX = {"red": "#e11d2e", "yellow": "#facc15", "green": "#22c55e", "blue": 
 
 def floor_is(color):
     return cond("floor_color", "mbuild",
-                f"quad rgb sensor [1] probe [(2) R1] detects [{FLOOR_HEX[color]}|{color}] ?", color=color)
+                f"quad rgb sensor [1] probe [(2) R1] detects [{FLOOR_HEX[color]}|{color}] ?", color=color, probe="R1")
 
 
 def cmp(a, op, b):
@@ -416,12 +416,11 @@ S8 = {
 S9 = {
     "session": 9, "id": "ball", "title": "Ball Chaser", "emoji": "⚽",
     "world": "ball", "camera": True, "level": 4,
-    "summary": "AI Camera 2.0 finds the red ball and reports WHERE it is. The robot steers toward it.",
+    "summary": "Teach AI Camera 2.0 the red ball as color 1. The camera reports WHERE the ball is and the robot steers toward it.",
     "concepts": ["AI vision", "Color blobs", "x-coordinate tracking"],
     "challenge": "Make the robot back away when the ball gets too close, like a shy puppy.",
     "scripts": [[
         hat(),
-        cam_mode("Color Recognition"),
         show("Ball Chaser!"),
         sound("start"),
         forever(

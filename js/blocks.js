@@ -161,12 +161,26 @@
       if (lane === 0) this.scrollIntoViewIfNeeded(e.el);
     }
 
+    /* Keep the running block visible WITHOUT shaking:
+     * - never scroll sideways (wide blocks just get a horizontal scrollbar)
+     * - only scroll up/down when the block is actually out of view
+     * - at most one jump every 2.5 s (big loops don't bounce back and forth)
+     * - pause auto-scroll for 5 s whenever the user scrolls/touches the blocks */
     scrollIntoViewIfNeeded(el) {
       const ws = this.container.closest('.workspace');
       if (!ws) return;
+      if (!this._wired) {
+        this._wired = true;
+        const hold = () => { this.userUntil = performance.now() + 5000; };
+        ['wheel', 'touchstart', 'pointerdown'].forEach((ev) => ws.addEventListener(ev, hold, { passive: true }));
+      }
+      const now = performance.now();
+      if (now < (this.userUntil || 0)) return;
       const a = el.getBoundingClientRect(), w = ws.getBoundingClientRect();
-      if (a.top < w.top + 10 || a.bottom > w.bottom - 10) ws.scrollTop += a.top - w.top - w.height / 3;
-      if (a.left < w.left || a.right > w.right) ws.scrollLeft += a.left - w.left - 40;
+      if (a.top >= w.top + 8 && a.bottom <= w.bottom - 8) return;
+      if (now - (this.lastAuto || 0) < 2500) return;
+      this.lastAuto = now;
+      ws.scrollTo({ top: Math.max(0, ws.scrollTop + (a.top - w.top) - w.height * 0.3), behavior: 'smooth' });
     }
 
     condResult(id, ok) {

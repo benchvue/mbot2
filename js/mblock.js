@@ -52,11 +52,10 @@
   const OPS = new Set(['when_start', 'display', 'led', 'led_anim', 'led_rgb', 'sound', 'note', 'move_for', 'turn',
     'stop_move', 'wait', 'repeat', 'forever', 'if', 'repeat_until', 'stop_all', 'set_var', 'change_var', 'call',
     'define', 'pen', 'tag_size']);
-  const CONDS = new Set(['cmp', 'line']);
-  const EXPRS = new Set(['var', 'join', 'add', 'sub', 'mul', 'div', 'rand', 'distance']);
+  const CONDS = new Set(['cmp', 'line', 'floor_color']);
+  const EXPRS = new Set(['var', 'join', 'add', 'sub', 'mul', 'div', 'rand', 'distance', 'blob_count', 'blob_x', 'blob_w']);
   const CAM_MODES = { 'QR Code': '1', Barcode: '2', AprilTag: '3' };
-  // move: plain "moves [forward] at (50) RPM" is verified; the EM1/EM2 dual-motor block is not yet
-  const opOK = (b) => (b.op === 'move' ? b.args.em1 === undefined
+  const opOK = (b) => (b.op === 'move' ? true
     : b.op === 'cam_mode' ? CAM_MODES[b.args.mode] !== undefined : OPS.has(b.op));
 
   const NEED = {
@@ -72,7 +71,7 @@
     blob_count: () => 'AI Camera 2.0: Number of [Red] color blocks  (dropdown set to Red)',
     blob_x: () => 'AI Camera 2.0: The [X Coordinate] of the blob with [Middle position]',
     blob_w: () => 'AI Camera 2.0: The [Width] of the blob with [Middle position]',
-    tag_id: () => 'AI Camera 2.0: The identify result of the tag with [Middle position]',
+    tag_id: () => 'AI Camera 2.0 → Tag Recognition: The identify result of the tag with [Middle position]',
   };
 
   function missing(demo) {
@@ -126,7 +125,13 @@
     function reporter(e, parent) {
       const id = nid();
       const bin = { add: 'operator_add', sub: 'operator_subtract', mul: 'operator_multiply', div: 'operator_divide' };
-      if (e.k === 'distance') {
+      const CAM = 'mbuild_ai_camera_cyberpi.';
+      if (e.k === 'blob_count') {
+        add(id, CAM + 'color_block_count', parent, { fields: { block: ['1', null] } }); // learned color 1
+      } else if (e.k === 'blob_x' || e.k === 'blob_w') {
+        // attribute: 1 = X Coordinate, 3 = Width; feature: 1 = Middle position
+        add(id, CAM + 'color_get_info', parent, { fields: { attribute: [e.k === 'blob_x' ? '1' : '3', null], feature: ['1', null] } });
+      } else if (e.k === 'distance') {
         add(id, 'cyberpi_mbuild_ultrasonic2.mbuild_ultrasonic2_get_distance', parent);
         const m = menu(id, 'cyberpi_mbuild_ultrasonic2.mbuild_ultrasonic2_get_distance_index_menu',
           'cyberpi_mbuild_ultrasonic2.mbuild_ultrasonic2_get_distance_index_menu_option', '1');
@@ -145,6 +150,15 @@
     }
     function condition(c, parent) {
       const a = c.args, id = nid();
+      if (c.op === 'floor_color') {
+        const Q = 'mbuild_quad_color_sensor.mbuild_quad_color_sensor_is_line_and_background';
+        add(id, Q, parent);
+        const m1 = menu(id, Q + '_index_menu', Q + '_index_menu_option', '1');
+        const m2 = menu(id, Q + '_inputMenu_2_menu', Q + '_inputMenu_2_menu_option', a.probe || 'R1');
+        const m3 = menu(id, Q + '_inputMenu_3_menu', Q + '_inputMenu_3_menu_option', a.color);
+        blocks[id].inputs = { index: [1, m1], inputMenu_2: [1, m2], inputMenu_3: [1, m3] };
+        return id;
+      }
       if (c.op === 'line') {
         const Q = 'mbuild_quad_color_sensor.mbuild_quad_color_sensor_get_sta_with_inputMenu';
         add(id, Q, parent, { fields: { inputMenu_1: ['line', null] } });
@@ -201,6 +215,12 @@
           return id;
         }
         case 'move':
+          if (a.em1 !== undefined) {
+            // encoder motor EM1 ↺ rotates at (x) RPM, encoder motor EM2 ↺ rotates at (y) RPM
+            add(id, 'mbot2.mbot2_encoder_motor_drive_speed2', parent);
+            blocks[id].inputs = { LEFT_POWER: value(a.em1, 4, id), RIGHT_POWER: value(a.em2, 4, id) };
+            return id;
+          }
           add(id, 'mbot2.mbot2_move_direction_with_rpm', parent, { fields: { DIRECTION: [a.direction, null] } });
           blocks[id].inputs = { POWER: value(a.rpm, 4, id) };
           return id;

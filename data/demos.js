@@ -446,7 +446,8 @@ window.MBOT_DATA = {
          "cat": "mbuild",
          "text": "quad rgb sensor [1] probe [(2) R1] detects [#e11d2e|red] ?",
          "args": {
-          "color": "red"
+          "color": "red",
+          "probe": "R1"
          }
         },
         "body": [
@@ -533,7 +534,8 @@ window.MBOT_DATA = {
            "cat": "mbuild",
            "text": "quad rgb sensor [1] probe [(2) R1] detects [#facc15|yellow] ?",
            "args": {
-            "color": "yellow"
+            "color": "yellow",
+            "probe": "R1"
            }
           },
           "body": [
@@ -577,7 +579,8 @@ window.MBOT_DATA = {
              "cat": "mbuild",
              "text": "quad rgb sensor [1] probe [(2) R1] detects [#22c55e|green] ?",
              "args": {
-              "color": "green"
+              "color": "green",
+              "probe": "R1"
              }
             },
             "body": [
@@ -621,7 +624,8 @@ window.MBOT_DATA = {
                "cat": "mbuild",
                "text": "quad rgb sensor [1] probe [(2) R1] detects [#2563eb|blue] ?",
                "args": {
-                "color": "blue"
+                "color": "blue",
+                "probe": "R1"
                }
               },
               "body": [
@@ -1668,7 +1672,7 @@ window.MBOT_DATA = {
    "world": "ball",
    "camera": true,
    "level": 4,
-   "summary": "AI Camera 2.0 finds the red ball and reports WHERE it is. The robot steers toward it.",
+   "summary": "Teach AI Camera 2.0 the red ball as color 1. The camera reports WHERE the ball is and the robot steers toward it.",
    "concepts": [
     "AI vision",
     "Color blobs",
@@ -1683,14 +1687,6 @@ window.MBOT_DATA = {
       "text": "when button [A] pressed",
       "args": {
        "button": "a"
-      }
-     },
-     {
-      "op": "cam_mode",
-      "cat": "cam_tag",
-      "text": "Switch to [Color Recognition] mode",
-      "args": {
-       "mode": "Color Recognition"
       }
      },
      {
@@ -1723,7 +1719,7 @@ window.MBOT_DATA = {
         "cond": {
          "op": "cmp",
          "cat": "operators",
-         "text": "{cam_color|Number of [#e11d2e|Red] color blocks} > (0)",
+         "text": "{cam_color|Number of [color 1] color blocks} > (0)",
          "args": {
           "a": {
            "k": "blob_count"
@@ -2410,7 +2406,8 @@ window.MBOT_DATA = {
            "cat": "mbuild",
            "text": "quad rgb sensor [1] probe [(2) R1] detects [#22c55e|green] ?",
            "args": {
-            "color": "green"
+            "color": "green",
+            "probe": "R1"
            }
           },
           "body": [
