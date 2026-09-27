@@ -8,18 +8,18 @@ Left: mBlock-style block code that highlights the running block. Right: a 3D mBo
 ## Sessions
 | # | Demo | Concepts |
 |---|---|---|
-| 1 | Build Day | Parts checklist, real-size screw ruler, 11 assembly steps |
+| 1 | Build Day | Parts checklist, real-size screw ruler, 11 steps, AI Camera 2.0 |
 | 2 | Hello, mBot2! | Sequence |
-| 3 | Shape Artist | Repeat loops, angles |
-| 4 | Traffic Light Robot | If / else, color sensor |
-| 5 | Line Follower | Forever, nested if |
-| 6 | Parking Assistant | Variables, sensor math |
-| 7 | Obstacle Avoider | Comparison, random numbers |
-| 8 | Music & Light Show | My Blocks, parallel scripts |
-| 9 | Ball Chaser | AI Camera 2.0: color blob tracking |
-| 10 | AI Tag Explorer | AI Camera 2.0: AprilTags |
+| 3 | Shape Artist | Repeat loop |
+| 4 | Wall Bounce | Ultrasonic distance, if / else |
+| 5 | Line Follower | Line sensor, steering |
+| 6 | Traffic Light Robot | Color sensor |
+| 7 | AI Color Guard | AI Camera 2.0: learn & find a color |
+| 8 | Ball Chaser | AI Camera 2.0: x-coordinate tracking |
+| 9 | AprilTag Explorer | AI Camera 2.0: tags & navigation |
+| 10 | Follow Me | AI Camera 2.0: posture + ultrasonic |
 | 11 | Robot Train Mission | Combine everything |
-| 12 | Project Day | Student projects (no demo) |
+| 12 | Project Day | Student projects |
 
 ## Phones
 On narrow screens the 3D view comes first, with a small Run button inside it.

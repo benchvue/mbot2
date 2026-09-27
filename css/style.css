@@ -22,6 +22,7 @@
   --c-cam_color: #2f9b5c;
   --c-cam_tag: #16a53a;
   --c-ai: #13a3c4;
+  --c-cam_pose: #9b22d8;
 
   font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
   color: var(--ink);
@@ -322,6 +323,7 @@ button:focus-visible, select:focus-visible { outline: 3px solid #93c5fd; outline
 .cat-mbuild { --c: var(--c-mbuild); }
 .cat-cam_color { --c: var(--c-cam_color); }
 .cat-cam_tag { --c: var(--c-cam_tag); }
+.cat-cam_pose { --c: var(--c-cam_pose); }
 .blk.hat.cat-events { color: #fff; }
 .ico { display: inline-block; width: 20px; height: 15px; flex: none; background: center / contain no-repeat; margin-right: 2px; }
 .ico-cyberpi { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 16'%3E%3Crect x='1' y='2' width='22' height='12' rx='2.5' fill='none' stroke='%23fff' stroke-width='1.8'/%3E%3Crect x='8' y='4.5' width='8' height='7' rx='1' fill='%23fff'/%3E%3Ccircle cx='4.5' cy='8' r='1.4' fill='%23fff'/%3E%3Ccircle cx='19.5' cy='8' r='1.4' fill='%23fff'/%3E%3C/svg%3E"); }
@@ -455,3 +457,5 @@ body.build-mode .bg-img img { max-height: 62vh; width: auto; max-width: 100%; ma
   .readouts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ro .v { font-size: 14px; }
 }
+.cam-steps { font-size: 15px; line-height: 1.7; padding-left: 22px; }
+.cam-steps b { color: #b45309; }

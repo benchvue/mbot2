@@ -21,7 +21,7 @@
     green: '#22c55e', red: '#ef4444', blue: '#3b82f6', yellow: '#facc15', white: '#ffffff',
     orange: '#f97316', cyan: '#06b6d4', purple: '#a855f7', pink: '#ec4899',
   };
-  const WARN = { obstacle: 20, parking: 35, train: 15 };
+  const WARN = { obstacle: 20, parking: 35, train: 15, corridor: 20, person: 30 };
 
   let course = document.title, demos = [], demo = null;
   let state = 'idle'; // idle | running | paused | done
@@ -176,7 +176,7 @@
     if (ro.cam) {
       const c = sensors.camera;
       ro.cam.innerHTML = c
-        ? (demo.world === 'ball'
+        ? (c.pose ? `person <small>x ${c.x}</small>` : core.ball
           ? `<span class="swatch" style="background:#e11d2e"></span>red blob <small>x ${c.x} · w ${c.size}</small>`
           : `AprilTag ${c.tag} <small>${c.dist.toFixed(0)} cm</small>`)
         : 'nothing <small>searching</small>';
@@ -439,7 +439,7 @@
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) { /* ignore */ } };
     const pages = [{ key: 'parts', label: 'Parts list' }, { key: 'ruler', label: '📏 Screw ruler' }]
       .concat(g.steps.map((img, i) => ({ key: 'step' + (i + 1), label: 'Step ' + (i + 1), img })))
-      .concat([{ key: 'done', label: 'Completed', img: g.completed }]);
+      .concat([{ key: 'done', label: 'Completed', img: g.completed }, { key: 'camera', label: '🎥 AI Camera 2.0' }]);
     let cur = 0;
 
     function progress() {
@@ -454,7 +454,17 @@
       const pg = pages[i];
       [...tabs.children].forEach((t, j) => t.setAttribute('aria-selected', j === i));
       tabs.children[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
-      if (pg.key === 'ruler') {
+      if (pg.key === 'camera') {
+        body.innerHTML = `<div class="bg-step-head"><h3>🎥 Add AI Camera 2.0</h3></div>
+          <p class="bg-lead">Your mBot2 is built. Now give it eyes! AI Camera 2.0 is used from Session 7 to Session 11.</p>
+          <ol class="cam-steps">
+            <li>Attach the block adapter to the camera.</li>
+            <li>Install the bracket on the front of mBot2.</li>
+            <li>Mount AI Camera 2.0 on the bracket.</li>
+            <li>Connect the mBuild cable. <b>Check the connector: front and back must match.</b></li>
+          </ol>
+          <p><a class="tbtn play" href="${g.camera_guide}" target="_blank" rel="noopener">Open the official camera guide with pictures ↗</a></p>`;
+      } else if (pg.key === 'ruler') {
         renderRuler(body);
       } else if (pg.key === 'parts') {
         const found = g.parts.filter((p) => done['part:' + p[0]]).length;

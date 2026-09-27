@@ -27,6 +27,7 @@ def label(e):
         "blob_x": "{cam_color|The [X Coordinate] of the blob with [Middle position]}",
         "blob_w": "{cam_color|The [Width] of the blob with [Middle position]}",
         "tag_id": "{cam_tag|The identify result of the tag with [Middle position]}",
+        "pose_x": "{cam_pose|The [X Coordinate] of the posture with [Middle position]}",
     }
     if k in fixed:
         return fixed[k]
@@ -51,6 +52,7 @@ BLOBS = {"k": "blob_count"}
 BLOB_X = {"k": "blob_x"}
 BLOB_W = {"k": "blob_w"}
 TAG = {"k": "tag_id"}
+POSE_X = {"k": "pose_x"}
 
 
 def var(n):
@@ -226,80 +228,56 @@ def cmp(a, op, b):
     return cond("cmp", "operators", f"{slot(a)} {op} {slot(b)}", a=a, cmp=op, b=b)
 
 # ================================================================ sessions
+# Sessions 2-6: basics with few blocks.  Sessions 7-10: AI Camera 2.0.  Session 11: mission.
 
 S2 = {
     "session": 2, "id": "hello", "title": "Hello, mBot2!", "emoji": "👋",
     "world": "arena", "camera": False, "level": 1,
-    "summary": "Your robot's first program: talk, light up, move and dance, one block at a time.",
+    "summary": "Your first program: blocks run one after another, from top to bottom.",
     "concepts": ["Sequence", "Motors", "LEDs & sound"],
-    "challenge": "Make mBot2 introduce itself with YOUR name and invent a new dance move.",
+    "challenge": "Change the message to YOUR name and make mBot2 come back to where it started.",
     "scripts": [[
         hat(),
         show("Hello! I am mBot2"),
         led("blue"),
         sound("hi"),
-        wait(1),
         moves_for(50, 1),
-        turn(90),
-        led("green"),
+        turn(180),
         moves_for(50, 1),
-        show("Let's dance!"),
-        sound("yeah"),
-        turn(-360, 60),
-        moves_for(40, 0.5, "backward"),
-        turn(360, 60),
         rainbow(),
         show("Nice to meet you!"),
-        sound("magic"),
     ]],
 }
 
 S3 = {
     "session": 3, "id": "shapes", "title": "Shape Artist", "emoji": "🎨",
     "world": "arena", "camera": False, "level": 1,
-    "summary": "Tape a marker to mBot2 and let loops do the drawing: a square, then a star.",
-    "concepts": ["Repeat loops", "Angles", "Patterns"],
-    "challenge": "What shape do you get with repeat (6) and turn (60)°? Try repeat (36) and turn (10)°!",
+    "summary": "Tape a marker to mBot2. One repeat loop draws a whole square.",
+    "concepts": ["Repeat loops", "Angles"],
+    "challenge": "Draw a star: repeat (5), turn (144)°. What does repeat (6) with (60)° make?",
     "scripts": [[
         hat(),
-        show("I can draw!"),
         led("red"),
         pen(True),
         repeat(4, moves_for(60, 1.5), turn(-90)),
         pen(False),
-        turn(-90),
-        moves_for(60, 1.5),
-        turn(-90),
-        led("blue"),
-        pen(True),
-        repeat(5, moves_for(60, 1.5), turn(-144)),
-        pen(False),
-        show("Square + Star = Art!"),
         rainbow(),
-        sound("magic"),
     ]],
 }
 
 S4 = {
-    "session": 4, "id": "traffic", "title": "Traffic Light Robot", "emoji": "🚦",
-    "world": "traffic", "camera": False, "level": 2,
-    "summary": "The quad RGB sensor reads the colors on the road. Green means go, yellow slow down, red stop!",
-    "concepts": ["If / else", "Color sensor", "Decisions"],
-    "challenge": "Add a new rule: when the robot sees purple, it spins around once.",
+    "session": 4, "id": "wall", "title": "Wall Bounce", "emoji": "📏",
+    "world": "corridor", "camera": False, "level": 2,
+    "summary": "The ultrasonic sensor shows the distance to the wall. Too close? Turn around 180°!",
+    "concepts": ["Ultrasonic sensor", "If / else", "Forever loop"],
+    "challenge": "Try 10 cm and 40 cm. Which distance is safest? Add a sound before turning.",
     "scripts": [[
         hat(),
-        show("Traffic Light Robot"),
-        led("white"),
-        moves(40),
         forever(
-            elif_chain(
-                (floor_is("red"), [
-                    stop(), led("red"), show("RED: stop!"), sound("beeps"), wait(2),
-                    led("green"), moves_for(50, 1.5), moves(40)]),
-                (floor_is("yellow"), [led("yellow"), show("YELLOW: slow down"), moves(20)]),
-                (floor_is("green"), [led("green"), show("GREEN: go!"), moves(60)]),
-                (floor_is("blue"), [stop(), show("Finish line!"), sound("magic"), rainbow(), stop_all()]),
-            ),
+            show(DIST),
+            if_(cmp(DIST, "<", 20),
+                [sound("beeps"), turn(180)],
+                [moves(50)]),
         ),
     ]],
 }
@@ -308,14 +286,10 @@ S5 = {
     "session": 5, "id": "line", "title": "Line Follower", "emoji": "🛤️",
     "world": "line", "camera": False, "level": 2,
     "summary": "Two light sensors watch the black line. The robot steers to keep the line between them.",
-    "concepts": ["Forever loop", "Nested if", "Steering"],
+    "concepts": ["Line sensor", "Nested if", "Steering"],
     "challenge": "Make it faster! How high can the RPM go before the robot loses the line?",
     "scripts": [[
         hat(),
-        led("green"),
-        sound("start"),
-        show("Following the line"),
-        wait(1),
         forever(
             elif_chain(
                 (line_is("11"), [wheels(35, 35)]),
@@ -327,143 +301,100 @@ S5 = {
 }
 
 S6 = {
-    "session": 6, "id": "parking", "title": "Parking Assistant", "emoji": "🅿️",
-    "world": "parking", "camera": False, "level": 3,
-    "summary": "Like a real car: the closer the wall, the faster the beeps. Then park perfectly.",
-    "concepts": ["Variables", "Math with sensors", "Thresholds"],
-    "challenge": "Change the parking distance to 15 cm. Can you make the LEDs turn orange when very close?",
+    "session": 6, "id": "traffic", "title": "Traffic Light Robot", "emoji": "🚦",
+    "world": "traffic", "camera": False, "level": 2,
+    "summary": "The color sensor reads the road: red means stop, blue means finish line.",
+    "concepts": ["Color sensor", "If / else if", "Stop"],
+    "challenge": "Add a rule: on green, drive faster (60 RPM).",
     "scripts": [[
         hat(),
-        show("Parking Assistant"),
-        led("white"),
+        moves(40),
         forever(
-            set_var("dist", DIST),
-            show(join("Distance: ", var("dist"))),
             elif_chain(
-                (cmp(var("dist"), "<", 8), [
-                    stop(), led("green"), show("Parked!"), sound("magic"), stop_all()]),
-                (cmp(var("dist"), "<", 35), [
-                    moves(15), led("yellow"), sound("beeps"), wait(div(var("dist"), 50))]),
-                otherwise=[moves(50), led("white")],
+                (floor_is("red"), [stop(), led("red"), wait(2), led("green"), moves_for(40, 1.5), moves(40)]),
+                (floor_is("blue"), [stop(), rainbow(), stop_all()]),
             ),
         ),
     ]],
 }
 
 S7 = {
-    "session": 7, "id": "obstacle", "title": "Obstacle Avoider", "emoji": "🧱",
-    "world": "obstacle", "camera": False, "level": 3,
-    "summary": "The ultrasonic 'eyes' measure distance. Too close? Back up and pick a random new direction.",
-    "concepts": ["Comparison", "Random numbers", "Autonomy"],
-    "challenge": "Instead of always 90°, turn a random angle between 60 and 150 degrees.",
+    "session": 7, "id": "guard", "title": "AI Color Guard", "emoji": "🛡️",
+    "world": "guard", "camera": True, "level": 3,
+    "summary": "Meet AI Camera 2.0! Teach it the red ball as color 1. The guard robot turns until it spots the ball.",
+    "concepts": ["AI Camera 2.0", "Learning a color", "Searching"],
+    "challenge": "Teach a second color. Make the LEDs match the color the camera sees.",
     "scripts": [[
         hat(),
-        show("Obstacle Avoider"),
-        led("green"),
-        sound("start"),
         forever(
-            show(DIST),
-            if_(cmp(DIST, "<", 20),
-                [
-                    stop(), led("red"), sound("warning"),
-                    moves_for(30, 0.6, "backward"),
-                    if_(cmp(rand(1, 2), "=", 1), [turn(-90)], [turn(90)]),
-                    led("green"),
-                ],
-                [moves(50)]),
+            if_(cmp(BLOBS, ">", 0),
+                [led("green"), show("I see it!"), sound("beeps"), wait(1)],
+                [led("red"), show("Searching..."), turn(-20)]),
         ),
     ]],
 }
 
-E5, G5, C5, D5, F5 = 76, 79, 72, 74, 77
-JINGLE = [note(E5, 0.5), note(E5, 0.5), note(E5, 1), note(E5, 0.5), note(E5, 0.5), note(E5, 1)]
-ALL_THE_WAY = [note(E5, 0.5), note(G5, 0.5), note(C5, 0.75), note(D5, 0.25), note(E5, 2)]
-
 S8 = {
-    "session": 8, "id": "music", "title": "Music & Light Show", "emoji": "🎵",
-    "world": "stage", "camera": False, "level": 3,
-    "summary": "Two scripts run at the same time: one sings Jingle Bells, the other dances. My Blocks keep it tidy.",
-    "concepts": ["My Blocks (functions)", "Parallel scripts", "Notes & beats"],
-    "challenge": "Write your own song with a My Block for the chorus, and design a matching dance.",
-    "scripts": [
-        [hat(),
-         show("Jingle Bells"),
-         call("jingle bells"),
-         call("all the way"),
-         repeat(4, note(F5, 0.5)),
-         repeat(3, note(E5, 0.5)),
-         note(E5, 0.25), note(E5, 0.25),
-         note(E5, 0.5), note(D5, 0.5), note(D5, 0.5), note(E5, 0.5),
-         note(D5, 1), note(G5, 1),
-         call("jingle bells"),
-         call("all the way"),
-         show("Happy holidays!")],
-        [hat(),
-         wait(0.5),
-         repeat(10,
-                led_random(),
-                turn(-45, 50),
-                turn(45, 50),
-                moves_for(40, 0.4),
-                moves_for(40, 0.4, "backward")),
-         rainbow(),
-         turn(360, 50)],
-        [define("jingle bells")] + JINGLE,
-        [define("all the way")] + ALL_THE_WAY,
-    ],
-}
-
-S9 = {
-    "session": 9, "id": "ball", "title": "Ball Chaser", "emoji": "⚽",
-    "world": "ball", "camera": True, "level": 4,
-    "summary": "Teach AI Camera 2.0 the red ball as color 1. The camera reports WHERE the ball is and the robot steers toward it.",
-    "concepts": ["AI vision", "Color blobs", "x-coordinate tracking"],
+    "session": 8, "id": "ball", "title": "Ball Chaser", "emoji": "⚽",
+    "world": "ball", "camera": True, "level": 3,
+    "summary": "The camera tells WHERE the ball is (x from 0 to 320). Left, right or center? Steer to chase it!",
+    "concepts": ["x-coordinate", "Tracking", "Blob width"],
     "challenge": "Make the robot back away when the ball gets too close, like a shy puppy.",
     "scripts": [[
         hat(),
-        show("Ball Chaser!"),
-        sound("start"),
         forever(
             if_(cmp(BLOBS, ">", 0),
                 [elif_chain(
-                    (cmp(BLOB_X, "<", 110), [led("blue"), wheels(10, 40)]),
-                    (cmp(BLOB_X, ">", 210), [led("blue"), wheels(40, 10)]),
-                    (cmp(BLOB_W, ">", 90), [
-                        stop(), led("green"), show("Got you!"), sound("beeps"), wait(0.5)]),
-                    otherwise=[led("white"), show("Chasing..."), moves(45)],
+                    (cmp(BLOB_X, "<", 110), [wheels(10, 40)]),
+                    (cmp(BLOB_X, ">", 210), [wheels(40, 10)]),
+                    (cmp(BLOB_W, ">", 90), [stop(), show("Got you!"), sound("beeps")]),
+                    otherwise=[moves(45)],
                 )],
-                [led("purple"), show("Where is the ball?"), wheels(-20, 20)]),
+                [show("Where is the ball?"), wheels(-20, 20)]),
         ),
     ]],
 }
 
-S10 = {
-    "session": 10, "id": "signs", "title": "AI Tag Explorer", "emoji": "👁️",
+S9 = {
+    "session": 9, "id": "signs", "title": "AprilTag Explorer", "emoji": "🏷️",
     "world": "camera", "camera": True, "level": 4,
     "summary": "AI Camera 2.0 reads AprilTag signs: tag 1 = turn left, tag 2 = turn right, tag 3 = goal!",
-    "concepts": ["AI vision", "AprilTags", "Multi-branch logic"],
+    "concepts": ["AprilTags", "Variables", "Navigation"],
     "challenge": "Add tag 4: when the camera sees it, mBot2 does a victory dance.",
     "scripts": [[
         hat(),
         cam_mode("AprilTag"),
         tag_size(10),
-        show("AI Explorer ready!"),
-        led("white"),
-        sound("start"),
-        wait(1),
         forever(
             set_var("tag", TAG),
             elif_chain(
-                (cmp(var("tag"), "=", 1), [
-                    stop(), show("Tag 1 = LEFT"), led("blue"), sound("beeps"), turn(-90)]),
-                (cmp(var("tag"), "=", 2), [
-                    stop(), show("Tag 2 = RIGHT"), led("yellow"), sound("beeps"), turn(90)]),
-                (cmp(var("tag"), "=", 3), [
-                    stop(), show("Tag 3 = GOAL!"), sound("magic"), rainbow(),
-                    repeat(3, turn(-40), turn(40)),
-                    stop_all()]),
+                (cmp(var("tag"), "=", 1), [stop(), show("Tag 1 = LEFT"), turn(-90)]),
+                (cmp(var("tag"), "=", 2), [stop(), show("Tag 2 = RIGHT"), turn(90)]),
+                (cmp(var("tag"), "=", 3), [stop(), show("GOAL!"), sound("magic"), rainbow(), stop_all()]),
                 otherwise=[moves(40)],
             ),
+        ),
+    ]],
+}
+
+S10 = {
+    "session": 10, "id": "follow", "title": "Follow Me", "emoji": "🚶",
+    "world": "person", "camera": True, "level": 4,
+    "summary": "Posture recognition finds a person. The robot follows them, and the ultrasonic sensor keeps a safe distance.",
+    "concepts": ["Posture recognition", "AI + sensors", "Safe distance"],
+    "challenge": "Make the robot say hello (sound + LEDs) when it catches up with you.",
+    "scripts": [[
+        hat(),
+        forever(
+            set_var("x", POSE_X),
+            if_(cmp(var("x"), ">", 0),
+                [elif_chain(
+                    (cmp(DIST, "<", 30), [stop(), led("green")]),
+                    (cmp(var("x"), "<", 110), [led("blue"), wheels(10, 40)]),
+                    (cmp(var("x"), ">", 210), [led("blue"), wheels(40, 10)]),
+                    otherwise=[led("white"), moves(45)],
+                )],
+                [led("red"), wheels(-20, 20)]),
         ),
     ]],
 }
@@ -526,20 +457,21 @@ BUILD_GUIDE = {
               "4412036305815", "4412056006935", "4412036310423", "4412039624471", "4412039634711",
               "4412056023703"],
     "completed": "4412039642903",
+    "camera_guide": "https://support.makeblock.com/hc/en-us/articles/35026070429463-Assemble-AI-Camera-2-0-to-mBot2",
     "img_base": IMG,
 }
 
 CURRICULUM = [
-    {"n": 1, "title": "Build Day", "desc": "Assemble mBot2, meet CyberPi, connect to mBlock 5", "demo": "build"},
-    {"n": 2, "title": "Hello, mBot2!", "desc": "Sequences: move, light, sound", "demo": "hello"},
+    {"n": 1, "title": "Build Day", "desc": "Assemble mBot2 and AI Camera 2.0", "demo": "build"},
+    {"n": 2, "title": "Hello, mBot2!", "desc": "Sequence: move, light, sound", "demo": "hello"},
     {"n": 3, "title": "Shape Artist", "desc": "Repeat loops and angles", "demo": "shapes"},
-    {"n": 4, "title": "Traffic Light Robot", "desc": "If / else with the color sensor", "demo": "traffic"},
-    {"n": 5, "title": "Line Follower", "desc": "Forever loops and steering", "demo": "line"},
-    {"n": 6, "title": "Parking Assistant", "desc": "Variables and sensor math", "demo": "parking"},
-    {"n": 7, "title": "Obstacle Avoider", "desc": "Comparisons and random numbers", "demo": "obstacle"},
-    {"n": 8, "title": "Music & Light Show", "desc": "My Blocks and parallel scripts", "demo": "music"},
-    {"n": 9, "title": "Ball Chaser", "desc": "AI vision: color blob tracking", "demo": "ball"},
-    {"n": 10, "title": "AI Tag Explorer", "desc": "AI vision: reading AprilTags", "demo": "signs"},
+    {"n": 4, "title": "Wall Bounce", "desc": "Ultrasonic distance and if / else", "demo": "wall"},
+    {"n": 5, "title": "Line Follower", "desc": "Line sensor and steering", "demo": "line"},
+    {"n": 6, "title": "Traffic Light Robot", "desc": "Color sensor decisions", "demo": "traffic"},
+    {"n": 7, "title": "AI Color Guard", "desc": "AI Camera 2.0: learn and find a color", "demo": "guard"},
+    {"n": 8, "title": "Ball Chaser", "desc": "AI Camera 2.0: track with x-coordinates", "demo": "ball"},
+    {"n": 9, "title": "AprilTag Explorer", "desc": "AI Camera 2.0: read tags and navigate", "demo": "signs"},
+    {"n": 10, "title": "Follow Me", "desc": "AI Camera 2.0: posture recognition + ultrasonic", "demo": "follow"},
     {"n": 11, "title": "Robot Train Mission", "desc": "Combine everything into one mission", "demo": "train"},
     {"n": 12, "title": "Project Day", "desc": "Design, build and present your own robot program", "demo": None},
 ]

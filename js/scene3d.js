@@ -125,7 +125,7 @@
       while (wg.children.length) wg.remove(wg.children[0]);
       while (this.compassGroup.children.length) this.compassGroup.remove(this.compassGroup.children[0]);
       this.cardMeshes.clear();
-      this.penCanvas = null; this.ballMesh = null; this.catMesh = null; this.lastPen = null;
+      this.penCanvas = null; this.ballMesh = null; this.catMesh = null; this.personMesh = null; this.lastPen = null;
 
       const world = S.WORLDS[name];
       if (world.track) this.buildLineMat(world);
@@ -139,6 +139,7 @@
       if (name === 'camera') this.buildStartPad(world.start);
       if (world.ball) this.buildBall(world.ball);
       if (world.cat) this.buildCat();
+      if (world.person) this.buildPerson(world.person);
 
       const R = world.road ? 185 : world.track ? 125 : 165;
       this.buildGroundCompass(R);
@@ -316,6 +317,28 @@
         new THREE.MeshBasicMaterial({ color: 0xfca5a5, transparent: true, opacity: 0.6 }));
       path.rotation.x = -Math.PI / 2; path.position.set(b.cx, 0.1, b.cz);
       this.worldGroup.add(path);
+    }
+
+    buildPerson(p) {
+      const g = new THREE.Group();
+      const shirt = mat(0x3b82f6), pants = mat(0x334155), skin = mat(0xf2c7a5);
+      const add = (geo, m, x, y, z, parent) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = true; (parent || g).add(o); return o; };
+      const legs = [];
+      for (const sx of [-3, 3]) {
+        const hip = new THREE.Group(); hip.position.set(sx, 20, 0); g.add(hip);
+        add(new THREE.BoxGeometry(4, 20, 4), pants, 0, -10, 0, hip);
+        add(new THREE.BoxGeometry(4.4, 2, 7), mat(0x111827), 0, -20, 1.5, hip);
+        legs.push(hip);
+      }
+      add(new THREE.BoxGeometry(12, 16, 6), shirt, 0, 28, 0);
+      add(new THREE.SphereGeometry(4.6, 20, 16), skin, 0, 41, 0);
+      for (const sx of [-7.5, 7.5]) add(new THREE.BoxGeometry(3, 15, 3), shirt, sx, 27, 0);
+      const ring = new THREE.Mesh(new THREE.RingGeometry(p.r - 0.4, p.r + 0.4, 96),
+        new THREE.MeshBasicMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.6 }));
+      ring.rotation.x = -Math.PI / 2; ring.position.set(p.cx, 0.1, p.cz);
+      this.worldGroup.add(ring);
+      this.personMesh = g; this.personLegs = legs;
+      this.worldGroup.add(g);
     }
 
     buildCat() {
@@ -703,11 +726,17 @@
 
       // moving things in the world
       if (this.ballMesh && core.ball) {
-        this.ballMesh.position.set(core.ball.x, S.WORLDS.ball.ball.radius, core.ball.z);
+        this.ballMesh.position.set(core.ball.x, S.WORLDS[this.worldName].ball.radius, core.ball.z);
         this.ballMesh.rotation.y = -core.ball.a * 3;
         this.ballMesh.rotation.x += simDt * 1.4;
       }
       if (this.catMesh && core.cat) this.catMesh.position.set(core.cat.x, 0, core.cat.z);
+      if (this.personMesh && core.person) {
+        const a = core.person.a;
+        this.personMesh.position.set(core.person.x, 0, core.person.z);
+        this.personMesh.rotation.y = Math.atan2(-Math.sin(a), Math.cos(a)); // face the walking direction
+        this.personLegs.forEach((l, i) => { l.rotation.x = Math.sin(a * 40 + i * Math.PI) * 0.45; });
+      }
       if (this.worldName === 'stage' && this.stageLights) {
         this.stageLights.forEach((c, i) => { c.rotation.z = Math.sin(t * 1.3 + i * 2) * 0.35; });
       }
@@ -810,7 +839,7 @@
       helpers.forEach((o) => o && (o.visible = true));
 
       // detection box
-      const mesh = detection && (this.cardMeshes.get(detection.obj) || this.ballMesh);
+      const mesh = detection && (this.cardMeshes.get(detection.obj) || (detection.pose ? this.personMesh : this.ballMesh));
       if (!mesh) { detBoxEl.hidden = true; return; }
       const box = new THREE.Box3().setFromObject(mesh);
       let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
@@ -823,7 +852,7 @@
       }
       x0 = Math.max(2, x0); y0 = Math.max(2, y0); x1 = Math.min(iw - 2, x1); y1 = Math.min(ih - 2, y1);
       Object.assign(detBoxEl.style, { left: x0 + 'px', top: y0 + 'px', width: (x1 - x0) + 'px', height: (y1 - y0) + 'px' });
-      detLabelEl.textContent = this.ballMesh
+      detLabelEl.textContent = detection.pose ? `posture  x=${detection.x}` : this.ballMesh
         ? `red block  x=${detection.x}  w=${detection.size}`
         : `AprilTag ${detection.tag}  ${detection.confidence}%`;
       detBoxEl.hidden = false;

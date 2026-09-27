@@ -97,6 +97,7 @@
         case 'blob_count': { const d = c.cameraDetect(); return d && c.ball ? 1 : 0; }
         case 'blob_x': { const d = c.cameraDetect(); return d && c.ball ? d.x : 0; }
         case 'blob_w': { const d = c.cameraDetect(); return d && c.ball ? d.size : 0; }
+        case 'pose_x': { const d = c.cameraDetect(); return d && d.pose ? d.x : 0; }
         case 'tag_id': { const d = c.cameraDetect(); return d && d.tag ? d.tag : 0; }
         case 'join': return String(this.ev(e.a)) + String(this.ev(e.b));
         case 'add': return Number(this.ev(e.a)) + Number(this.ev(e.b));

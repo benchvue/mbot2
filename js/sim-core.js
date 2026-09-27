@@ -54,10 +54,8 @@
       obstacles: [],
       patches: [
         { x: 0, z: 90, w: 36, d: 20, color: 'green' },
-        { x: 0, z: 50, w: 36, d: 20, color: 'yellow' },
         { x: 0, z: 15, w: 36, d: 20, color: 'red' },
         { x: 0, z: -25, w: 36, d: 20, color: 'green' },
-        { x: 0, z: -60, w: 36, d: 20, color: 'yellow' },
         { x: 0, z: -95, w: 36, d: 20, color: 'red' },
         { x: 0, z: -125, w: 36, d: 20, color: 'green' },
         { x: 0, z: -160, w: 36, d: 20, color: 'blue' },
@@ -102,6 +100,26 @@
       obstacles: walls(130, 130, 3, 8),
       ball: { cx: 0, cz: 0, r: 70, w: 0.1, a0: -Math.PI / 2, radius: 5 },
       view: { pos: [0, 175, 220], target: [0, 0, 15] },
+    },
+    corridor: {
+      floor: { w: 80, d: 240, color: '#f4f6f9' },
+      start: { x: 0, z: 60, h: 0 },
+      obstacles: walls(30, 110, 4, 16),
+      view: { pos: [120, 130, 150], target: [0, 0, 0] },
+    },
+    guard: {
+      floor: { w: 240, d: 240, color: '#f4f6f9' },
+      start: { x: 0, z: 0, h: 0 },
+      obstacles: walls(120, 120, 3, 6),
+      ball: { cx: 0, cz: 0, r: 70, w: 0.18, a0: 0, radius: 5 },
+      view: { pos: [0, 150, 175], target: [0, 0, 0] },
+    },
+    person: {
+      floor: { w: 280, d: 280, color: '#f4f6f9' },
+      start: { x: 0, z: 100, h: 0 },
+      obstacles: walls(140, 140, 3, 8),
+      person: { cx: 0, cz: 0, r: 80, w: 0.085, a0: -Math.PI / 2 },
+      view: { pos: [0, 200, 250], target: [0, 0, 20] },
     },
     camera: {
       floor: { w: 250, d: 270, color: '#f4f6f9' },
@@ -162,6 +180,11 @@
         this.ball = { a: w.ball.a0, x: 0, z: 0 };
         this._placeBall();
       } else this.ball = null;
+      if (w.person) {
+        this.person = { a: w.person.a0, x: 0, z: 0, w: 16, d: 16, h: 40, person: true };
+        this._placePerson();
+        this.dyn.push(this.person);
+      } else this.person = null;
     }
 
     obstacles() {
@@ -185,7 +208,17 @@
       this.time += dt;
     }
 
+    _placePerson() {
+      const p = this.world.person;
+      this.person.x = p.cx + p.r * Math.cos(this.person.a);
+      this.person.z = p.cz + p.r * Math.sin(this.person.a);
+    }
+
     _world(dt) {
+      if (this.person) {
+        this.person.a += this.world.person.w * dt;
+        this._placePerson();
+      }
       if (this.ball) {
         this.ball.a += this.world.ball.w * dt;
         this._placeBall();
@@ -309,6 +342,13 @@
             color: 'red', dist, obj: this.ball, confidence: 95,
             x: Math.round(160 + (ang / 30) * 160), size,
           };
+        }
+      }
+      if (this.person) {
+        const dx = this.person.x - c.x, dz = this.person.z - c.z, dist = Math.hypot(dx, dz);
+        const ang = Math.atan2(dx * rv.x + dz * rv.z, dx * f.x + dz * f.z) / D2R;
+        if (dist < 250 && Math.abs(ang) < 30) {
+          found = { color: 'person', pose: true, dist, obj: this.person, confidence: 90, x: Math.round(160 + (ang / 30) * 160), size: 0 };
         }
       }
       return found;

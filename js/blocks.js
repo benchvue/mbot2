@@ -48,7 +48,7 @@
 
   const ICON = {
     events: 'cyberpi', cp_audio: 'cyberpi', cp_led: 'cyberpi', cp_display: 'cyberpi',
-    chassis: 'mbot', mbuild: 'mbuild', cam_color: 'cam', cam_tag: 'cam',
+    chassis: 'mbot', mbuild: 'mbuild', cam_color: 'cam', cam_tag: 'cam', cam_pose: 'cam',
   };
   function icon(cat, into) {
     if (!ICON[cat]) return;
