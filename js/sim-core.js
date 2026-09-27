@@ -37,7 +37,7 @@
       floor: { w: 240, d: 240, color: '#f4f6f9' },
       start: { x: -40, z: 40, h: 0 },
       obstacles: walls(120, 120, 3, 5),
-      view: { pos: [0, 230, 230], target: [0, 0, 0] },
+      view: { pos: [-20, 105, 135], target: [-20, 0, 15] },
       canvasFloor: true, // marker drawing surface
     },
     stage: {
@@ -45,7 +45,7 @@
       start: { x: 0, z: 0, h: 0 },
       obstacles: walls(120, 120, 3, 5),
       stage: true,
-      view: { pos: [0, 90, 120], target: [0, 5, 0] },
+      view: { pos: [0, 45, 70], target: [0, 4, 0] },
     },
     traffic: {
       floor: { w: 120, d: 340, color: '#f4f6f9' },
@@ -62,14 +62,14 @@
         { x: 0, z: -125, w: 36, d: 20, color: 'green' },
         { x: 0, z: -160, w: 36, d: 20, color: 'blue' },
       ],
-      view: { pos: [150, 160, 160], target: [0, 0, 20] },
+      view: { pos: [60, 70, 200], target: [0, 0, 110] },
     },
     line: {
       floor: null,
       track: true,
       start: { x: -20, z: 40, h: 90 },
       obstacles: [],
-      view: { pos: [0, 150, 190], target: [0, 0, 0] },
+      view: { pos: [0, 105, 135], target: [0, 0, 10] },
     },
     parking: {
       floor: { w: 200, d: 260, color: '#f4f6f9' },
@@ -81,7 +81,7 @@
         { x: -62, z: -30, w: 22, d: 38, h: 12, color: '#fca5a5', car: true },
         { x: 62, z: -32, w: 22, d: 38, h: 12, color: '#93c5fd', car: true },
       ],
-      view: { pos: [120, 150, 190], target: [0, 0, 10] },
+      view: { pos: [60, 80, 160], target: [0, 0, 40] },
     },
     obstacle: {
       floor: { w: 220, d: 220, color: '#f4f6f9' },
@@ -94,14 +94,14 @@
         { x: -70, z: 55, w: 20, d: 34, h: 18, color: '#cdb4ff' },
         { x: 25, z: -75, w: 36, d: 16, h: 12, color: '#9ee6e6' },
       ]),
-      view: { pos: [0, 210, 230], target: [0, 0, 0] },
+      view: { pos: [0, 110, 170], target: [0, 0, 50] },
     },
     ball: {
       floor: { w: 260, d: 260, color: '#f4f6f9' },
       start: { x: 0, z: 90, h: 0 },
       obstacles: walls(130, 130, 3, 8),
       ball: { cx: 0, cz: 0, r: 70, w: 0.1, a0: -Math.PI / 2, radius: 5 },
-      view: { pos: [0, 230, 240], target: [0, 0, 10] },
+      view: { pos: [0, 115, 175], target: [0, 0, 35] },
     },
     camera: {
       floor: { w: 250, d: 270, color: '#f4f6f9' },
@@ -112,7 +112,7 @@
         { x: -95, z: -21, face: 90, color: 'yellow', label: 'RIGHT', icon: '→' },
         { x: -51, z: -112, face: 180, color: 'red', label: 'GOAL', icon: '★' },
       ],
-      view: { pos: [-30, 200, 210], target: [-30, 0, -20] },
+      view: { pos: [-10, 95, 140], target: [-10, 0, 25] },
     },
     train: {
       floor: null,
@@ -125,7 +125,7 @@
         { x: -35, z: 40, w: 10, d: 14, color: 'green', station: 'Star' },
       ],
       cat: { x: 20, z: -40, awayZ: -78 },
-      view: { pos: [0, 150, 190], target: [0, 0, 0] },
+      view: { pos: [0, 105, 135], target: [0, 0, 10] },
     },
   };
 

@@ -293,3 +293,27 @@ button:focus-visible, select:focus-visible { outline: 3px solid #93c5fd; outline
 
 .swatch { width: 14px; height: 14px; border-radius: 4px; border: 1px solid rgba(0,0,0,.2); display: inline-block; }
 .var { font-size: 13px; background: #fff4e6; border: 1px solid #fed7aa; color: #9a3412; border-radius: 6px; padding: 1px 7px; }
+
+/* ---------- compact one-line toolbar ---------- */
+.code-panel { container-type: inline-size; }
+.toolbar { flex-wrap: nowrap; gap: 6px; padding: 8px 10px; }
+.tbtn { padding: 7px 11px; font-size: 13.5px; gap: 5px; }
+.tbtn.icon { padding: 6px 9px; }
+.tb-sep { margin: 0 2px; }
+.zoom { gap: 2px; }
+.zoom span { min-width: 30px; }
+.ws-wrap { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.ws-wrap .workspace { flex: 1; }
+.ws-wrap .status {
+  position: absolute; top: 10px; right: 18px; margin: 0; z-index: 6; pointer-events: none;
+  box-shadow: 0 1px 4px rgba(31,42,55,.1);
+}
+.status.idle { background: #fff; border: 1px solid var(--line); }
+@container (max-width: 700px) {
+  .tbtn.pause span, .tbtn.stop span { display: none; }
+  .tbtn.pause, .tbtn.stop { padding: 7px 9px; }
+}
+@container (max-width: 560px) {
+  .tbtn.play span, #btnExport span { display: none; }
+  .zoom span { display: none; }
+}

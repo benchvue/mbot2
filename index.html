@@ -50,8 +50,8 @@
           <svg viewBox="0 0 24 24"><rect x="5.5" y="5.5" width="13" height="13" rx="2"/></svg><span>Stop</span>
         </button>
         <div class="tb-sep"></div>
-        <label class="speed">Speed
-          <select id="speedSel">
+        <label class="speed" title="Speed">
+          <select id="speedSel" aria-label="Speed">
             <option value="0.25">0.25×</option>
             <option value="0.5">0.5×</option>
             <option value="1" selected>1×</option>
@@ -65,18 +65,20 @@
           <button id="zoomIn" class="tbtn icon" title="Bigger blocks">+</button>
         </div>
         <div class="export">
-          <button id="btnExport" class="tbtn" aria-haspopup="true" aria-expanded="false">⬇ Export</button>
+          <button id="btnExport" class="tbtn" aria-haspopup="true" aria-expanded="false">⬇ <span>Export</span></button>
           <div class="export-menu" id="exportMenu" hidden>
             <button data-x="py"><b>mBlock Python (.py)</b><small>Upload to the real mBot2 from mBlock 5</small></button>
             <button data-x="png"><b>Block sheet (.png)</b><small>Printable picture of these blocks</small></button>
             <button data-x="json"><b>Program data (.json)</b><small>This demo's program, for editing</small></button>
           </div>
         </div>
-        <span id="statusPill" class="status idle">Ready</span>
       </div>
 
-      <div class="workspace" id="workspace">
-        <div id="blocks" class="blocks"></div>
+      <div class="ws-wrap">
+        <div class="workspace" id="workspace">
+          <div id="blocks" class="blocks"></div>
+        </div>
+        <span id="statusPill" class="status idle">Ready</span>
       </div>
 
       <div class="sensors" id="sensors">

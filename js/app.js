@@ -69,6 +69,10 @@
     if (state === 'running') return;
     if (state === 'done') resetRun();
     view.clearMarks();
+    if (demo.world !== 'stage' && !scene.follow) {
+      scene.follow = true;
+      els.follow.setAttribute('aria-pressed', true);
+    }
     setState('running');
     interp.start({ scripts: demo.scripts });
   }
