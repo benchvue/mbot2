@@ -413,3 +413,30 @@ body.build-mode .compass, body.build-mode #btnFollow, body.build-mode #btnTop, b
 .bg-img .bg-fallback { padding: 30px 10px; text-align: center; font-size: 14px; }
 .run-mini { display: none; background: #16a34a !important; border-color: #16a34a !important; color: #fff; }
 body.build-mode .run-mini { display: none !important; }
+
+/* ---------- Build Day: full width, no 3D view ---------- */
+body.build-mode .view-panel { display: none; }
+body.build-mode .layout { grid-template-columns: 1fr; }
+body.build-mode .code-panel { border-right: 0; }
+body.build-mode .bg-body { max-width: 1100px; width: 100%; margin: 0 auto; }
+body.build-mode .bg-img img { max-height: 62vh; width: auto; max-width: 100%; margin: 0 auto; }
+.ruler-wrap { overflow-x: auto; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.ruler-wrap svg { display: block; }
+.calib { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; background: var(--bg-soft); }
+.calib summary { font-weight: 800; cursor: pointer; }
+.calib p { font-size: 13.5px; color: var(--ink-2); }
+.calib input { width: 100%; max-width: 420px; }
+.card-box { margin-top: 10px; border: 3px solid var(--mbot); border-radius: 10px; display: grid; place-items: center;
+  color: var(--mbot); font-weight: 800; background: #eff6ff; box-sizing: border-box; }
+
+/* ---------- phone session picker ---------- */
+.rail-m { display: none; }
+@media (max-width: 820px) {
+  .rail { display: none; }
+  .rail-m { display: flex; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: #fff;
+    position: sticky; top: 0; z-index: 20; }
+  .rail-m select { flex: 1; min-width: 0; height: 48px; font: inherit; font-size: 16px; font-weight: 800; padding: 0 12px;
+    border: 1.5px solid var(--mbot); border-radius: 12px; background: #fff; color: var(--ink); }
+  .rm-btn { width: 48px; height: 48px; flex: none; border-radius: 12px; border: 1.5px solid var(--line); background: #fff;
+    font-size: 26px; font-weight: 700; line-height: 1; }
+}

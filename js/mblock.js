@@ -49,24 +49,29 @@
   const b64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 
   /* ---------- which blocks can be exported ---------- */
-  const OPS = new Set(['when_start', 'display', 'led', 'led_anim', 'sound', 'move_for', 'turn', 'wait',
-    'repeat', 'forever', 'if', 'repeat_until', 'stop_all', 'set_var', 'change_var', 'call', 'define', 'pen']);
-  const CONDS = new Set(['cmp']);
-  const EXPRS = new Set(['var', 'join', 'add', 'sub', 'mul', 'div', 'rand']);
+  const OPS = new Set(['when_start', 'display', 'led', 'led_anim', 'led_rgb', 'sound', 'note', 'move_for', 'turn',
+    'stop_move', 'wait', 'repeat', 'forever', 'if', 'repeat_until', 'stop_all', 'set_var', 'change_var', 'call',
+    'define', 'pen', 'tag_size']);
+  const CONDS = new Set(['cmp', 'line']);
+  const EXPRS = new Set(['var', 'join', 'add', 'sub', 'mul', 'div', 'rand', 'distance']);
+  const CAM_MODES = { 'QR Code': '1', Barcode: '2', AprilTag: '3' };
+  // move: plain "moves [forward] at (50) RPM" is verified; the EM1/EM2 dual-motor block is not yet
+  const opOK = (b) => (b.op === 'move' ? b.args.em1 === undefined
+    : b.op === 'cam_mode' ? CAM_MODES[b.args.mode] !== undefined : OPS.has(b.op));
 
   const NEED = {
-    move: (b) => (b.args.em1 !== undefined ? 'encoder motor EM1 ... RPM, encoder motor EM2 ... RPM' : 'moves [forward] at (50) RPM'),
+    move: () => 'encoder motor EM1 ↺ rotates at (50) RPM, encoder motor EM2 ↺ rotates at (50) RPM',
+    cam_mode: (b) => `AI Camera 2.0: the block that switches to ${b.args.mode} mode`,
     stop_move: () => 'stop encoder motor [all]',
     note: () => 'play note (60) for (0.25) beat',
     led_rgb: () => 'LED [all] displays R ( ) G ( ) B ( )',
-    cam_mode: () => 'AI Camera 2.0: Switch to [ ] mode',
     tag_size: () => 'AI Camera 2.0: Set AprilTag size to (10) cm',
     line: () => "quad rgb sensor [1] L1, R1's [line] in status [ ] ?",
-    floor_color: () => 'quad rgb sensor [1] probe [ ] detects [color] ?',
+    floor_color: () => 'quad rgb sensor [1] probe [(2) R1] detects [red] ?  (the hexagon block, dropdown set to a color)',
     distance: () => 'ultrasonic 2 [1] distance to an object (cm)',
-    blob_count: () => 'AI Camera 2.0: Number of [ ] color blocks',
+    blob_count: () => 'AI Camera 2.0: Number of [Red] color blocks  (dropdown set to Red)',
     blob_x: () => 'AI Camera 2.0: The [X Coordinate] of the blob with [Middle position]',
-    blob_w: () => 'AI Camera 2.0: The [X Coordinate] of the blob with [Middle position]',
+    blob_w: () => 'AI Camera 2.0: The [Width] of the blob with [Middle position]',
     tag_id: () => 'AI Camera 2.0: The identify result of the tag with [Middle position]',
   };
 
@@ -78,7 +83,7 @@
       ex(e.a); ex(e.b);
     };
     const walk = (list) => (list || []).forEach((b) => {
-      if (!OPS.has(b.op)) out.add(NEED[b.op] ? NEED[b.op](b) : b.op);
+      if (!opOK(b)) out.add(NEED[b.op] ? NEED[b.op](b) : b.op);
       Object.values(b.args || {}).forEach(ex);
       if (b.cond) {
         if (!CONDS.has(b.cond.op)) out.add(NEED[b.cond.op] ? NEED[b.cond.op]() : b.cond.op);
@@ -121,7 +126,12 @@
     function reporter(e, parent) {
       const id = nid();
       const bin = { add: 'operator_add', sub: 'operator_subtract', mul: 'operator_multiply', div: 'operator_divide' };
-      if (e.k === 'join') {
+      if (e.k === 'distance') {
+        add(id, 'cyberpi_mbuild_ultrasonic2.mbuild_ultrasonic2_get_distance', parent);
+        const m = menu(id, 'cyberpi_mbuild_ultrasonic2.mbuild_ultrasonic2_get_distance_index_menu',
+          'cyberpi_mbuild_ultrasonic2.mbuild_ultrasonic2_get_distance_index_menu_option', '1');
+        blocks[id].inputs = { index: [1, m] };
+      } else if (e.k === 'join') {
         add(id, 'operator_join', parent);
         blocks[id].inputs = { STRING1: value(e.a, 10, id), STRING2: value(e.b, 10, id) };
       } else if (e.k === 'rand') {
@@ -135,6 +145,14 @@
     }
     function condition(c, parent) {
       const a = c.args, id = nid();
+      if (c.op === 'line') {
+        const Q = 'mbuild_quad_color_sensor.mbuild_quad_color_sensor_get_sta_with_inputMenu';
+        add(id, Q, parent, { fields: { inputMenu_1: ['line', null] } });
+        const m1 = menu(id, Q + '_index_menu', Q + '_index_menu_option', '1');
+        const m2 = menu(id, Q + '_inputMenu_2_menu', Q + '_inputMenu_2_menu_option', String(a.status));
+        blocks[id].inputs = { index: [1, m1], inputMenu_2: [1, m2] };
+        return id;
+      }
       const op = { '<': 'operator_lt', '>': 'operator_gt', '=': 'operator_equals' }[a.cmp];
       add(id, op, parent);
       blocks[id].inputs = { OPERAND1: value(a.a, 10, id), OPERAND2: value(a.b, 10, id) };
@@ -182,12 +200,37 @@
           blocks[id].inputs = { file_name: [1, m] };
           return id;
         }
+        case 'move':
+          add(id, 'mbot2.mbot2_move_direction_with_rpm', parent, { fields: { DIRECTION: [a.direction, null] } });
+          blocks[id].inputs = { POWER: value(a.rpm, 4, id) };
+          return id;
+        case 'stop_move':
+          return add(id, 'mbot2.mbot2_encoder_motor_stop', parent, { fields: { fieldMenu_1: ['ALL', null] } });
+        case 'led_rgb': {
+          add(id, 'cyberpi.cyberpi_led_show_single_with_rgb_2', parent);
+          const m = menu(id, 'cyberpi.cyberpi_led_show_single_with_rgb_2_fieldMenu_1_menu',
+            'cyberpi.cyberpi_led_show_single_with_rgb_2_fieldMenu_1_menu_option', '"all"');
+          blocks[id].inputs = { fieldMenu_1: [1, m], r: value(a.r, 4, id), g: value(a.g, 4, id), b: value(a.b, 4, id) };
+          return id;
+        }
+        case 'note': {
+          add(id, 'cyberpi.cyberpi_play_music_with_tone_and_note_2', parent);
+          const n = add(nid(), 'note', id, { shadow: true, fields: { NOTE: [String(a.note), null] } });
+          blocks[id].inputs = { number_1: [1, n], number_2: value(a.beats, 4, id) };
+          return id;
+        }
+        case 'tag_size':
+          add(id, 'mbuild_ai_camera_cyberpi.label_set_size', parent);
+          blocks[id].inputs = { size: value(a.cm, 4, id) };
+          return id;
+        case 'cam_mode':
+          return add(id, 'mbuild_ai_camera_cyberpi.label_switch', parent, { fields: { mode: [CAM_MODES[a.mode], null] } });
         case 'move_for':
           add(id, 'mbot2.mbot2_move_direction_with_time', parent, { fields: { DIRECTION: [a.direction, null] } });
           blocks[id].inputs = { POWER: value(a.rpm, 4, id), TIME: value(a.sec, 4, id) };
           return id;
         case 'turn':
-          // In the saved mBlock 5.6.0 file the "turns left" block stores fieldMenu_1 = "cw".
+          // Verified from mBlock 5.6.0 files: "turns left" = "cw", "turns right" = "ccw".
           add(id, 'mbot2.mbot2_cw_and_ccw_with_angle', parent, { fields: { fieldMenu_1: [a.deg < 0 ? 'cw' : 'ccw', null] } });
           blocks[id].inputs = { ANGLE: value(Math.abs(a.deg), 4, id) };
           return id;

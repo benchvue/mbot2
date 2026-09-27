@@ -8,7 +8,7 @@ Left: mBlock-style block code that highlights the running block. Right: a 3D mBo
 ## Sessions
 | # | Demo | Concepts |
 |---|---|---|
-| 1 | Build Day | Parts checklist + 11 assembly steps with progress |
+| 1 | Build Day | Parts checklist, real-size screw ruler, 11 assembly steps |
 | 2 | Hello, mBot2! | Sequence |
 | 3 | Shape Artist | Repeat loops, angles |
 | 4 | Traffic Light Robot | If / else, color sensor |
@@ -49,11 +49,8 @@ with mBlock's wording, colors and device icons. Programs start with **when butto
 Note: in the encoder-motor block, EM2 is mirrored, so driving forward means EM2 gets a negative RPM.
 
 ## Export (toolbar → Export)
-- **mBlock 5 project (.mblock)** – opens in mBlock 5 with real blocks. Built from a project saved by mBlock 5.6.0.
-  Works now for Sessions 2 and 3. Other sessions show which blocks still need their mBlock ID
-  (moves at RPM, encoder motor EM1/EM2, stop encoder motor, play note, LED R G B, quad RGB line/color,
-  ultrasonic distance, AI Camera 2.0 blocks). Save one mBlock project containing each of those blocks
-  (plus a "turns right" block) and send it to finish the export for all sessions.
+- **mBlock 5 project (.mblock)** – opens in mBlock 5 with real blocks (IDs verified from files saved by mBlock 5.6.0).
+  Works now for Sessions 2, 3, 6, 7, 8. Sessions 4, 5, 9, 10, 11 list the blocks whose IDs are still needed.
 - **mBlock Python (.py)** – for the Python tab in mBlock 5 (AI Camera 2.0 calls are left as helper stubs).
 - **Block sheet (.png)** – printable picture of the blocks
 - **Program data (.json)**

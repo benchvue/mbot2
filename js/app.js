@@ -94,7 +94,7 @@
   const BUILD_DEMO = {
     id: 'build', session: 1, title: 'Build Day', emoji: '🔧', world: 'stage', camera: false, level: 0,
     scripts: [],
-    summary: 'Unbox the kit, check every part, and build your own mBot2 step by step. Spin the 3D model to see where each part goes.',
+    summary: 'Unbox the kit, check every part, measure the screws, and build your own mBot2 step by step.',
     concepts: ['Parts & tools', 'Following instructions', 'Teamwork'],
     challenge: 'Finish all 11 steps, then press button A on CyberPi to say hello to your new robot!',
   };
@@ -104,15 +104,15 @@
     demo = id === 'build' ? BUILD_DEMO : demos.find((d) => d.id === id);
     const isBuild = id === 'build';
     document.body.classList.toggle('build-mode', isBuild);
-    scene.turntable = isBuild;
+    scene.turntable = false;
     core.setWorld(demo.world);
     view.render(demo);
     scene.loadWorld(demo.world, demo.camera);
-    if (isBuild) scene.animateTo(new THREE.Vector3(0, 32, 46), new THREE.Vector3(0, 6, 0), 0.01);
     els.inset.hidden = !demo.camera;
     els.detBox.hidden = true;
 
     els.rail.querySelectorAll('.sess').forEach((b) => b.setAttribute('aria-current', b.dataset.id === id));
+    if ($('railSel').options.length) $('railSel').value = id;
     els.title.textContent = `Session ${demo.session} · ${demo.emoji} ${demo.title}`;
     els.summary.textContent = demo.summary;
     els.challenge.textContent = demo.challenge;
@@ -357,6 +357,67 @@
     if (e.code === 'Escape') { stop(); closeMenu(); }
   });
 
+  /* ---------- real-size screw ruler ---------- */
+  const SCREWS = [
+    { name: 'M4 × 25 mm', len: 25, d: 4, head: 7, hh: 2.8, pitch: 0.7 },
+    { name: 'M4 × 14 mm', len: 14, d: 4, head: 7, hh: 2.8, pitch: 0.7 },
+    { name: 'M2.5 × 12 mm', len: 12, d: 2.5, head: 4.5, hh: 1.8, pitch: 0.45 },
+    { name: 'M4 × 8 mm', len: 8, d: 4, head: 7, hh: 2.8, pitch: 0.7 },
+  ];
+  const CARD_MM = 85.6; // ISO ID-1 card (bank card / most student ID cards)
+
+  function renderRuler(body) {
+    let px = 96 / 25.4;
+    try { px = parseFloat(localStorage.getItem('mbot2-mm-px')) || px; } catch (e) { /* ignore */ }
+    body.innerHTML = `
+      <p class="bg-lead"><b>Which screw is which?</b> Lay a screw flat on the screen: put the bottom of the head on the
+      <b>0</b> line and see which mark the tip reaches. Length is measured <b>without</b> the head.</p>
+      <div class="ruler-wrap"><svg id="rulerSvg"></svg></div>
+      <details class="calib" ${localStorage.getItem('mbot2-mm-px') ? '' : 'open'}>
+        <summary>Make the ruler real size (do this once per screen)</summary>
+        <p>Hold a bank card or student ID card against the screen. Move the slider until the blue box is exactly as wide as the card.</p>
+        <input type="range" id="calib" min="2" max="12" step="0.01" value="${px}">
+        <div class="card-box" id="cardBox">85.6 mm card</div>
+      </details>`;
+    const svg = body.querySelector('#rulerSvg'), slider = body.querySelector('#calib'), box = body.querySelector('#cardBox');
+    const draw = () => {
+      const k = px, left = 14 * k, top = 8, rowH = Math.max(12 * k, 42);
+      const W = left + 30 * k + 20, H = top + 10 * k + 12 + SCREWS.length * rowH + 10;
+      let g = `<rect x="${left}" y="${top}" width="${30 * k}" height="${10 * k}" fill="#fff7d6" stroke="#b8860b"/>`;
+      for (let mm = 0; mm <= 30; mm++) {
+        const x = left + mm * k, h = mm % 10 === 0 ? 7 * k : mm % 5 === 0 ? 5 * k : 3 * k;
+        g += `<line x1="${x}" y1="${top}" x2="${x}" y2="${top + h}" stroke="#1f2a37" stroke-width="${mm % 5 ? 0.8 : 1.4}"/>`;
+        if (mm % 5 === 0) g += `<text x="${x + 2}" y="${top + 9.4 * k}" font-size="${Math.max(10, 2.6 * k)}" fill="#1f2a37">${mm}</text>`;
+      }
+      g += `<text x="${left + 30 * k - 2}" y="${top + 9.4 * k}" font-size="${Math.max(9, 2.2 * k)}" text-anchor="end" fill="#8a6d1a">mm</text>`;
+      const y0 = top + 10 * k + 12;
+      g += `<line x1="${left}" y1="${top}" x2="${left}" y2="${H - 6}" stroke="#e0342b" stroke-width="2"/>`;
+      SCREWS.forEach((sc, i) => {
+        const cy = y0 + i * rowH + rowH / 2, xe = left + sc.len * k;
+        g += `<line x1="${xe}" y1="${top}" x2="${xe}" y2="${cy + sc.d * k / 2 + 4}" stroke="#94a3b8" stroke-dasharray="3 3"/>`;
+        // head (left of 0) + shank (0 → length)
+        g += `<rect x="${left - sc.hh * k}" y="${cy - sc.head * k / 2}" width="${sc.hh * k}" height="${sc.head * k}" rx="${sc.hh * k * 0.45}" fill="#9aa5b1" stroke="#475569"/>`;
+        g += `<rect x="${left}" y="${cy - sc.d * k / 2}" width="${sc.len * k}" height="${sc.d * k}" fill="#cbd5e1" stroke="#475569"/>`;
+        for (let t = sc.pitch; t < sc.len; t += sc.pitch) {
+          const x = left + t * k;
+          g += `<line x1="${x}" y1="${cy - sc.d * k / 2}" x2="${x + sc.pitch * k * 0.6}" y2="${cy + sc.d * k / 2}" stroke="#64748b" stroke-width="0.7"/>`;
+        }
+        g += `<text x="${xe + 6}" y="${cy + 4}" font-size="13" font-weight="800" fill="#1f2a37">${sc.name}</text>`;
+      });
+      svg.setAttribute('width', W + 90); svg.setAttribute('height', H);
+      svg.setAttribute('viewBox', `0 0 ${W + 90} ${H}`);
+      svg.innerHTML = g;
+      box.style.width = CARD_MM * k + 'px';
+      box.style.height = 53.98 * k + 'px';
+    };
+    slider.oninput = () => {
+      px = parseFloat(slider.value);
+      try { localStorage.setItem('mbot2-mm-px', String(px)); } catch (e) { /* ignore */ }
+      draw();
+    };
+    draw();
+  }
+
   /* ---------- Session 1: Build Day guide ---------- */
   function buildGuide(g) {
     if (!g) return;
@@ -365,7 +426,7 @@
     let done = {};
     try { done = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { done = {}; }
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) { /* ignore */ } };
-    const pages = [{ key: 'parts', label: 'Parts list' }]
+    const pages = [{ key: 'parts', label: 'Parts list' }, { key: 'ruler', label: '📏 Screw ruler' }]
       .concat(g.steps.map((img, i) => ({ key: 'step' + (i + 1), label: 'Step ' + (i + 1), img })))
       .concat([{ key: 'done', label: 'Completed', img: g.completed }]);
     let cur = 0;
@@ -382,7 +443,9 @@
       const pg = pages[i];
       [...tabs.children].forEach((t, j) => t.setAttribute('aria-selected', j === i));
       tabs.children[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
-      if (pg.key === 'parts') {
+      if (pg.key === 'ruler') {
+        renderRuler(body);
+      } else if (pg.key === 'parts') {
         const found = g.parts.filter((p) => done['part:' + p[0]]).length;
         body.innerHTML = `<p class="bg-lead">Check that you have every part before you start. Tap a part when you find it. <b>${found} / ${g.parts.length}</b> found.</p>
           <div class="parts">${g.parts.map((p) => `
@@ -443,6 +506,23 @@
         li.appendChild(b);
         els.rail.appendChild(li);
       });
+      const sel = $('railSel');
+      data.curriculum.forEach((c) => {
+        const o = document.createElement('option');
+        o.value = c.demo || '';
+        o.disabled = !c.demo;
+        o.textContent = `Session ${c.n} · ${c.title}${c.demo ? '' : ' (no demo)'}`;
+        sel.appendChild(o);
+      });
+      sel.onchange = () => sel.value && selectDemo(sel.value);
+      const stepSess = (d) => {
+        const opts = [...sel.options];
+        let i = sel.selectedIndex + d;
+        while (opts[i] && opts[i].disabled) i += d;
+        if (opts[i]) { sel.selectedIndex = i; selectDemo(opts[i].value); }
+      };
+      $('railPrev').onclick = () => stepSess(-1);
+      $('railNext').onclick = () => stepSess(1);
       buildGuide(data.build);
       const want = location.hash.slice(1);
       selectDemo(want === 'build' || demos.some((d) => d.id === want) ? want : demos[0].id);

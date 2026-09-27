@@ -169,7 +169,7 @@
       floor.position.y = 0.05;
       floor.receiveShadow = true;
       this.worldGroup.add(floor);
-      if (!drawable) this.buildGrid(f.w, f.d, 0, 0, 0.07); // 10 cm grid on the floor itself
+      this.buildGrid(f.w, f.d, 0, 0, 0.09); // 10 cm grid on the floor itself (also over the marker paper)
     }
 
     buildGrid(w, d, cx, cz, y) {
