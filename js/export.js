@@ -13,6 +13,7 @@
   };
   const NOTE = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
   const midi = (n) => {
+    if (typeof n === 'number') return n;
     const m = /^([A-G])(#?)(\d)$/.exec(n);
     return m ? 12 * (Number(m[3]) + 1) + NOTE[m[1]] + (m[2] ? 1 : 0) : 60;
   };
@@ -27,8 +28,10 @@
     switch (e.k) {
       case 'distance': return 'mbuild.ultrasonic2.get(1)';
       case 'var': return pyName(e.n);
-      case 'cam_x': return 'mbuild.smart_camera.get_sign_x(1, 1)';
-      case 'cam_size': return 'mbuild.smart_camera.get_sign_wide(1, 1)';
+      case 'blob_count': return 'ai_camera_blob_count()';
+      case 'blob_x': return 'ai_camera_blob_x()';
+      case 'blob_w': return 'ai_camera_blob_width()';
+      case 'tag_id': return 'ai_camera_tag_id()';
       case 'join': return `str(${expr(e.a)}) + str(${expr(e.b)})`;
       case 'rand': return `random.randint(${expr(e.a)}, ${expr(e.b)})`;
       case 'round': return `round(${expr(e.a)})`;
@@ -97,10 +100,13 @@
           if (a.color === 'rainbow') return [`${I}cyberpi.led.play("rainbow")`];
           if (a.color === 'random') return [`${I}cyberpi.led.on(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), "all")`];
           return [`${I}cyberpi.led.on(${(RGB[a.color] || RGB.white).join(', ')}, "all")`];
+        case 'led_anim': return [`${I}cyberpi.led.play(${pyStr(a.name)})`, `${I}time.sleep(1)`];
+        case 'led_rgb': return [`${I}cyberpi.led.on(${expr(a.r)}, ${expr(a.g)}, ${expr(a.b)}, "all")`];
+        case 'tag_size': return [`${I}pass  # AI Camera 2.0: set AprilTag size to ${a.cm} cm`];
         case 'sound': return [`${I}cyberpi.audio.play(${pyStr(SOUND[a.name] || a.name)})`];
         case 'note': return [`${I}cyberpi.audio.play_music(${midi(a.note)}, ${a.beats})  # ${a.note}`];
         case 'display': return [`${I}cyberpi.display.show_label(str(${expr(a.text)}), 16, "center", index=0)`];
-        case 'cam_mode': return [`${I}mbuild.smart_camera.set_mode("color", 1)`];
+        case 'cam_mode': return [`${I}pass  # AI Camera 2.0: switch to ${a.mode} mode`];
         case 'pen': return [`${I}pass  # marker ${a.down ? 'down' : 'up'} (simulator only: tape a real marker to mBot2!)`];
         case 'move': return [`${I}drive(${expr(a.l)}, ${expr(a.r)})`];
         case 'move_for':
@@ -118,7 +124,7 @@
     const L = [];
     L.push(`# ${course}`);
     L.push(`# Session ${demo.session}: ${demo.title}`);
-    L.push('# Exported from the mBot2 class demo.');
+    L.push('# Exported from the Robotics with mBot2 class demo.');
     L.push('# How to use: mBlock 5 > connect mBot2 > Upload mode > Python tab > paste > Upload.');
     L.push('');
     L.push('import event, time, random, cyberpi, mbot2, mbuild');
@@ -134,6 +140,14 @@
     L.push('    mbot2.turn(angle, 50)');
     L.push('    time.sleep(abs(angle) / 90 * 0.7 + 0.1)');
     L.push('');
+    if (JSON.stringify(demo.scripts).match(/blob_|tag_id/)) {
+      L.push('');
+      L.push('# AI Camera 2.0: replace these helpers with the AI Camera 2.0 Python calls');
+      L.push('# shown in mBlock (drag the AI Camera block in, then look at the Python tab).');
+      ['ai_camera_blob_count', 'ai_camera_blob_x', 'ai_camera_blob_width', 'ai_camera_tag_id'].forEach((f) => {
+        L.push(`def ${f}():`, '    return 0', '');
+      });
+    }
     if (vars.size) {
       L.push('');
       [...vars].forEach((v) => L.push(`${v} = 0`));

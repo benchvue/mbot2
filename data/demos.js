@@ -22,31 +22,34 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Hello! I am mBot2) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Hello! I am mBot2) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Hello! I am mBot2"
       }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#3b82f6|blue]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#0113d0)",
       "args": {
-       "color": "blue"
+       "color": "blue",
+       "hex": "#0113d0"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 hello]",
+      "cat": "cp_audio",
+      "text": "play [hi]",
       "args": {
-       "name": "hello"
+       "name": "hi"
       }
      },
      {
@@ -59,18 +62,20 @@ window.MBOT_DATA = {
      },
      {
       "op": "move_for",
-      "cat": "motion",
-      "text": "move forward at (50) RPM for (1) secs",
+      "cat": "chassis",
+      "text": "moves [forward] at (50) RPM for (1) secs",
       "args": {
        "l": 50,
        "r": 50,
-       "sec": 1
+       "sec": 1,
+       "direction": "forward",
+       "rpm": 50
       }
      },
      {
       "op": "turn",
-      "cat": "motion",
-      "text": "turn right (90)°",
+      "cat": "chassis",
+      "text": "turns [right] (90) ° until done",
       "args": {
        "deg": 90,
        "rpm": 40
@@ -78,50 +83,45 @@ window.MBOT_DATA = {
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#22c55e|green]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#7ed321)",
       "args": {
-       "color": "green"
+       "color": "green",
+       "hex": "#7ed321"
       }
      },
      {
       "op": "move_for",
-      "cat": "motion",
-      "text": "move forward at (50) RPM for (1) secs",
+      "cat": "chassis",
+      "text": "moves [forward] at (50) RPM for (1) secs",
       "args": {
        "l": 50,
        "r": 50,
-       "sec": 1
+       "sec": 1,
+       "direction": "forward",
+       "rpm": 50
       }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Let's dance!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Let's dance!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Let's dance!"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 yeah]",
+      "cat": "cp_audio",
+      "text": "play [yeah]",
       "args": {
        "name": "yeah"
       }
      },
      {
-      "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#a855f7|🌈 rainbow]",
-      "args": {
-       "color": "rainbow"
-      }
-     },
-     {
       "op": "turn",
-      "cat": "motion",
-      "text": "turn left (360)°",
+      "cat": "chassis",
+      "text": "turns [left] (360) ° until done",
       "args": {
        "deg": -360,
        "rpm": 60
@@ -129,37 +129,47 @@ window.MBOT_DATA = {
      },
      {
       "op": "move_for",
-      "cat": "motion",
-      "text": "move backward at (40) RPM for (0.5) secs",
+      "cat": "chassis",
+      "text": "moves [backward] at (40) RPM for (0.5) secs",
       "args": {
        "l": -40,
        "r": -40,
-       "sec": 0.5
+       "sec": 0.5,
+       "direction": "backward",
+       "rpm": 40
       }
      },
      {
       "op": "turn",
-      "cat": "motion",
-      "text": "turn right (360)°",
+      "cat": "chassis",
+      "text": "turns [right] (360) ° until done",
       "args": {
        "deg": 360,
        "rpm": 60
       }
      },
      {
+      "op": "led_anim",
+      "cat": "cp_led",
+      "text": "play LED animation [rainbow] until done",
+      "args": {
+       "name": "rainbow"
+      }
+     },
+     {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Nice to meet you!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Nice to meet you!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Nice to meet you!"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 success]",
+      "cat": "cp_audio",
+      "text": "play [magic]",
       "args": {
-       "name": "success"
+       "name": "magic"
       }
      }
     ]
@@ -185,29 +195,32 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (I can draw!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (I can draw!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "I can draw!"
       }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#ef4444|red]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#d0021b)",
       "args": {
-       "color": "red"
+       "color": "red",
+       "hex": "#d0021b"
       }
      },
      {
       "op": "pen",
       "cat": "pen",
-      "text": "🖍 marker down (simulator)",
+      "text": "🖍 marker down \\(simulator only\\)",
       "args": {
        "down": true
       }
@@ -222,20 +235,22 @@ window.MBOT_DATA = {
       "body": [
        {
         "op": "move_for",
-        "cat": "motion",
-        "text": "move forward at (60) RPM for (1.5) secs",
+        "cat": "chassis",
+        "text": "moves [forward] at (60) RPM for (1.5) secs",
         "args": {
          "l": 60,
          "r": 60,
-         "sec": 1.5
+         "sec": 1.5,
+         "direction": "forward",
+         "rpm": 60
         }
        },
        {
         "op": "turn",
-        "cat": "motion",
-        "text": "turn right (90)°",
+        "cat": "chassis",
+        "text": "turns [left] (90) ° until done",
         "args": {
-         "deg": 90,
+         "deg": -90,
          "rpm": 40
         }
        }
@@ -244,34 +259,36 @@ window.MBOT_DATA = {
      {
       "op": "pen",
       "cat": "pen",
-      "text": "🖍 marker up (simulator)",
+      "text": "🖍 marker up \\(simulator only\\)",
       "args": {
        "down": false
       }
      },
      {
       "op": "turn",
-      "cat": "motion",
-      "text": "turn right (90)°",
+      "cat": "chassis",
+      "text": "turns [left] (90) ° until done",
       "args": {
-       "deg": 90,
+       "deg": -90,
        "rpm": 40
       }
      },
      {
       "op": "move_for",
-      "cat": "motion",
-      "text": "move forward at (60) RPM for (1.6) secs",
+      "cat": "chassis",
+      "text": "moves [forward] at (60) RPM for (1.5) secs",
       "args": {
        "l": 60,
        "r": 60,
-       "sec": 1.6
+       "sec": 1.5,
+       "direction": "forward",
+       "rpm": 60
       }
      },
      {
       "op": "turn",
-      "cat": "motion",
-      "text": "turn left (90)°",
+      "cat": "chassis",
+      "text": "turns [left] (90) ° until done",
       "args": {
        "deg": -90,
        "rpm": 40
@@ -279,16 +296,17 @@ window.MBOT_DATA = {
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#3b82f6|blue]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#0113d0)",
       "args": {
-       "color": "blue"
+       "color": "blue",
+       "hex": "#0113d0"
       }
      },
      {
       "op": "pen",
       "cat": "pen",
-      "text": "🖍 marker down (simulator)",
+      "text": "🖍 marker down \\(simulator only\\)",
       "args": {
        "down": true
       }
@@ -303,20 +321,22 @@ window.MBOT_DATA = {
       "body": [
        {
         "op": "move_for",
-        "cat": "motion",
-        "text": "move forward at (60) RPM for (1.2) secs",
+        "cat": "chassis",
+        "text": "moves [forward] at (60) RPM for (1.5) secs",
         "args": {
          "l": 60,
          "r": 60,
-         "sec": 1.2
+         "sec": 1.5,
+         "direction": "forward",
+         "rpm": 60
         }
        },
        {
         "op": "turn",
-        "cat": "motion",
-        "text": "turn right (144)°",
+        "cat": "chassis",
+        "text": "turns [left] (144) ° until done",
         "args": {
-         "deg": 144,
+         "deg": -144,
          "rpm": 40
         }
        }
@@ -325,33 +345,33 @@ window.MBOT_DATA = {
      {
       "op": "pen",
       "cat": "pen",
-      "text": "🖍 marker up (simulator)",
+      "text": "🖍 marker up \\(simulator only\\)",
       "args": {
        "down": false
       }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Square + Star = Art!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Square + Star = Art!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Square + Star = Art!"
       }
      },
      {
-      "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#a855f7|🌈 rainbow]",
+      "op": "led_anim",
+      "cat": "cp_led",
+      "text": "play LED animation [rainbow] until done",
       "args": {
-       "color": "rainbow"
+       "name": "rainbow"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 success]",
+      "cat": "cp_audio",
+      "text": "play [magic]",
       "args": {
-       "name": "success"
+       "name": "magic"
       }
      }
     ]
@@ -377,47 +397,54 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Traffic Light Robot) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Traffic Light Robot) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Traffic Light Robot"
       }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#e5e7eb|white]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#ffffff)",
       "args": {
-       "color": "white"
+       "color": "white",
+       "hex": "#ffffff"
       }
      },
      {
       "op": "move",
-      "cat": "motion",
-      "text": "move forward at (40) RPM",
+      "cat": "chassis",
+      "text": "moves [forward] at (40) RPM",
       "args": {
        "l": 40,
-       "r": 40
+       "r": 40,
+       "direction": "forward",
+       "rpm": 40
       }
      },
      {
       "op": "forever",
       "cat": "control",
       "text": "forever",
+      "args": {},
       "body": [
        {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
          "op": "floor_color",
-         "cat": "sensing",
-         "text": "quad RGB sensor detects [#ef4444|red] ?",
+         "cat": "mbuild",
+         "text": "quad rgb sensor [1] probe [(2) R1] detects [#e11d2e|red] ?",
          "args": {
           "color": "red"
          }
@@ -425,32 +452,33 @@ window.MBOT_DATA = {
         "body": [
          {
           "op": "stop_move",
-          "cat": "motion",
-          "text": "stop encoder motors",
+          "cat": "chassis",
+          "text": "stop encoder motor [all]",
           "args": {}
          },
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#ef4444|red]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#d0021b)",
           "args": {
-           "color": "red"
+           "color": "red",
+           "hex": "#d0021b"
           }
          },
          {
           "op": "display",
-          "cat": "display",
-          "text": "show label (RED: stop!) on screen",
+          "cat": "cp_display",
+          "text": "show label [1] (RED: stop!) at [center of screen] by [middle] pixel",
           "args": {
            "text": "RED: stop!"
           }
          },
          {
           "op": "sound",
-          "cat": "audio",
-          "text": "play sound [🔊 beep]",
+          "cat": "cp_audio",
+          "text": "play [beeps]",
           "args": {
-           "name": "beep"
+           "name": "beeps"
           }
          },
          {
@@ -463,29 +491,34 @@ window.MBOT_DATA = {
          },
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#22c55e|green]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#7ed321)",
           "args": {
-           "color": "green"
+           "color": "green",
+           "hex": "#7ed321"
           }
          },
          {
           "op": "move_for",
-          "cat": "motion",
-          "text": "move forward at (50) RPM for (1.5) secs",
+          "cat": "chassis",
+          "text": "moves [forward] at (50) RPM for (1.5) secs",
           "args": {
            "l": 50,
            "r": 50,
-           "sec": 1.5
+           "sec": 1.5,
+           "direction": "forward",
+           "rpm": 50
           }
          },
          {
           "op": "move",
-          "cat": "motion",
-          "text": "move forward at (40) RPM",
+          "cat": "chassis",
+          "text": "moves [forward] at (40) RPM",
           "args": {
            "l": 40,
-           "r": 40
+           "r": 40,
+           "direction": "forward",
+           "rpm": 40
           }
          }
         ],
@@ -494,10 +527,11 @@ window.MBOT_DATA = {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
            "op": "floor_color",
-           "cat": "sensing",
-           "text": "quad RGB sensor detects [#facc15|yellow] ?",
+           "cat": "mbuild",
+           "text": "quad rgb sensor [1] probe [(2) R1] detects [#facc15|yellow] ?",
            "args": {
             "color": "yellow"
            }
@@ -505,27 +539,30 @@ window.MBOT_DATA = {
           "body": [
            {
             "op": "led",
-            "cat": "light",
-            "text": "all LEDs light up [#facc15|yellow]",
+            "cat": "cp_led",
+            "text": "LED [all] displays (#f8e71c)",
             "args": {
-             "color": "yellow"
+             "color": "yellow",
+             "hex": "#f8e71c"
             }
            },
            {
             "op": "display",
-            "cat": "display",
-            "text": "show label (YELLOW: slow down) on screen",
+            "cat": "cp_display",
+            "text": "show label [1] (YELLOW: slow down) at [center of screen] by [middle] pixel",
             "args": {
              "text": "YELLOW: slow down"
             }
            },
            {
             "op": "move",
-            "cat": "motion",
-            "text": "move forward at (20) RPM",
+            "cat": "chassis",
+            "text": "moves [forward] at (20) RPM",
             "args": {
              "l": 20,
-             "r": 20
+             "r": 20,
+             "direction": "forward",
+             "rpm": 20
             }
            }
           ],
@@ -534,10 +571,11 @@ window.MBOT_DATA = {
             "op": "if",
             "cat": "control",
             "text": "if %c then",
+            "args": {},
             "cond": {
              "op": "floor_color",
-             "cat": "sensing",
-             "text": "quad RGB sensor detects [#22c55e|green] ?",
+             "cat": "mbuild",
+             "text": "quad rgb sensor [1] probe [(2) R1] detects [#22c55e|green] ?",
              "args": {
               "color": "green"
              }
@@ -545,27 +583,30 @@ window.MBOT_DATA = {
             "body": [
              {
               "op": "led",
-              "cat": "light",
-              "text": "all LEDs light up [#22c55e|green]",
+              "cat": "cp_led",
+              "text": "LED [all] displays (#7ed321)",
               "args": {
-               "color": "green"
+               "color": "green",
+               "hex": "#7ed321"
               }
              },
              {
               "op": "display",
-              "cat": "display",
-              "text": "show label (GREEN: go!) on screen",
+              "cat": "cp_display",
+              "text": "show label [1] (GREEN: go!) at [center of screen] by [middle] pixel",
               "args": {
                "text": "GREEN: go!"
               }
              },
              {
               "op": "move",
-              "cat": "motion",
-              "text": "move forward at (60) RPM",
+              "cat": "chassis",
+              "text": "moves [forward] at (60) RPM",
               "args": {
                "l": 60,
-               "r": 60
+               "r": 60,
+               "direction": "forward",
+               "rpm": 60
               }
              }
             ],
@@ -574,10 +615,11 @@ window.MBOT_DATA = {
               "op": "if",
               "cat": "control",
               "text": "if %c then",
+              "args": {},
               "cond": {
                "op": "floor_color",
-               "cat": "sensing",
-               "text": "quad RGB sensor detects [#3b82f6|blue] ?",
+               "cat": "mbuild",
+               "text": "quad rgb sensor [1] probe [(2) R1] detects [#2563eb|blue] ?",
                "args": {
                 "color": "blue"
                }
@@ -585,32 +627,32 @@ window.MBOT_DATA = {
               "body": [
                {
                 "op": "stop_move",
-                "cat": "motion",
-                "text": "stop encoder motors",
+                "cat": "chassis",
+                "text": "stop encoder motor [all]",
                 "args": {}
                },
                {
-                "op": "led",
-                "cat": "light",
-                "text": "all LEDs light up [#a855f7|🌈 rainbow]",
-                "args": {
-                 "color": "rainbow"
-                }
-               },
-               {
                 "op": "display",
-                "cat": "display",
-                "text": "show label (Finish line!) on screen",
+                "cat": "cp_display",
+                "text": "show label [1] (Finish line!) at [center of screen] by [middle] pixel",
                 "args": {
                  "text": "Finish line!"
                 }
                },
                {
                 "op": "sound",
-                "cat": "audio",
-                "text": "play sound [🔊 success]",
+                "cat": "cp_audio",
+                "text": "play [magic]",
                 "args": {
-                 "name": "success"
+                 "name": "magic"
+                }
+               },
+               {
+                "op": "led_anim",
+                "cat": "cp_led",
+                "text": "play LED animation [rainbow] until done",
+                "args": {
+                 "name": "rainbow"
                 }
                },
                {
@@ -652,29 +694,32 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#22c55e|green]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#7ed321)",
       "args": {
-       "color": "green"
+       "color": "green",
+       "hex": "#7ed321"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 start]",
+      "cat": "cp_audio",
+      "text": "play [start]",
       "args": {
        "name": "start"
       }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Following the line) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Following the line) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Following the line"
       }
@@ -691,27 +736,32 @@ window.MBOT_DATA = {
       "op": "forever",
       "cat": "control",
       "text": "forever",
+      "args": {},
       "body": [
        {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
          "op": "line",
-         "cat": "sensing",
-         "text": "quad RGB sensor [L1 R1] is [■ ■ both on line] ?",
+         "cat": "mbuild",
+         "text": "quad rgb sensor [1] L1, R1's [line] in status [(3) 11] ?",
          "args": {
-          "pattern": "11"
+          "pattern": "11",
+          "status": 3
          }
         },
         "body": [
          {
           "op": "move",
-          "cat": "motion",
-          "text": "EM1 left at (35) RPM, EM2 right at (35) RPM",
+          "cat": "chassis",
+          "text": "encoder motor EM1 ↺ rotates at (35) RPM, encoder motor EM2 ↺ rotates at (-35) RPM",
           "args": {
            "l": 35,
-           "r": 35
+           "r": 35,
+           "em1": 35,
+           "em2": -35
           }
          }
         ],
@@ -720,22 +770,26 @@ window.MBOT_DATA = {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
            "op": "line",
-           "cat": "sensing",
-           "text": "quad RGB sensor [L1 R1] is [■ □ only left] ?",
+           "cat": "mbuild",
+           "text": "quad rgb sensor [1] L1, R1's [line] in status [(2) 10] ?",
            "args": {
-            "pattern": "10"
+            "pattern": "10",
+            "status": 2
            }
           },
           "body": [
            {
             "op": "move",
-            "cat": "motion",
-            "text": "EM1 left at (10) RPM, EM2 right at (35) RPM",
+            "cat": "chassis",
+            "text": "encoder motor EM1 ↺ rotates at (10) RPM, encoder motor EM2 ↺ rotates at (-35) RPM",
             "args": {
              "l": 10,
-             "r": 35
+             "r": 35,
+             "em1": 10,
+             "em2": -35
             }
            }
           ],
@@ -744,22 +798,26 @@ window.MBOT_DATA = {
             "op": "if",
             "cat": "control",
             "text": "if %c then",
+            "args": {},
             "cond": {
              "op": "line",
-             "cat": "sensing",
-             "text": "quad RGB sensor [L1 R1] is [□ ■ only right] ?",
+             "cat": "mbuild",
+             "text": "quad rgb sensor [1] L1, R1's [line] in status [(1) 01] ?",
              "args": {
-              "pattern": "01"
+              "pattern": "01",
+              "status": 1
              }
             },
             "body": [
              {
               "op": "move",
-              "cat": "motion",
-              "text": "EM1 left at (35) RPM, EM2 right at (10) RPM",
+              "cat": "chassis",
+              "text": "encoder motor EM1 ↺ rotates at (35) RPM, encoder motor EM2 ↺ rotates at (-10) RPM",
               "args": {
                "l": 35,
-               "r": 10
+               "r": 10,
+               "em1": 35,
+               "em2": -10
               }
              }
             ]
@@ -793,34 +851,38 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Parking Assistant) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Parking Assistant) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Parking Assistant"
       }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#e5e7eb|white]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#ffffff)",
       "args": {
-       "color": "white"
+       "color": "white",
+       "hex": "#ffffff"
       }
      },
      {
       "op": "forever",
       "cat": "control",
       "text": "forever",
+      "args": {},
       "body": [
        {
         "op": "set_var",
         "cat": "variables",
-        "text": "set [dist] to {sensing|ultrasonic 2 [1] distance cm}",
+        "text": "set [dist] to {mbuild|ultrasonic 2 [1] distance to an object \\(cm\\)}",
         "args": {
          "name": "dist",
          "value": {
@@ -830,8 +892,8 @@ window.MBOT_DATA = {
        },
        {
         "op": "display",
-        "cat": "display",
-        "text": "show label {operators|join (Distance: ) {variables|dist}} on screen",
+        "cat": "cp_display",
+        "text": "show label [1] {operators|join (Distance: ) {variables|dist}} at [center of screen] by [middle] pixel",
         "args": {
          "text": {
           "k": "join",
@@ -847,6 +909,7 @@ window.MBOT_DATA = {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
          "op": "cmp",
          "cat": "operators",
@@ -863,32 +926,33 @@ window.MBOT_DATA = {
         "body": [
          {
           "op": "stop_move",
-          "cat": "motion",
-          "text": "stop encoder motors",
+          "cat": "chassis",
+          "text": "stop encoder motor [all]",
           "args": {}
          },
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#22c55e|green]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#7ed321)",
           "args": {
-           "color": "green"
+           "color": "green",
+           "hex": "#7ed321"
           }
          },
          {
           "op": "display",
-          "cat": "display",
-          "text": "show label (Parked! 🎉) on screen",
+          "cat": "cp_display",
+          "text": "show label [1] (Parked!) at [center of screen] by [middle] pixel",
           "args": {
-           "text": "Parked! 🎉"
+           "text": "Parked!"
           }
          },
          {
           "op": "sound",
-          "cat": "audio",
-          "text": "play sound [🔊 success]",
+          "cat": "cp_audio",
+          "text": "play [magic]",
           "args": {
-           "name": "success"
+           "name": "magic"
           }
          },
          {
@@ -903,6 +967,7 @@ window.MBOT_DATA = {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
            "op": "cmp",
            "cat": "operators",
@@ -919,27 +984,30 @@ window.MBOT_DATA = {
           "body": [
            {
             "op": "move",
-            "cat": "motion",
-            "text": "move forward at (15) RPM",
+            "cat": "chassis",
+            "text": "moves [forward] at (15) RPM",
             "args": {
              "l": 15,
-             "r": 15
+             "r": 15,
+             "direction": "forward",
+             "rpm": 15
             }
            },
            {
             "op": "led",
-            "cat": "light",
-            "text": "all LEDs light up [#facc15|yellow]",
+            "cat": "cp_led",
+            "text": "LED [all] displays (#f8e71c)",
             "args": {
-             "color": "yellow"
+             "color": "yellow",
+             "hex": "#f8e71c"
             }
            },
            {
             "op": "sound",
-            "cat": "audio",
-            "text": "play sound [🔊 beep]",
+            "cat": "cp_audio",
+            "text": "play [beeps]",
             "args": {
-             "name": "beep"
+             "name": "beeps"
             }
            },
            {
@@ -961,19 +1029,22 @@ window.MBOT_DATA = {
           "else": [
            {
             "op": "move",
-            "cat": "motion",
-            "text": "move forward at (50) RPM",
+            "cat": "chassis",
+            "text": "moves [forward] at (50) RPM",
             "args": {
              "l": 50,
-             "r": 50
+             "r": 50,
+             "direction": "forward",
+             "rpm": 50
             }
            },
            {
             "op": "led",
-            "cat": "light",
-            "text": "all LEDs light up [#e5e7eb|white]",
+            "cat": "cp_led",
+            "text": "LED [all] displays (#ffffff)",
             "args": {
-             "color": "white"
+             "color": "white",
+             "hex": "#ffffff"
             }
            }
           ]
@@ -1005,29 +1076,32 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Obstacle Avoider) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Obstacle Avoider) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Obstacle Avoider"
       }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#22c55e|green]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#7ed321)",
       "args": {
-       "color": "green"
+       "color": "green",
+       "hex": "#7ed321"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 start]",
+      "cat": "cp_audio",
+      "text": "play [start]",
       "args": {
        "name": "start"
       }
@@ -1036,11 +1110,12 @@ window.MBOT_DATA = {
       "op": "forever",
       "cat": "control",
       "text": "forever",
+      "args": {},
       "body": [
        {
         "op": "display",
-        "cat": "display",
-        "text": "show label {sensing|ultrasonic 2 [1] distance cm} on screen",
+        "cat": "cp_display",
+        "text": "show label [1] {mbuild|ultrasonic 2 [1] distance to an object \\(cm\\)} at [center of screen] by [middle] pixel",
         "args": {
          "text": {
           "k": "distance"
@@ -1051,10 +1126,11 @@ window.MBOT_DATA = {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
          "op": "cmp",
          "cat": "operators",
-         "text": "{sensing|ultrasonic 2 [1] distance cm} < (20)",
+         "text": "{mbuild|ultrasonic 2 [1] distance to an object \\(cm\\)} < (20)",
          "args": {
           "a": {
            "k": "distance"
@@ -1066,40 +1142,44 @@ window.MBOT_DATA = {
         "body": [
          {
           "op": "stop_move",
-          "cat": "motion",
-          "text": "stop encoder motors",
+          "cat": "chassis",
+          "text": "stop encoder motor [all]",
           "args": {}
          },
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#ef4444|red]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#d0021b)",
           "args": {
-           "color": "red"
+           "color": "red",
+           "hex": "#d0021b"
           }
          },
          {
           "op": "sound",
-          "cat": "audio",
-          "text": "play sound [🔊 alert]",
+          "cat": "cp_audio",
+          "text": "play [warning]",
           "args": {
-           "name": "alert"
+           "name": "warning"
           }
          },
          {
           "op": "move_for",
-          "cat": "motion",
-          "text": "move backward at (30) RPM for (0.6) secs",
+          "cat": "chassis",
+          "text": "moves [backward] at (30) RPM for (0.6) secs",
           "args": {
            "l": -30,
            "r": -30,
-           "sec": 0.6
+           "sec": 0.6,
+           "direction": "backward",
+           "rpm": 30
           }
          },
          {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
            "op": "cmp",
            "cat": "operators",
@@ -1117,8 +1197,8 @@ window.MBOT_DATA = {
           "body": [
            {
             "op": "turn",
-            "cat": "motion",
-            "text": "turn left (90)°",
+            "cat": "chassis",
+            "text": "turns [left] (90) ° until done",
             "args": {
              "deg": -90,
              "rpm": 40
@@ -1128,8 +1208,8 @@ window.MBOT_DATA = {
           "else": [
            {
             "op": "turn",
-            "cat": "motion",
-            "text": "turn right (90)°",
+            "cat": "chassis",
+            "text": "turns [right] (90) ° until done",
             "args": {
              "deg": 90,
              "rpm": 40
@@ -1139,21 +1219,24 @@ window.MBOT_DATA = {
          },
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#22c55e|green]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#7ed321)",
           "args": {
-           "color": "green"
+           "color": "green",
+           "hex": "#7ed321"
           }
          }
         ],
         "else": [
          {
           "op": "move",
-          "cat": "motion",
-          "text": "move forward at (50) RPM",
+          "cat": "chassis",
+          "text": "moves [forward] at (50) RPM",
           "args": {
            "l": 50,
-           "r": 50
+           "r": 50,
+           "direction": "forward",
+           "rpm": 50
           }
          }
         ]
@@ -1183,15 +1266,17 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (🎵 Jingle Bells) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Jingle Bells) at [center of screen] by [middle] pixel",
       "args": {
-       "text": "🎵 Jingle Bells"
+       "text": "Jingle Bells"
       }
      },
      {
@@ -1220,11 +1305,11 @@ window.MBOT_DATA = {
       "body": [
        {
         "op": "note",
-        "cat": "audio",
-        "text": "play note [F5] for (1) beats",
+        "cat": "cp_audio",
+        "text": "play note (77) for (0.5) beat",
         "args": {
-         "note": "F5",
-         "beats": 1
+         "note": 77,
+         "beats": 0.5
         }
        }
       ]
@@ -1239,85 +1324,85 @@ window.MBOT_DATA = {
       "body": [
        {
         "op": "note",
-        "cat": "audio",
-        "text": "play note [E5] for (1) beats",
+        "cat": "cp_audio",
+        "text": "play note (76) for (0.5) beat",
         "args": {
-         "note": "E5",
-         "beats": 1
+         "note": 76,
+         "beats": 0.5
         }
        }
       ]
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (0.5) beats",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.25) beat",
       "args": {
-       "note": "E5",
+       "note": 76,
+       "beats": 0.25
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.25) beat",
+      "args": {
+       "note": 76,
+       "beats": 0.25
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.5) beat",
+      "args": {
+       "note": 76,
        "beats": 0.5
       }
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (0.5) beats",
+      "cat": "cp_audio",
+      "text": "play note (74) for (0.5) beat",
       "args": {
-       "note": "E5",
+       "note": 74,
        "beats": 0.5
       }
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (1) beats",
+      "cat": "cp_audio",
+      "text": "play note (74) for (0.5) beat",
       "args": {
-       "note": "E5",
+       "note": 74,
+       "beats": 0.5
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.5) beat",
+      "args": {
+       "note": 76,
+       "beats": 0.5
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (74) for (1) beat",
+      "args": {
+       "note": 74,
        "beats": 1
       }
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [D5] for (1) beats",
+      "cat": "cp_audio",
+      "text": "play note (79) for (1) beat",
       "args": {
-       "note": "D5",
+       "note": 79,
        "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [D5] for (1) beats",
-      "args": {
-       "note": "D5",
-       "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (1) beats",
-      "args": {
-       "note": "E5",
-       "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [D5] for (2) beats",
-      "args": {
-       "note": "D5",
-       "beats": 2
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [G5] for (2) beats",
-      "args": {
-       "note": "G5",
-       "beats": 2
       }
      },
      {
@@ -1338,8 +1423,8 @@ window.MBOT_DATA = {
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Happy holidays!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Happy holidays!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Happy holidays!"
       }
@@ -1349,8 +1434,10 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "wait",
@@ -1369,17 +1456,31 @@ window.MBOT_DATA = {
       },
       "body": [
        {
-        "op": "led",
-        "cat": "light",
-        "text": "all LEDs light up [#94a3b8|🎲 random color]",
+        "op": "led_rgb",
+        "cat": "cp_led",
+        "text": "LED [all] displays R {operators|pick random (0) to (255)} G {operators|pick random (0) to (255)} B {operators|pick random (0) to (255)}",
         "args": {
-         "color": "random"
+         "r": {
+          "k": "rand",
+          "a": 0,
+          "b": 255
+         },
+         "g": {
+          "k": "rand",
+          "a": 0,
+          "b": 255
+         },
+         "b": {
+          "k": "rand",
+          "a": 0,
+          "b": 255
+         }
         }
        },
        {
         "op": "turn",
-        "cat": "motion",
-        "text": "turn left (45)°",
+        "cat": "chassis",
+        "text": "turns [left] (45) ° until done",
         "args": {
          "deg": -45,
          "rpm": 50
@@ -1387,8 +1488,8 @@ window.MBOT_DATA = {
        },
        {
         "op": "turn",
-        "cat": "motion",
-        "text": "turn right (45)°",
+        "cat": "chassis",
+        "text": "turns [right] (45) ° until done",
         "args": {
          "deg": 45,
          "rpm": 50
@@ -1396,48 +1497,46 @@ window.MBOT_DATA = {
        },
        {
         "op": "move_for",
-        "cat": "motion",
-        "text": "move forward at (40) RPM for (0.4) secs",
+        "cat": "chassis",
+        "text": "moves [forward] at (40) RPM for (0.4) secs",
         "args": {
          "l": 40,
          "r": 40,
-         "sec": 0.4
+         "sec": 0.4,
+         "direction": "forward",
+         "rpm": 40
         }
        },
        {
         "op": "move_for",
-        "cat": "motion",
-        "text": "move backward at (40) RPM for (0.4) secs",
+        "cat": "chassis",
+        "text": "moves [backward] at (40) RPM for (0.4) secs",
         "args": {
          "l": -40,
          "r": -40,
-         "sec": 0.4
+         "sec": 0.4,
+         "direction": "backward",
+         "rpm": 40
         }
        }
       ]
      },
      {
-      "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#a855f7|🌈 rainbow]",
+      "op": "led_anim",
+      "cat": "cp_led",
+      "text": "play LED animation [rainbow] until done",
       "args": {
-       "color": "rainbow"
+       "name": "rainbow"
       }
      },
      {
       "op": "turn",
-      "cat": "motion",
-      "text": "turn right (360)°",
+      "cat": "chassis",
+      "text": "turns [right] (360) ° until done",
       "args": {
        "deg": 360,
        "rpm": 50
       }
-     },
-     {
-      "op": "stop_move",
-      "cat": "motion",
-      "text": "stop encoder motors",
-      "args": {}
      }
     ],
     [
@@ -1451,56 +1550,56 @@ window.MBOT_DATA = {
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (1) beats",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.5) beat",
       "args": {
-       "note": "E5",
+       "note": 76,
+       "beats": 0.5
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.5) beat",
+      "args": {
+       "note": 76,
+       "beats": 0.5
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (1) beat",
+      "args": {
+       "note": 76,
        "beats": 1
       }
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (1) beats",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.5) beat",
       "args": {
-       "note": "E5",
+       "note": 76,
+       "beats": 0.5
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.5) beat",
+      "args": {
+       "note": 76,
+       "beats": 0.5
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (1) beat",
+      "args": {
+       "note": 76,
        "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (2) beats",
-      "args": {
-       "note": "E5",
-       "beats": 2
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (1) beats",
-      "args": {
-       "note": "E5",
-       "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (1) beats",
-      "args": {
-       "note": "E5",
-       "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (2) beats",
-      "args": {
-       "note": "E5",
-       "beats": 2
       }
      }
     ],
@@ -1515,47 +1614,47 @@ window.MBOT_DATA = {
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (1) beats",
+      "cat": "cp_audio",
+      "text": "play note (76) for (0.5) beat",
       "args": {
-       "note": "E5",
-       "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [G5] for (1) beats",
-      "args": {
-       "note": "G5",
-       "beats": 1
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [C5] for (1.5) beats",
-      "args": {
-       "note": "C5",
-       "beats": 1.5
-      }
-     },
-     {
-      "op": "note",
-      "cat": "audio",
-      "text": "play note [D5] for (0.5) beats",
-      "args": {
-       "note": "D5",
+       "note": 76,
        "beats": 0.5
       }
      },
      {
       "op": "note",
-      "cat": "audio",
-      "text": "play note [E5] for (4) beats",
+      "cat": "cp_audio",
+      "text": "play note (79) for (0.5) beat",
       "args": {
-       "note": "E5",
-       "beats": 4
+       "note": 79,
+       "beats": 0.5
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (72) for (0.75) beat",
+      "args": {
+       "note": 72,
+       "beats": 0.75
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (74) for (0.25) beat",
+      "args": {
+       "note": 74,
+       "beats": 0.25
+      }
+     },
+     {
+      "op": "note",
+      "cat": "cp_audio",
+      "text": "play note (76) for (2) beat",
+      "args": {
+       "note": 76,
+       "beats": 2
       }
      }
     ]
@@ -1569,11 +1668,11 @@ window.MBOT_DATA = {
    "world": "ball",
    "camera": true,
    "level": 4,
-   "summary": "The smart camera finds the red ball and reports WHERE it is. The robot steers toward it.",
+   "summary": "AI Camera 2.0 finds the red ball and reports WHERE it is. The robot steers toward it.",
    "concepts": [
     "AI vision",
-    "x-coordinate",
-    "Tracking"
+    "Color blobs",
+    "x-coordinate tracking"
    ],
    "challenge": "Make the robot back away when the ball gets too close, like a shy puppy.",
    "scripts": [
@@ -1581,29 +1680,31 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "cam_mode",
-      "cat": "ai",
-      "text": "smart camera [1] switch to [color block] mode",
+      "cat": "cam_tag",
+      "text": "Switch to [Color Recognition] mode",
       "args": {
-       "mode": "color"
+       "mode": "Color Recognition"
       }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Ball Chaser!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Ball Chaser!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Ball Chaser!"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 start]",
+      "cat": "cp_audio",
+      "text": "play [start]",
       "args": {
        "name": "start"
       }
@@ -1612,18 +1713,23 @@ window.MBOT_DATA = {
       "op": "forever",
       "cat": "control",
       "text": "forever",
+      "args": {},
       "body": [
        {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
-         "op": "cam_color",
-         "cat": "ai",
-         "text": "smart camera [1] sees color block [#ef4444|1 red] ?",
+         "op": "cmp",
+         "cat": "operators",
+         "text": "{cam_color|Number of [#e11d2e|Red] color blocks} > (0)",
          "args": {
-          "color": "red",
-          "sign": 1
+          "a": {
+           "k": "blob_count"
+          },
+          "cmp": ">",
+          "b": 0
          }
         },
         "body": [
@@ -1631,13 +1737,14 @@ window.MBOT_DATA = {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
            "op": "cmp",
            "cat": "operators",
-           "text": "{ai|smart camera [1] color block [1] x} < (110)",
+           "text": "{cam_color|The [X Coordinate] of the blob with [Middle position]} < (110)",
            "args": {
             "a": {
-             "k": "cam_x"
+             "k": "blob_x"
             },
             "cmp": "<",
             "b": 110
@@ -1646,19 +1753,22 @@ window.MBOT_DATA = {
           "body": [
            {
             "op": "led",
-            "cat": "light",
-            "text": "all LEDs light up [#3b82f6|blue]",
+            "cat": "cp_led",
+            "text": "LED [all] displays (#0113d0)",
             "args": {
-             "color": "blue"
+             "color": "blue",
+             "hex": "#0113d0"
             }
            },
            {
             "op": "move",
-            "cat": "motion",
-            "text": "EM1 left at (10) RPM, EM2 right at (40) RPM",
+            "cat": "chassis",
+            "text": "encoder motor EM1 ↺ rotates at (10) RPM, encoder motor EM2 ↺ rotates at (-40) RPM",
             "args": {
              "l": 10,
-             "r": 40
+             "r": 40,
+             "em1": 10,
+             "em2": -40
             }
            }
           ],
@@ -1667,13 +1777,14 @@ window.MBOT_DATA = {
             "op": "if",
             "cat": "control",
             "text": "if %c then",
+            "args": {},
             "cond": {
              "op": "cmp",
              "cat": "operators",
-             "text": "{ai|smart camera [1] color block [1] x} > (210)",
+             "text": "{cam_color|The [X Coordinate] of the blob with [Middle position]} > (210)",
              "args": {
               "a": {
-               "k": "cam_x"
+               "k": "blob_x"
               },
               "cmp": ">",
               "b": 210
@@ -1682,19 +1793,22 @@ window.MBOT_DATA = {
             "body": [
              {
               "op": "led",
-              "cat": "light",
-              "text": "all LEDs light up [#3b82f6|blue]",
+              "cat": "cp_led",
+              "text": "LED [all] displays (#0113d0)",
               "args": {
-               "color": "blue"
+               "color": "blue",
+               "hex": "#0113d0"
               }
              },
              {
               "op": "move",
-              "cat": "motion",
-              "text": "EM1 left at (40) RPM, EM2 right at (10) RPM",
+              "cat": "chassis",
+              "text": "encoder motor EM1 ↺ rotates at (40) RPM, encoder motor EM2 ↺ rotates at (-10) RPM",
               "args": {
                "l": 40,
-               "r": 10
+               "r": 10,
+               "em1": 40,
+               "em2": -10
               }
              }
             ],
@@ -1703,13 +1817,14 @@ window.MBOT_DATA = {
               "op": "if",
               "cat": "control",
               "text": "if %c then",
+              "args": {},
               "cond": {
                "op": "cmp",
                "cat": "operators",
-               "text": "{ai|smart camera [1] color block [1] width} > (90)",
+               "text": "{cam_color|The [Width] of the blob with [Middle position]} > (90)",
                "args": {
                 "a": {
-                 "k": "cam_size"
+                 "k": "blob_w"
                 },
                 "cmp": ">",
                 "b": 90
@@ -1718,32 +1833,33 @@ window.MBOT_DATA = {
               "body": [
                {
                 "op": "stop_move",
-                "cat": "motion",
-                "text": "stop encoder motors",
+                "cat": "chassis",
+                "text": "stop encoder motor [all]",
                 "args": {}
                },
                {
                 "op": "led",
-                "cat": "light",
-                "text": "all LEDs light up [#22c55e|green]",
+                "cat": "cp_led",
+                "text": "LED [all] displays (#7ed321)",
                 "args": {
-                 "color": "green"
+                 "color": "green",
+                 "hex": "#7ed321"
                 }
                },
                {
                 "op": "display",
-                "cat": "display",
-                "text": "show label (Got you! ⚽) on screen",
+                "cat": "cp_display",
+                "text": "show label [1] (Got you!) at [center of screen] by [middle] pixel",
                 "args": {
-                 "text": "Got you! ⚽"
+                 "text": "Got you!"
                 }
                },
                {
                 "op": "sound",
-                "cat": "audio",
-                "text": "play sound [🔊 beep]",
+                "cat": "cp_audio",
+                "text": "play [beeps]",
                 "args": {
-                 "name": "beep"
+                 "name": "beeps"
                 }
                },
                {
@@ -1758,27 +1874,30 @@ window.MBOT_DATA = {
               "else": [
                {
                 "op": "led",
-                "cat": "light",
-                "text": "all LEDs light up [#e5e7eb|white]",
+                "cat": "cp_led",
+                "text": "LED [all] displays (#ffffff)",
                 "args": {
-                 "color": "white"
+                 "color": "white",
+                 "hex": "#ffffff"
                 }
                },
                {
                 "op": "display",
-                "cat": "display",
-                "text": "show label (Chasing...) on screen",
+                "cat": "cp_display",
+                "text": "show label [1] (Chasing...) at [center of screen] by [middle] pixel",
                 "args": {
                  "text": "Chasing..."
                 }
                },
                {
                 "op": "move",
-                "cat": "motion",
-                "text": "move forward at (45) RPM",
+                "cat": "chassis",
+                "text": "moves [forward] at (45) RPM",
                 "args": {
                  "l": 45,
-                 "r": 45
+                 "r": 45,
+                 "direction": "forward",
+                 "rpm": 45
                 }
                }
               ]
@@ -1791,27 +1910,30 @@ window.MBOT_DATA = {
         "else": [
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#a855f7|purple]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#9013fe)",
           "args": {
-           "color": "purple"
+           "color": "purple",
+           "hex": "#9013fe"
           }
          },
          {
           "op": "display",
-          "cat": "display",
-          "text": "show label (Where is the ball?) on screen",
+          "cat": "cp_display",
+          "text": "show label [1] (Where is the ball?) at [center of screen] by [middle] pixel",
           "args": {
            "text": "Where is the ball?"
           }
          },
          {
           "op": "move",
-          "cat": "motion",
-          "text": "EM1 left at (-20) RPM, EM2 right at (20) RPM",
+          "cat": "chassis",
+          "text": "encoder motor EM1 ↺ rotates at (-20) RPM, encoder motor EM2 ↺ rotates at (-20) RPM",
           "args": {
            "l": -20,
-           "r": 20
+           "r": 20,
+           "em1": -20,
+           "em2": -20
           }
          }
         ]
@@ -1824,54 +1946,65 @@ window.MBOT_DATA = {
   {
    "session": 10,
    "id": "signs",
-   "title": "AI Sign Explorer",
+   "title": "AI Tag Explorer",
    "emoji": "👁️",
    "world": "camera",
    "camera": true,
    "level": 4,
-   "summary": "The smart camera learns three colored signs and follows their directions to the goal.",
+   "summary": "AI Camera 2.0 reads AprilTag signs: tag 1 = turn left, tag 2 = turn right, tag 3 = goal!",
    "concepts": [
-    "Machine learning",
-    "Multi-branch logic",
-    "Navigation"
+    "AI vision",
+    "AprilTags",
+    "Multi-branch logic"
    ],
-   "challenge": "Teach the camera a fourth sign that makes mBot2 do a victory dance.",
+   "challenge": "Add tag 4: when the camera sees it, mBot2 does a victory dance.",
    "scripts": [
     [
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "cam_mode",
-      "cat": "ai",
-      "text": "smart camera [1] switch to [color block] mode",
+      "cat": "cam_tag",
+      "text": "Switch to [AprilTag] mode",
       "args": {
-       "mode": "color"
+       "mode": "AprilTag"
+      }
+     },
+     {
+      "op": "tag_size",
+      "cat": "cam_tag",
+      "text": "Set AprilTag size to (10) cm",
+      "args": {
+       "cm": 10
       }
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (AI Explorer ready!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (AI Explorer ready!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "AI Explorer ready!"
       }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#e5e7eb|white]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#ffffff)",
       "args": {
-       "color": "white"
+       "color": "white",
+       "hex": "#ffffff"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 start]",
+      "cat": "cp_audio",
+      "text": "play [start]",
       "args": {
        "name": "start"
       }
@@ -1888,55 +2021,73 @@ window.MBOT_DATA = {
       "op": "forever",
       "cat": "control",
       "text": "forever",
+      "args": {},
       "body": [
+       {
+        "op": "set_var",
+        "cat": "variables",
+        "text": "set [tag] to {cam_tag|The identify result of the tag with [Middle position]}",
+        "args": {
+         "name": "tag",
+         "value": {
+          "k": "tag_id"
+         }
+        }
+       },
        {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
-         "op": "cam_color",
-         "cat": "ai",
-         "text": "smart camera [1] sees color block [#3b82f6|1 blue] ?",
+         "op": "cmp",
+         "cat": "operators",
+         "text": "{variables|tag} = (1)",
          "args": {
-          "color": "blue",
-          "sign": 1
+          "a": {
+           "k": "var",
+           "n": "tag"
+          },
+          "cmp": "=",
+          "b": 1
          }
         },
         "body": [
          {
           "op": "stop_move",
-          "cat": "motion",
-          "text": "stop encoder motors",
+          "cat": "chassis",
+          "text": "stop encoder motor [all]",
           "args": {}
          },
          {
           "op": "display",
-          "cat": "display",
-          "text": "show label (Blue = LEFT) on screen",
+          "cat": "cp_display",
+          "text": "show label [1] (Tag 1 = LEFT) at [center of screen] by [middle] pixel",
           "args": {
-           "text": "Blue = LEFT"
+           "text": "Tag 1 = LEFT"
           }
          },
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#3b82f6|blue]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#0113d0)",
           "args": {
-           "color": "blue"
+           "color": "blue",
+           "hex": "#0113d0"
           }
          },
          {
           "op": "sound",
-          "cat": "audio",
-          "text": "play sound [🔊 beep]",
+          "cat": "cp_audio",
+          "text": "play [beeps]",
           "args": {
-           "name": "beep"
+           "name": "beeps"
           }
          },
          {
           "op": "turn",
-          "cat": "motion",
-          "text": "turn left (90)°",
+          "cat": "chassis",
+          "text": "turns [left] (90) ° until done",
           "args": {
            "deg": -90,
            "rpm": 40
@@ -1948,50 +2099,56 @@ window.MBOT_DATA = {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
-           "op": "cam_color",
-           "cat": "ai",
-           "text": "smart camera [1] sees color block [#facc15|2 yellow] ?",
+           "op": "cmp",
+           "cat": "operators",
+           "text": "{variables|tag} = (2)",
            "args": {
-            "color": "yellow",
-            "sign": 2
+            "a": {
+             "k": "var",
+             "n": "tag"
+            },
+            "cmp": "=",
+            "b": 2
            }
           },
           "body": [
            {
             "op": "stop_move",
-            "cat": "motion",
-            "text": "stop encoder motors",
+            "cat": "chassis",
+            "text": "stop encoder motor [all]",
             "args": {}
            },
            {
             "op": "display",
-            "cat": "display",
-            "text": "show label (Yellow = RIGHT) on screen",
+            "cat": "cp_display",
+            "text": "show label [1] (Tag 2 = RIGHT) at [center of screen] by [middle] pixel",
             "args": {
-             "text": "Yellow = RIGHT"
+             "text": "Tag 2 = RIGHT"
             }
            },
            {
             "op": "led",
-            "cat": "light",
-            "text": "all LEDs light up [#facc15|yellow]",
+            "cat": "cp_led",
+            "text": "LED [all] displays (#f8e71c)",
             "args": {
-             "color": "yellow"
+             "color": "yellow",
+             "hex": "#f8e71c"
             }
            },
            {
             "op": "sound",
-            "cat": "audio",
-            "text": "play sound [🔊 beep]",
+            "cat": "cp_audio",
+            "text": "play [beeps]",
             "args": {
-             "name": "beep"
+             "name": "beeps"
             }
            },
            {
             "op": "turn",
-            "cat": "motion",
-            "text": "turn right (90)°",
+            "cat": "chassis",
+            "text": "turns [right] (90) ° until done",
             "args": {
              "deg": 90,
              "rpm": 40
@@ -2003,44 +2160,49 @@ window.MBOT_DATA = {
             "op": "if",
             "cat": "control",
             "text": "if %c then",
+            "args": {},
             "cond": {
-             "op": "cam_color",
-             "cat": "ai",
-             "text": "smart camera [1] sees color block [#ef4444|3 red] ?",
+             "op": "cmp",
+             "cat": "operators",
+             "text": "{variables|tag} = (3)",
              "args": {
-              "color": "red",
-              "sign": 3
+              "a": {
+               "k": "var",
+               "n": "tag"
+              },
+              "cmp": "=",
+              "b": 3
              }
             },
             "body": [
              {
               "op": "stop_move",
-              "cat": "motion",
-              "text": "stop encoder motors",
+              "cat": "chassis",
+              "text": "stop encoder motor [all]",
               "args": {}
              },
              {
               "op": "display",
-              "cat": "display",
-              "text": "show label (GOAL! Mission complete) on screen",
+              "cat": "cp_display",
+              "text": "show label [1] (Tag 3 = GOAL!) at [center of screen] by [middle] pixel",
               "args": {
-               "text": "GOAL! Mission complete"
-              }
-             },
-             {
-              "op": "led",
-              "cat": "light",
-              "text": "all LEDs light up [#a855f7|🌈 rainbow]",
-              "args": {
-               "color": "rainbow"
+               "text": "Tag 3 = GOAL!"
               }
              },
              {
               "op": "sound",
-              "cat": "audio",
-              "text": "play sound [🔊 success]",
+              "cat": "cp_audio",
+              "text": "play [magic]",
               "args": {
-               "name": "success"
+               "name": "magic"
+              }
+             },
+             {
+              "op": "led_anim",
+              "cat": "cp_led",
+              "text": "play LED animation [rainbow] until done",
+              "args": {
+               "name": "rainbow"
               }
              },
              {
@@ -2053,8 +2215,8 @@ window.MBOT_DATA = {
               "body": [
                {
                 "op": "turn",
-                "cat": "motion",
-                "text": "turn left (40)°",
+                "cat": "chassis",
+                "text": "turns [left] (40) ° until done",
                 "args": {
                  "deg": -40,
                  "rpm": 40
@@ -2062,8 +2224,8 @@ window.MBOT_DATA = {
                },
                {
                 "op": "turn",
-                "cat": "motion",
-                "text": "turn right (40)°",
+                "cat": "chassis",
+                "text": "turns [right] (40) ° until done",
                 "args": {
                  "deg": 40,
                  "rpm": 40
@@ -2081,11 +2243,13 @@ window.MBOT_DATA = {
             "else": [
              {
               "op": "move",
-              "cat": "motion",
-              "text": "move forward at (40) RPM",
+              "cat": "chassis",
+              "text": "moves [forward] at (40) RPM",
               "args": {
                "l": 40,
-               "r": 40
+               "r": 40,
+               "direction": "forward",
+               "rpm": 40
               }
              }
             ]
@@ -2119,8 +2283,10 @@ window.MBOT_DATA = {
      {
       "op": "when_start",
       "cat": "events",
-      "text": "🚩 when mBot2 starts up",
-      "args": {}
+      "text": "when button [A] pressed",
+      "args": {
+       "button": "a"
+      }
      },
      {
       "op": "set_var",
@@ -2133,24 +2299,25 @@ window.MBOT_DATA = {
      },
      {
       "op": "display",
-      "cat": "display",
-      "text": "show label (All aboard! 🚂) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (All aboard!) at [center of screen] by [middle] pixel",
       "args": {
-       "text": "All aboard! 🚂"
+       "text": "All aboard!"
       }
      },
      {
       "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#22c55e|green]",
+      "cat": "cp_led",
+      "text": "LED [all] displays (#7ed321)",
       "args": {
-       "color": "green"
+       "color": "green",
+       "hex": "#7ed321"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 start]",
+      "cat": "cp_audio",
+      "text": "play [start]",
       "args": {
        "name": "start"
       }
@@ -2159,6 +2326,7 @@ window.MBOT_DATA = {
       "op": "repeat_until",
       "cat": "control",
       "text": "repeat until %c",
+      "args": {},
       "cond": {
        "op": "cmp",
        "cat": "operators",
@@ -2177,10 +2345,11 @@ window.MBOT_DATA = {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
          "op": "cmp",
          "cat": "operators",
-         "text": "{sensing|ultrasonic 2 [1] distance cm} < (15)",
+         "text": "{mbuild|ultrasonic 2 [1] distance to an object \\(cm\\)} < (15)",
          "args": {
           "a": {
            "k": "distance"
@@ -2192,30 +2361,31 @@ window.MBOT_DATA = {
         "body": [
          {
           "op": "stop_move",
-          "cat": "motion",
-          "text": "stop encoder motors",
+          "cat": "chassis",
+          "text": "stop encoder motor [all]",
           "args": {}
          },
          {
           "op": "led",
-          "cat": "light",
-          "text": "all LEDs light up [#ef4444|red]",
+          "cat": "cp_led",
+          "text": "LED [all] displays (#d0021b)",
           "args": {
-           "color": "red"
+           "color": "red",
+           "hex": "#d0021b"
           }
          },
          {
           "op": "display",
-          "cat": "display",
-          "text": "show label (Cat on the track!) on screen",
+          "cat": "cp_display",
+          "text": "show label [1] (Cat on the track!) at [center of screen] by [middle] pixel",
           "args": {
            "text": "Cat on the track!"
           }
          },
          {
           "op": "sound",
-          "cat": "audio",
-          "text": "play sound [🔊 meow]",
+          "cat": "cp_audio",
+          "text": "play [meow]",
           "args": {
            "name": "meow"
           }
@@ -2234,10 +2404,11 @@ window.MBOT_DATA = {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
            "op": "floor_color",
-           "cat": "sensing",
-           "text": "quad RGB sensor detects [#22c55e|green] ?",
+           "cat": "mbuild",
+           "text": "quad rgb sensor [1] probe [(2) R1] detects [#22c55e|green] ?",
            "args": {
             "color": "green"
            }
@@ -2245,8 +2416,8 @@ window.MBOT_DATA = {
           "body": [
            {
             "op": "stop_move",
-            "cat": "motion",
-            "text": "stop encoder motors",
+            "cat": "chassis",
+            "text": "stop encoder motor [all]",
             "args": {}
            },
            {
@@ -2260,16 +2431,17 @@ window.MBOT_DATA = {
            },
            {
             "op": "led",
-            "cat": "light",
-            "text": "all LEDs light up [#3b82f6|blue]",
+            "cat": "cp_led",
+            "text": "LED [all] displays (#0113d0)",
             "args": {
-             "color": "blue"
+             "color": "blue",
+             "hex": "#0113d0"
             }
            },
            {
             "op": "display",
-            "cat": "display",
-            "text": "show label {operators|join (Station ) {variables|stations}} on screen",
+            "cat": "cp_display",
+            "text": "show label [1] {operators|join (Station ) {variables|stations}} at [center of screen] by [middle] pixel",
             "args": {
              "text": {
               "k": "join",
@@ -2283,10 +2455,10 @@ window.MBOT_DATA = {
            },
            {
             "op": "sound",
-            "cat": "audio",
-            "text": "play sound [🔊 ding]",
+            "cat": "cp_audio",
+            "text": "play [ring]",
             "args": {
-             "name": "ding"
+             "name": "ring"
             }
            },
            {
@@ -2299,20 +2471,23 @@ window.MBOT_DATA = {
            },
            {
             "op": "led",
-            "cat": "light",
-            "text": "all LEDs light up [#22c55e|green]",
+            "cat": "cp_led",
+            "text": "LED [all] displays (#7ed321)",
             "args": {
-             "color": "green"
+             "color": "green",
+             "hex": "#7ed321"
             }
            },
            {
             "op": "move_for",
-            "cat": "motion",
-            "text": "move forward at (30) RPM for (1.2) secs",
+            "cat": "chassis",
+            "text": "moves [forward] at (30) RPM for (1.2) secs",
             "args": {
              "l": 30,
              "r": 30,
-             "sec": 1.2
+             "sec": 1.2,
+             "direction": "forward",
+             "rpm": 30
             }
            }
           ],
@@ -2333,32 +2508,32 @@ window.MBOT_DATA = {
      },
      {
       "op": "stop_move",
-      "cat": "motion",
-      "text": "stop encoder motors",
+      "cat": "chassis",
+      "text": "stop encoder motor [all]",
       "args": {}
      },
      {
-      "op": "led",
-      "cat": "light",
-      "text": "all LEDs light up [#a855f7|🌈 rainbow]",
-      "args": {
-       "color": "rainbow"
-      }
-     },
-     {
       "op": "display",
-      "cat": "display",
-      "text": "show label (Last stop! Thank you!) on screen",
+      "cat": "cp_display",
+      "text": "show label [1] (Last stop! Thank you!) at [center of screen] by [middle] pixel",
       "args": {
        "text": "Last stop! Thank you!"
       }
      },
      {
       "op": "sound",
-      "cat": "audio",
-      "text": "play sound [🔊 success]",
+      "cat": "cp_audio",
+      "text": "play [magic]",
       "args": {
-       "name": "success"
+       "name": "magic"
+      }
+     },
+     {
+      "op": "led_anim",
+      "cat": "cp_led",
+      "text": "play LED animation [rainbow] until done",
+      "args": {
+       "name": "rainbow"
       }
      }
     ],
@@ -2375,22 +2550,26 @@ window.MBOT_DATA = {
       "op": "if",
       "cat": "control",
       "text": "if %c then",
+      "args": {},
       "cond": {
        "op": "line",
-       "cat": "sensing",
-       "text": "quad RGB sensor [L1 R1] is [■ ■ both on line] ?",
+       "cat": "mbuild",
+       "text": "quad rgb sensor [1] L1, R1's [line] in status [(3) 11] ?",
        "args": {
-        "pattern": "11"
+        "pattern": "11",
+        "status": 3
        }
       },
       "body": [
        {
         "op": "move",
-        "cat": "motion",
-        "text": "EM1 left at (30) RPM, EM2 right at (30) RPM",
+        "cat": "chassis",
+        "text": "encoder motor EM1 ↺ rotates at (30) RPM, encoder motor EM2 ↺ rotates at (-30) RPM",
         "args": {
          "l": 30,
-         "r": 30
+         "r": 30,
+         "em1": 30,
+         "em2": -30
         }
        }
       ],
@@ -2399,22 +2578,26 @@ window.MBOT_DATA = {
         "op": "if",
         "cat": "control",
         "text": "if %c then",
+        "args": {},
         "cond": {
          "op": "line",
-         "cat": "sensing",
-         "text": "quad RGB sensor [L1 R1] is [■ □ only left] ?",
+         "cat": "mbuild",
+         "text": "quad rgb sensor [1] L1, R1's [line] in status [(2) 10] ?",
          "args": {
-          "pattern": "10"
+          "pattern": "10",
+          "status": 2
          }
         },
         "body": [
          {
           "op": "move",
-          "cat": "motion",
-          "text": "EM1 left at (8) RPM, EM2 right at (30) RPM",
+          "cat": "chassis",
+          "text": "encoder motor EM1 ↺ rotates at (8) RPM, encoder motor EM2 ↺ rotates at (-30) RPM",
           "args": {
            "l": 8,
-           "r": 30
+           "r": 30,
+           "em1": 8,
+           "em2": -30
           }
          }
         ],
@@ -2423,22 +2606,26 @@ window.MBOT_DATA = {
           "op": "if",
           "cat": "control",
           "text": "if %c then",
+          "args": {},
           "cond": {
            "op": "line",
-           "cat": "sensing",
-           "text": "quad RGB sensor [L1 R1] is [□ ■ only right] ?",
+           "cat": "mbuild",
+           "text": "quad rgb sensor [1] L1, R1's [line] in status [(1) 01] ?",
            "args": {
-            "pattern": "01"
+            "pattern": "01",
+            "status": 1
            }
           },
           "body": [
            {
             "op": "move",
-            "cat": "motion",
-            "text": "EM1 left at (30) RPM, EM2 right at (8) RPM",
+            "cat": "chassis",
+            "text": "encoder motor EM1 ↺ rotates at (30) RPM, encoder motor EM2 ↺ rotates at (-8) RPM",
             "args": {
              "l": 30,
-             "r": 8
+             "r": 8,
+             "em1": 30,
+             "em2": -8
             }
            }
           ]
@@ -2456,7 +2643,7 @@ window.MBOT_DATA = {
    "n": 1,
    "title": "Build Day",
    "desc": "Assemble mBot2, meet CyberPi, connect to mBlock 5",
-   "demo": null
+   "demo": "build"
   },
   {
    "n": 2,
@@ -2503,13 +2690,13 @@ window.MBOT_DATA = {
   {
    "n": 9,
    "title": "Ball Chaser",
-   "desc": "AI vision: tracking with x-coordinates",
+   "desc": "AI vision: color blob tracking",
    "demo": "ball"
   },
   {
    "n": 10,
-   "title": "AI Sign Explorer",
-   "desc": "AI vision: learning and recognizing signs",
+   "title": "AI Tag Explorer",
+   "desc": "AI vision: reading AprilTags",
    "demo": "signs"
   },
   {
@@ -2524,5 +2711,101 @@ window.MBOT_DATA = {
    "desc": "Design, build and present your own robot program",
    "demo": null
   }
- ]
+ ],
+ "build": {
+  "source": "https://support.makeblock.com/hc/en-us/articles/1500006253942-Assemble-mBot-Neo-mBot2",
+  "parts": [
+   [
+    "CyberPi",
+    "4412035667351"
+   ],
+   [
+    "mBot2 Shield",
+    "4412055742487"
+   ],
+   [
+    "Ultrasonic sensor 2",
+    "4412039018903"
+   ],
+   [
+    "Quad RGB sensor",
+    "4412035668631"
+   ],
+   [
+    "Encoder motor",
+    "4412035667735"
+   ],
+   [
+    "Wheel hub",
+    "4412039019159"
+   ],
+   [
+    "Slick tyre",
+    "4412039018519"
+   ],
+   [
+    "Mini wheel",
+    "4412039017623"
+   ],
+   [
+    "Chassis",
+    "4412039016727"
+   ],
+   [
+    "USB cable",
+    "4412035669911"
+   ],
+   [
+    "Motor cable",
+    "4412039017879"
+   ],
+   [
+    "mBuild cable (10 cm)",
+    "4412035667991"
+   ],
+   [
+    "mBuild cable (20 cm)",
+    "4412035668247"
+   ],
+   [
+    "Line-following track map",
+    "4412039017367"
+   ],
+   [
+    "Screw M4×25 mm",
+    "4412035669399"
+   ],
+   [
+    "Screw M4×14 mm",
+    "4412035669143"
+   ],
+   [
+    "Screw M4×8 mm",
+    "4412035668887"
+   ],
+   [
+    "Screw M2.5×12 mm",
+    "4412047239703"
+   ],
+   [
+    "Screwdriver",
+    "4412035669655"
+   ]
+  ],
+  "steps": [
+   "4412039398935",
+   "4412039476503",
+   "4412039499031",
+   "4412055994647",
+   "4412036303383",
+   "4412036305815",
+   "4412056006935",
+   "4412036310423",
+   "4412039624471",
+   "4412039634711",
+   "4412056023703"
+  ],
+  "completed": "4412039642903",
+  "img_base": "https://support.makeblock.com/hc/article_attachments/"
+ }
 };

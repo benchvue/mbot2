@@ -1,33 +1,37 @@
-"""Robotics with mBot2: AI Vision & Programming — session demos (2-11).
+"""Robotics with mBot2: AI Vision & Programming - session demos.
 
-Block label syntax (rendered as mBlock-style shapes in the browser):
-  (value)         white input slot
-  [value]         dropdown
-  [#hex|value]    dropdown with a color dot
-  {cat|content}   round reporter block (can contain () [] {} again)
+Every block uses the real mBlock 5 (v5.6.0) wording for CyberPi, mBot2,
+mBuild sensors and AI Camera 2.0.
+
+Label syntax (drawn as mBlock-style shapes in the browser):
+  (value)        white input       (#d0021b)   color swatch input
+  [value]        dropdown          [#hex|v]    dropdown with a color dot
+  {cat|content}  round reporter    \\( \\)       literal parentheses
 """
 
 COURSE_TITLE = "Robotics with mBot2: AI Vision & Programming"
 
-# ---------------------------------------------------------------- reporters
+# ------------------------------------------------------------ reporters
 
 def lit(x):
     return not isinstance(x, dict)
 
 
 def label(e):
-    """Label text for a reporter expression."""
     if lit(e):
         return str(e)
     k = e["k"]
-    if k == "distance":
-        return "{sensing|ultrasonic 2 [1] distance cm}"
+    fixed = {
+        "distance": "{mbuild|ultrasonic 2 [1] distance to an object \\(cm\\)}",
+        "blob_count": "{cam_color|Number of [#e11d2e|Red] color blocks}",
+        "blob_x": "{cam_color|The [X Coordinate] of the blob with [Middle position]}",
+        "blob_w": "{cam_color|The [Width] of the blob with [Middle position]}",
+        "tag_id": "{cam_tag|The identify result of the tag with [Middle position]}",
+    }
+    if k in fixed:
+        return fixed[k]
     if k == "var":
         return "{variables|" + e["n"] + "}"
-    if k == "cam_x":
-        return "{ai|smart camera [1] color block [1] x}"
-    if k == "cam_size":
-        return "{ai|smart camera [1] color block [1] width}"
     if k == "join":
         return "{operators|join " + slot(e["a"]) + " " + slot(e["b"]) + "}"
     if k == "rand":
@@ -35,8 +39,6 @@ def label(e):
     ops = {"add": "+", "sub": "-", "mul": "*", "div": "/"}
     if k in ops:
         return "{operators|" + slot(e["a"]) + " " + ops[k] + " " + slot(e["b"]) + "}"
-    if k == "round":
-        return "{operators|round " + slot(e["a"]) + "}"
     raise ValueError(k)
 
 
@@ -45,8 +47,10 @@ def slot(e):
 
 
 DIST = {"k": "distance"}
-CAM_X = {"k": "cam_x"}
-CAM_W = {"k": "cam_size"}
+BLOBS = {"k": "blob_count"}
+BLOB_X = {"k": "blob_x"}
+BLOB_W = {"k": "blob_w"}
+TAG = {"k": "tag_id"}
 
 
 def var(n):
@@ -64,7 +68,7 @@ def div(a, b):
 def rand(a, b):
     return {"k": "rand", "a": a, "b": b}
 
-# ---------------------------------------------------------------- blocks
+# ------------------------------------------------------------ blocks
 
 def blk(op, cat, label_text, **args):
     return {"op": op, "cat": cat, "text": label_text, "args": args}
@@ -75,11 +79,11 @@ def cond(op, cat, label_text, **args):
 
 
 def hat():
-    return {"op": "when_start", "cat": "events", "text": "🚩 when mBot2 starts up", "args": {}}
+    return blk("when_start", "events", "when button [A] pressed", button="a")
 
 
 def define(name):
-    return {"op": "define", "cat": "myblocks", "text": f"define [{name}]", "args": {"name": name}}
+    return blk("define", "myblocks", f"define [{name}]", name=name)
 
 
 def call(name):
@@ -87,7 +91,7 @@ def call(name):
 
 
 def forever(*body):
-    return {"op": "forever", "cat": "control", "text": "forever", "body": list(body)}
+    return {"op": "forever", "cat": "control", "text": "forever", "args": {}, "body": list(body)}
 
 
 def repeat(n, *body):
@@ -95,71 +99,82 @@ def repeat(n, *body):
 
 
 def repeat_until(c, *body):
-    return {"op": "repeat_until", "cat": "control", "text": "repeat until %c", "cond": c, "body": list(body)}
+    return {"op": "repeat_until", "cat": "control", "text": "repeat until %c", "args": {}, "cond": c, "body": list(body)}
 
 
 def if_(c, body, else_=None):
-    d = {"op": "if", "cat": "control", "text": "if %c then", "cond": c, "body": body}
+    d = {"op": "if", "cat": "control", "text": "if %c then", "args": {}, "cond": c, "body": body}
     if else_ is not None:
         d["else"] = else_
     return d
 
 
 def elif_chain(*pairs, otherwise=None):
-    """if / else if / ... built as nested if-else blocks (like mBlock)."""
     (c, body), rest = pairs[0], pairs[1:]
     if rest:
         return if_(c, body, [elif_chain(*rest, otherwise=otherwise)])
     return if_(c, body, otherwise)
 
 
-COLORS = {
-    "red": "#ef4444", "orange": "#f97316", "yellow": "#facc15", "green": "#22c55e",
-    "cyan": "#06b6d4", "blue": "#3b82f6", "purple": "#a855f7", "pink": "#ec4899",
-    "white": "#e5e7eb", "black": "#111827", "rainbow": "#a855f7", "random": "#94a3b8",
+LED_HEX = {
+    "red": "#d0021b", "orange": "#f5a623", "yellow": "#f8e71c", "green": "#7ed321",
+    "cyan": "#50e3c2", "blue": "#0113d0", "purple": "#9013fe", "white": "#ffffff",
 }
 
 
 def led(color):
-    name = {"random": "🎲 random color", "rainbow": "🌈 rainbow"}.get(color, color)
-    return blk("led", "light", f"all LEDs light up [{COLORS[color]}|{name}]", color=color)
+    return blk("led", "cp_led", f"LED [all] displays ({LED_HEX[color]})", color=color, hex=LED_HEX[color])
+
+
+def led_random():
+    return blk("led_rgb", "cp_led",
+               "LED [all] displays R " + label(rand(0, 255)) + " G " + label(rand(0, 255)) + " B " + label(rand(0, 255)),
+               r=rand(0, 255), g=rand(0, 255), b=rand(0, 255))
+
+
+def rainbow():
+    return blk("led_anim", "cp_led", "play LED animation [rainbow] until done", name="rainbow")
 
 
 def sound(name):
-    return blk("sound", "audio", f"play sound [🔊 {name}]", name=name)
+    return blk("sound", "cp_audio", f"play [{name}]", name=name)
 
 
-def note(n, beats):
-    return blk("note", "audio", f"play note [{n}] for ({beats}) beats", note=n, beats=beats)
+def note(midi, beats):
+    return blk("note", "cp_audio", f"play note ({midi}) for ({beats}) beat", note=midi, beats=beats)
 
 
 def show(text):
-    return blk("display", "display", f"show label {slot(text)} on screen", text=text)
+    return blk("display", "cp_display",
+               f"show label [1] {slot(text)} at [center of screen] by [middle] pixel", text=text)
 
 
-def forward(rpm):
-    return blk("move", "motion", f"move forward at ({rpm}) RPM", l=rpm, r=rpm)
+def moves(rpm, direction="forward"):
+    return blk("move", "chassis", f"moves [{direction}] at ({rpm}) RPM",
+               l=rpm if direction == "forward" else -rpm, r=rpm if direction == "forward" else -rpm,
+               direction=direction, rpm=rpm)
 
 
-def wheels(l, r):
-    return blk("move", "motion", f"EM1 left at ({l}) RPM, EM2 right at ({r}) RPM", l=l, r=r)
-
-
-def forward_for(rpm, sec):
-    return blk("move_for", "motion", f"move forward at ({rpm}) RPM for ({sec}) secs", l=rpm, r=rpm, sec=sec)
-
-
-def backward_for(rpm, sec):
-    return blk("move_for", "motion", f"move backward at ({rpm}) RPM for ({sec}) secs", l=-rpm, r=-rpm, sec=sec)
+def moves_for(rpm, sec, direction="forward"):
+    s = 1 if direction == "forward" else -1
+    return blk("move_for", "chassis", f"moves [{direction}] at ({rpm}) RPM for ({sec}) secs",
+               l=s * rpm, r=s * rpm, sec=sec, direction=direction, rpm=rpm)
 
 
 def turn(deg, rpm=40):
     side = "right" if deg > 0 else "left"
-    return blk("turn", "motion", f"turn {side} ({abs(deg)})°", deg=deg, rpm=rpm)
+    return blk("turn", "chassis", f"turns [{side}] ({abs(deg)}) ° until done", deg=deg, rpm=rpm)
+
+
+def wheels(left, right):
+    """Left/right wheel speeds. EM2 is mounted mirrored, so its RPM is negative to drive forward."""
+    return blk("move", "chassis",
+               f"encoder motor EM1 ↺ rotates at ({left}) RPM, encoder motor EM2 ↺ rotates at ({-right}) RPM",
+               l=left, r=right, em1=left, em2=-right)
 
 
 def stop():
-    return blk("stop_move", "motion", "stop encoder motors")
+    return blk("stop_move", "chassis", "stop encoder motor [all]")
 
 
 def wait(sec):
@@ -179,26 +194,32 @@ def change_var(name, value):
 
 
 def pen(down):
-    return blk("pen", "pen", "🖍 marker " + ("down" if down else "up") + " (simulator)", down=down)
+    return blk("pen", "pen", "🖍 marker " + ("down" if down else "up") + " \\(simulator only\\)", down=down)
 
 
-def cam_mode():
-    return blk("cam_mode", "ai", "smart camera [1] switch to [color block] mode", mode="color")
+def cam_mode(mode):
+    return blk("cam_mode", "cam_tag", f"Switch to [{mode}] mode", mode=mode)
 
-# ---------------------------------------------------------------- conditions
 
-def line_is(pattern, text):
-    return cond("line", "sensing", f"quad RGB sensor [L1 R1] is [{text}] ?", pattern=pattern)
+def tag_size(cm):
+    return blk("tag_size", "cam_tag", f"Set AprilTag size to ({cm}) cm", cm=cm)
+
+# ------------------------------------------------------------ conditions
+
+LINE_STATUS = {"11": "(3) 11", "10": "(2) 10", "01": "(1) 01", "00": "(0) 00"}
+
+
+def line_is(pattern):
+    return cond("line", "mbuild", f"quad rgb sensor [1] L1, R1's [line] in status [{LINE_STATUS[pattern]}] ?",
+                pattern=pattern, status=int(pattern, 2))
+
+
+FLOOR_HEX = {"red": "#e11d2e", "yellow": "#facc15", "green": "#22c55e", "blue": "#2563eb"}
 
 
 def floor_is(color):
-    return cond("floor_color", "sensing", f"quad RGB sensor detects [{COLORS[color]}|{color}] ?", color=color)
-
-
-def cam_sees(color, number):
-    return cond("cam_color", "ai",
-                f"smart camera [1] sees color block [{COLORS[color]}|{number} {color}] ?",
-                color=color, sign=number)
+    return cond("floor_color", "mbuild",
+                f"quad rgb sensor [1] probe [(2) R1] detects [{FLOOR_HEX[color]}|{color}] ?", color=color)
 
 
 def cmp(a, op, b):
@@ -216,20 +237,20 @@ S2 = {
         hat(),
         show("Hello! I am mBot2"),
         led("blue"),
-        sound("hello"),
+        sound("hi"),
         wait(1),
-        forward_for(50, 1),
+        moves_for(50, 1),
         turn(90),
         led("green"),
-        forward_for(50, 1),
+        moves_for(50, 1),
         show("Let's dance!"),
         sound("yeah"),
-        led("rainbow"),
         turn(-360, 60),
-        backward_for(40, 0.5),
+        moves_for(40, 0.5, "backward"),
         turn(360, 60),
+        rainbow(),
         show("Nice to meet you!"),
-        sound("success"),
+        sound("magic"),
     ]],
 }
 
@@ -244,22 +265,18 @@ S3 = {
         show("I can draw!"),
         led("red"),
         pen(True),
-        repeat(4,
-               forward_for(60, 1.5),
-               turn(90)),
+        repeat(4, moves_for(60, 1.5), turn(-90)),
         pen(False),
-        turn(90),
-        forward_for(60, 1.6),
+        turn(-90),
+        moves_for(60, 1.5),
         turn(-90),
         led("blue"),
         pen(True),
-        repeat(5,
-               forward_for(60, 1.2),
-               turn(144)),
+        repeat(5, moves_for(60, 1.5), turn(-144)),
         pen(False),
         show("Square + Star = Art!"),
-        led("rainbow"),
-        sound("success"),
+        rainbow(),
+        sound("magic"),
     ]],
 }
 
@@ -273,16 +290,15 @@ S4 = {
         hat(),
         show("Traffic Light Robot"),
         led("white"),
-        forward(40),
+        moves(40),
         forever(
             elif_chain(
                 (floor_is("red"), [
-                    stop(), led("red"), show("RED: stop!"), sound("beep"), wait(2),
-                    led("green"), forward_for(50, 1.5), forward(40)]),
-                (floor_is("yellow"), [led("yellow"), show("YELLOW: slow down"), forward(20)]),
-                (floor_is("green"), [led("green"), show("GREEN: go!"), forward(60)]),
-                (floor_is("blue"), [
-                    stop(), led("rainbow"), show("Finish line!"), sound("success"), stop_all()]),
+                    stop(), led("red"), show("RED: stop!"), sound("beeps"), wait(2),
+                    led("green"), moves_for(50, 1.5), moves(40)]),
+                (floor_is("yellow"), [led("yellow"), show("YELLOW: slow down"), moves(20)]),
+                (floor_is("green"), [led("green"), show("GREEN: go!"), moves(60)]),
+                (floor_is("blue"), [stop(), show("Finish line!"), sound("magic"), rainbow(), stop_all()]),
             ),
         ),
     ]],
@@ -302,9 +318,9 @@ S5 = {
         wait(1),
         forever(
             elif_chain(
-                (line_is("11", "■ ■ both on line"), [wheels(35, 35)]),
-                (line_is("10", "■ □ only left"), [wheels(10, 35)]),
-                (line_is("01", "□ ■ only right"), [wheels(35, 10)]),
+                (line_is("11"), [wheels(35, 35)]),
+                (line_is("10"), [wheels(10, 35)]),
+                (line_is("01"), [wheels(35, 10)]),
             ),
         ),
     ]],
@@ -325,10 +341,10 @@ S6 = {
             show(join("Distance: ", var("dist"))),
             elif_chain(
                 (cmp(var("dist"), "<", 8), [
-                    stop(), led("green"), show("Parked! 🎉"), sound("success"), stop_all()]),
+                    stop(), led("green"), show("Parked!"), sound("magic"), stop_all()]),
                 (cmp(var("dist"), "<", 35), [
-                    forward(15), led("yellow"), sound("beep"), wait(div(var("dist"), 50))]),
-                otherwise=[forward(50), led("white")],
+                    moves(15), led("yellow"), sound("beeps"), wait(div(var("dist"), 50))]),
+                otherwise=[moves(50), led("white")],
             ),
         ),
     ]],
@@ -349,18 +365,19 @@ S7 = {
             show(DIST),
             if_(cmp(DIST, "<", 20),
                 [
-                    stop(), led("red"), sound("alert"),
-                    backward_for(30, 0.6),
+                    stop(), led("red"), sound("warning"),
+                    moves_for(30, 0.6, "backward"),
                     if_(cmp(rand(1, 2), "=", 1), [turn(-90)], [turn(90)]),
                     led("green"),
                 ],
-                [forward(50)]),
+                [moves(50)]),
         ),
     ]],
 }
 
-JINGLE = [note("E5", 1), note("E5", 1), note("E5", 2), note("E5", 1), note("E5", 1), note("E5", 2)]
-ALL_THE_WAY = [note("E5", 1), note("G5", 1), note("C5", 1.5), note("D5", 0.5), note("E5", 4)]
+E5, G5, C5, D5, F5 = 76, 79, 72, 74, 77
+JINGLE = [note(E5, 0.5), note(E5, 0.5), note(E5, 1), note(E5, 0.5), note(E5, 0.5), note(E5, 1)]
+ALL_THE_WAY = [note(E5, 0.5), note(G5, 0.5), note(C5, 0.75), note(D5, 0.25), note(E5, 2)]
 
 S8 = {
     "session": 8, "id": "music", "title": "Music & Light Show", "emoji": "🎵",
@@ -370,28 +387,27 @@ S8 = {
     "challenge": "Write your own song with a My Block for the chorus, and design a matching dance.",
     "scripts": [
         [hat(),
-         show("🎵 Jingle Bells"),
+         show("Jingle Bells"),
          call("jingle bells"),
          call("all the way"),
-         repeat(4, note("F5", 1)),
-         repeat(3, note("E5", 1)),
-         note("E5", 0.5), note("E5", 0.5),
-         note("E5", 1), note("D5", 1), note("D5", 1), note("E5", 1),
-         note("D5", 2), note("G5", 2),
+         repeat(4, note(F5, 0.5)),
+         repeat(3, note(E5, 0.5)),
+         note(E5, 0.25), note(E5, 0.25),
+         note(E5, 0.5), note(D5, 0.5), note(D5, 0.5), note(E5, 0.5),
+         note(D5, 1), note(G5, 1),
          call("jingle bells"),
          call("all the way"),
          show("Happy holidays!")],
         [hat(),
          wait(0.5),
          repeat(10,
-                led("random"),
+                led_random(),
                 turn(-45, 50),
                 turn(45, 50),
-                forward_for(40, 0.4),
-                backward_for(40, 0.4)),
-         led("rainbow"),
-         turn(360, 50),
-         stop()],
+                moves_for(40, 0.4),
+                moves_for(40, 0.4, "backward")),
+         rainbow(),
+         turn(360, 50)],
         [define("jingle bells")] + JINGLE,
         [define("all the way")] + ALL_THE_WAY,
     ],
@@ -400,22 +416,22 @@ S8 = {
 S9 = {
     "session": 9, "id": "ball", "title": "Ball Chaser", "emoji": "⚽",
     "world": "ball", "camera": True, "level": 4,
-    "summary": "The smart camera finds the red ball and reports WHERE it is. The robot steers toward it.",
-    "concepts": ["AI vision", "x-coordinate", "Tracking"],
+    "summary": "AI Camera 2.0 finds the red ball and reports WHERE it is. The robot steers toward it.",
+    "concepts": ["AI vision", "Color blobs", "x-coordinate tracking"],
     "challenge": "Make the robot back away when the ball gets too close, like a shy puppy.",
     "scripts": [[
         hat(),
-        cam_mode(),
+        cam_mode("Color Recognition"),
         show("Ball Chaser!"),
         sound("start"),
         forever(
-            if_(cam_sees("red", 1),
+            if_(cmp(BLOBS, ">", 0),
                 [elif_chain(
-                    (cmp(CAM_X, "<", 110), [led("blue"), wheels(10, 40)]),
-                    (cmp(CAM_X, ">", 210), [led("blue"), wheels(40, 10)]),
-                    (cmp(CAM_W, ">", 90), [
-                        stop(), led("green"), show("Got you! ⚽"), sound("beep"), wait(0.5)]),
-                    otherwise=[led("white"), show("Chasing..."), forward(45)],
+                    (cmp(BLOB_X, "<", 110), [led("blue"), wheels(10, 40)]),
+                    (cmp(BLOB_X, ">", 210), [led("blue"), wheels(40, 10)]),
+                    (cmp(BLOB_W, ">", 90), [
+                        stop(), led("green"), show("Got you!"), sound("beeps"), wait(0.5)]),
+                    otherwise=[led("white"), show("Chasing..."), moves(45)],
                 )],
                 [led("purple"), show("Where is the ball?"), wheels(-20, 20)]),
         ),
@@ -423,29 +439,31 @@ S9 = {
 }
 
 S10 = {
-    "session": 10, "id": "signs", "title": "AI Sign Explorer", "emoji": "👁️",
+    "session": 10, "id": "signs", "title": "AI Tag Explorer", "emoji": "👁️",
     "world": "camera", "camera": True, "level": 4,
-    "summary": "The smart camera learns three colored signs and follows their directions to the goal.",
-    "concepts": ["Machine learning", "Multi-branch logic", "Navigation"],
-    "challenge": "Teach the camera a fourth sign that makes mBot2 do a victory dance.",
+    "summary": "AI Camera 2.0 reads AprilTag signs: tag 1 = turn left, tag 2 = turn right, tag 3 = goal!",
+    "concepts": ["AI vision", "AprilTags", "Multi-branch logic"],
+    "challenge": "Add tag 4: when the camera sees it, mBot2 does a victory dance.",
     "scripts": [[
         hat(),
-        cam_mode(),
+        cam_mode("AprilTag"),
+        tag_size(10),
         show("AI Explorer ready!"),
         led("white"),
         sound("start"),
         wait(1),
         forever(
+            set_var("tag", TAG),
             elif_chain(
-                (cam_sees("blue", 1), [
-                    stop(), show("Blue = LEFT"), led("blue"), sound("beep"), turn(-90)]),
-                (cam_sees("yellow", 2), [
-                    stop(), show("Yellow = RIGHT"), led("yellow"), sound("beep"), turn(90)]),
-                (cam_sees("red", 3), [
-                    stop(), show("GOAL! Mission complete"), led("rainbow"), sound("success"),
+                (cmp(var("tag"), "=", 1), [
+                    stop(), show("Tag 1 = LEFT"), led("blue"), sound("beeps"), turn(-90)]),
+                (cmp(var("tag"), "=", 2), [
+                    stop(), show("Tag 2 = RIGHT"), led("yellow"), sound("beeps"), turn(90)]),
+                (cmp(var("tag"), "=", 3), [
+                    stop(), show("Tag 3 = GOAL!"), sound("magic"), rainbow(),
                     repeat(3, turn(-40), turn(40)),
                     stop_all()]),
-                otherwise=[forward(40)],
+                otherwise=[moves(40)],
             ),
         ),
     ]],
@@ -460,7 +478,7 @@ S11 = {
     "scripts": [
         [hat(),
          set_var("stations", 0),
-         show("All aboard! 🚂"),
+         show("All aboard!"),
          led("green"),
          sound("start"),
          repeat_until(cmp(var("stations"), "=", 3),
@@ -469,27 +487,51 @@ S11 = {
                               stop(), led("red"), show("Cat on the track!"), sound("meow"), wait(0.5)]),
                           (floor_is("green"), [
                               stop(), change_var("stations", 1), led("blue"),
-                              show(join("Station ", var("stations"))), sound("ding"), wait(2),
-                              led("green"), forward_for(30, 1.2)]),
+                              show(join("Station ", var("stations"))), sound("ring"), wait(2),
+                              led("green"), moves_for(30, 1.2)]),
                           otherwise=[call("follow line")],
                       )),
          stop(),
-         led("rainbow"),
          show("Last stop! Thank you!"),
-         sound("success")],
+         sound("magic"),
+         rainbow()],
         [define("follow line"),
          elif_chain(
-             (line_is("11", "■ ■ both on line"), [wheels(30, 30)]),
-             (line_is("10", "■ □ only left"), [wheels(8, 30)]),
-             (line_is("01", "□ ■ only right"), [wheels(30, 8)]),
+             (line_is("11"), [wheels(30, 30)]),
+             (line_is("10"), [wheels(8, 30)]),
+             (line_is("01"), [wheels(30, 8)]),
          )],
     ],
 }
 
 DEMOS = [S2, S3, S4, S5, S6, S7, S8, S9, S10, S11]
 
+# ------------------------------------------------------------ Session 1: Build Day
+# Pictures are loaded from the official Makeblock guide (credited and linked in the page).
+IMG = "https://support.makeblock.com/hc/article_attachments/"
+BUILD_GUIDE = {
+    "source": "https://support.makeblock.com/hc/en-us/articles/1500006253942-Assemble-mBot-Neo-mBot2",
+    "parts": [
+        ["CyberPi", "4412035667351"], ["mBot2 Shield", "4412055742487"],
+        ["Ultrasonic sensor 2", "4412039018903"], ["Quad RGB sensor", "4412035668631"],
+        ["Encoder motor", "4412035667735"], ["Wheel hub", "4412039019159"],
+        ["Slick tyre", "4412039018519"], ["Mini wheel", "4412039017623"],
+        ["Chassis", "4412039016727"], ["USB cable", "4412035669911"],
+        ["Motor cable", "4412039017879"], ["mBuild cable (10 cm)", "4412035667991"],
+        ["mBuild cable (20 cm)", "4412035668247"], ["Line-following track map", "4412039017367"],
+        ["Screw M4×25 mm", "4412035669399"], ["Screw M4×14 mm", "4412035669143"],
+        ["Screw M4×8 mm", "4412035668887"], ["Screw M2.5×12 mm", "4412047239703"],
+        ["Screwdriver", "4412035669655"],
+    ],
+    "steps": ["4412039398935", "4412039476503", "4412039499031", "4412055994647", "4412036303383",
+              "4412036305815", "4412056006935", "4412036310423", "4412039624471", "4412039634711",
+              "4412056023703"],
+    "completed": "4412039642903",
+    "img_base": IMG,
+}
+
 CURRICULUM = [
-    {"n": 1, "title": "Build Day", "desc": "Assemble mBot2, meet CyberPi, connect to mBlock 5", "demo": None},
+    {"n": 1, "title": "Build Day", "desc": "Assemble mBot2, meet CyberPi, connect to mBlock 5", "demo": "build"},
     {"n": 2, "title": "Hello, mBot2!", "desc": "Sequences: move, light, sound", "demo": "hello"},
     {"n": 3, "title": "Shape Artist", "desc": "Repeat loops and angles", "demo": "shapes"},
     {"n": 4, "title": "Traffic Light Robot", "desc": "If / else with the color sensor", "demo": "traffic"},
@@ -497,8 +539,8 @@ CURRICULUM = [
     {"n": 6, "title": "Parking Assistant", "desc": "Variables and sensor math", "demo": "parking"},
     {"n": 7, "title": "Obstacle Avoider", "desc": "Comparisons and random numbers", "demo": "obstacle"},
     {"n": 8, "title": "Music & Light Show", "desc": "My Blocks and parallel scripts", "demo": "music"},
-    {"n": 9, "title": "Ball Chaser", "desc": "AI vision: tracking with x-coordinates", "demo": "ball"},
-    {"n": 10, "title": "AI Sign Explorer", "desc": "AI vision: learning and recognizing signs", "demo": "signs"},
+    {"n": 9, "title": "Ball Chaser", "desc": "AI vision: color blob tracking", "demo": "ball"},
+    {"n": 10, "title": "AI Tag Explorer", "desc": "AI vision: reading AprilTags", "demo": "signs"},
     {"n": 11, "title": "Robot Train Mission", "desc": "Combine everything into one mission", "demo": "train"},
     {"n": 12, "title": "Project Day", "desc": "Design, build and present your own robot program", "demo": None},
 ]

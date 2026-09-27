@@ -8,11 +8,14 @@
     const flush = () => { if (buf) { into.appendChild(document.createTextNode(buf)); buf = ''; } };
     while (i < str.length) {
       const ch = str[i];
+      if (ch === '\\') { buf += str[i + 1] || ''; i += 2; continue; }
       if (ch === '(') {
         const j = str.indexOf(')', i);
         flush();
+        const v = str.slice(i + 1, j);
         const s = document.createElement('span');
-        s.className = 'slot'; s.textContent = str.slice(i + 1, j);
+        if (/^#[0-9a-f]{6}$/i.test(v)) { s.className = 'swatch-slot'; s.style.background = v; }
+        else { s.className = 'slot'; s.textContent = v; }
         into.appendChild(s); i = j + 1;
       } else if (ch === '[') {
         const j = str.indexOf(']', i);
@@ -35,12 +38,25 @@
         const inner = str.slice(i + 1, j - 1), bar = inner.indexOf('|');
         const s = document.createElement('span');
         s.className = 'pill cat-' + inner.slice(0, bar);
+        if (G.blockIcon) G.blockIcon(inner.slice(0, bar), s);
         renderText(inner.slice(bar + 1), s);
         into.appendChild(s); i = j;
       } else { buf += ch; i++; }
     }
     flush();
   }
+
+  const ICON = {
+    events: 'cyberpi', cp_audio: 'cyberpi', cp_led: 'cyberpi', cp_display: 'cyberpi',
+    chassis: 'mbot', mbuild: 'mbuild', cam_color: 'cam', cam_tag: 'cam',
+  };
+  function icon(cat, into) {
+    if (!ICON[cat]) return;
+    const i = document.createElement('i');
+    i.className = 'ico ico-' + ICON[cat];
+    into.appendChild(i);
+  }
+  G.blockIcon = icon;
 
   class BlockView {
     constructor(container) {
@@ -74,6 +90,7 @@
       if (['forever', 'repeat', 'repeat_until', 'if'].includes(b.op)) return this.renderC(b);
       const el = document.createElement('div');
       el.className = `blk cat-${b.cat}` + (b.op === 'when_start' || b.op === 'define' ? ' hat' : '');
+      icon(b.cat, el);
       renderText(b.text, el);
       this.map.set(b.id, { el });
       return el;
@@ -91,6 +108,7 @@
         head.appendChild(document.createTextNode(pre));
         const hex = document.createElement('span');
         hex.className = 'hex cat-' + b.cond.cat;
+        icon(b.cond.cat, hex);
         renderText(b.cond.text, hex);
         head.appendChild(hex);
         if (post) head.appendChild(document.createTextNode(post));

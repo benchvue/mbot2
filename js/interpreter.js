@@ -6,7 +6,7 @@
 
   const STEP = 0.08;   // sim-seconds a normal block takes
   const CHECK = 0.05;  // sim-seconds a condition check takes
-  const BEAT = 0.4;    // sim-seconds per music beat
+  const BEAT = 1.0;    // sim-seconds per beat (CyberPi default tempo 60)
 
   class SimClock {
     constructor() { this.t = 0; this.waiters = []; }
@@ -94,8 +94,10 @@
       switch (e.k) {
         case 'distance': return c.distance();
         case 'var': return this.core.vars[e.n] ?? 0;
-        case 'cam_x': { const d = c.cameraDetect(); return d ? d.x : 0; }
-        case 'cam_size': { const d = c.cameraDetect(); return d ? d.size : 0; }
+        case 'blob_count': { const d = c.cameraDetect(); return d && c.ball ? 1 : 0; }
+        case 'blob_x': { const d = c.cameraDetect(); return d && c.ball ? d.x : 0; }
+        case 'blob_w': { const d = c.cameraDetect(); return d && c.ball ? d.size : 0; }
+        case 'tag_id': { const d = c.cameraDetect(); return d && d.tag ? d.tag : 0; }
         case 'join': return String(this.ev(e.a)) + String(this.ev(e.b));
         case 'add': return Number(this.ev(e.a)) + Number(this.ev(e.b));
         case 'sub': return Number(this.ev(e.a)) - Number(this.ev(e.b));
@@ -197,6 +199,23 @@
             const pool = ['red', 'orange', 'yellow', 'green', 'cyan', 'blue', 'purple', 'pink'];
             r.led = pool[Math.floor(Math.random() * pool.length)];
           } else r.led = a.color;
+          await this.wait(STEP, my);
+          break;
+
+        case 'led_rgb': {
+          const v = [a.r, a.g, a.b].map((x) => Math.max(0, Math.min(255, Number(this.ev(x)))));
+          r.led = 'rgb(' + v.join(',') + ')';
+          await this.wait(STEP, my);
+          break;
+        }
+
+        case 'led_anim':
+          r.led = 'rainbow';
+          await this.wait(1.2, my);
+          r.led = 'off';
+          break;
+
+        case 'tag_size':
           await this.wait(STEP, my);
           break;
 

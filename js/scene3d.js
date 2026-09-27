@@ -169,6 +169,18 @@
       floor.position.y = 0.05;
       floor.receiveShadow = true;
       this.worldGroup.add(floor);
+      if (!drawable) this.buildGrid(f.w, f.d, 0, 0, 0.07); // 10 cm grid on the floor itself
+    }
+
+    buildGrid(w, d, cx, cz, y) {
+      const pts = [];
+      for (let x = -w / 2; x <= w / 2 + 0.01; x += 10) pts.push(cx + x, y, cz - d / 2, cx + x, y, cz + d / 2);
+      for (let z = -d / 2; z <= d / 2 + 0.01; z += 10) pts.push(cx - w / 2, y, cz + z, cx + w / 2, y, cz + z);
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+      const lines = new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0xcfd6df, transparent: true, opacity: 0.9 }));
+      this.worldGroup.add(lines);
+      return lines;
     }
 
     clearPen() {
@@ -335,7 +347,10 @@
       const g = c.getContext('2d');
       const X = (x) => (x + W / 2) * PX, Z = (z) => (z + H / 2) * PX;
       g.fillStyle = '#ffffff'; g.fillRect(0, 0, c.width, c.height);
-      g.strokeStyle = '#dde3ea'; g.lineWidth = 12; g.strokeRect(6, 6, c.width - 12, c.height - 12);
+      g.strokeStyle = '#dfe5ec'; g.lineWidth = 2;
+      for (let x = 0; x <= W; x += 10) { g.beginPath(); g.moveTo(x * PX, 0); g.lineTo(x * PX, c.height); g.stroke(); }
+      for (let z = 0; z <= H; z += 10) { g.beginPath(); g.moveTo(0, z * PX); g.lineTo(c.width, z * PX); g.stroke(); }
+      g.strokeStyle = '#cfd6df'; g.lineWidth = 12; g.strokeRect(6, 6, c.width - 12, c.height - 12);
 
       const { half, r, width } = S.TRACK;
       g.strokeStyle = '#111418'; g.lineWidth = width * PX; g.lineJoin = 'round';
@@ -393,14 +408,25 @@
       const c = document.createElement('canvas');
       c.width = 260; c.height = 180;
       const g = c.getContext('2d');
+      g.fillStyle = CSS_HEX(card.color); g.fillRect(0, 0, 260, 180);
+      g.fillStyle = '#ffffff'; g.fillRect(8, 8, 244, 164);
+      // AprilTag-like marker: black border + fixed bit pattern per tag number
+      const S0 = 18, cell = 18, ox = 16, oy = 18;
+      g.fillStyle = '#000'; g.fillRect(ox, oy, cell * 8, cell * 8);
+      g.fillStyle = '#fff'; g.fillRect(ox + cell, oy + cell, cell * 6, cell * 6);
+      let seed = (card.tag || 1) * 2654435761 >>> 0;
+      g.fillStyle = '#000';
+      for (let yy = 0; yy < 4; yy++) for (let xx = 0; xx < 4; xx++) {
+        seed = (seed * 1103515245 + 12345) >>> 0;
+        if (seed & 0x10000) g.fillRect(ox + cell * (2 + xx), oy + cell * (2 + yy), cell, cell);
+      }
+      void S0;
+      g.fillStyle = '#111827'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.font = '900 64px Pretendard, sans-serif';
+      g.fillText(String(card.tag || ''), 212, 66);
+      g.font = '800 26px Pretendard, sans-serif';
       g.fillStyle = CSS_HEX(card.color);
-      g.fillRect(0, 0, 260, 180);
-      g.fillStyle = card.color === 'yellow' ? '#3b2f00' : '#ffffff';
-      g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.font = '900 96px Pretendard, sans-serif';
-      g.fillText(card.icon, 130, 72);
-      g.font = '800 34px Pretendard, sans-serif';
-      g.fillText(card.label, 130, 148);
+      g.fillText(card.icon + ' ' + card.label, 212, 128);
       const tex = new THREE.CanvasTexture(c);
       tex.encoding = THREE.sRGBEncoding;
       const back = mat(0xe5e9ef);
@@ -653,6 +679,7 @@
         let c = null;
         if (r.led === 'rainbow') c = new THREE.Color().setHSL(((t * 0.6 + i / 5) % 1), 0.9, 0.55);
         else if (COLOR_HEX[r.led] !== undefined) c = new THREE.Color(COLOR_HEX[r.led]);
+        else if (r.led && r.led.startsWith('rgb')) c = new THREE.Color(r.led);
         if (c) { m.color.copy(c); m.emissive.copy(c); m.emissiveIntensity = 0.9; }
         else { m.color.setHex(0xd7dce3); m.emissive.setHex(0x000000); }
       });
@@ -715,6 +742,8 @@
         this.controls.target.lerpVectors(a.fromTgt, a.toTgt, e);
         if (a.t >= 1) this.anim = null;
       }
+      this.controls.autoRotate = !!this.turntable;
+      this.controls.autoRotateSpeed = 2.2;
       this.controls.update();
     }
 
@@ -764,7 +793,11 @@
       r.render(this.scene, this.camera);
 
       if (!this.withCamera || !insetEl || insetEl.hidden) return;
-      const iw = 250, ih = 186, ix = 15, iy = 15;
+      // size & place the camera view from the inset box (it moves on phones)
+      const cr = this.container.getBoundingClientRect(), er = insetEl.getBoundingClientRect(), bw = 3;
+      const iw = Math.round(er.width - 2 * bw), ih = Math.round(er.height - 2 * bw);
+      const ix = Math.round(er.left - cr.left + bw), iy = Math.round(cr.bottom - er.bottom + bw);
+      if (Math.abs(this.robotCam.aspect - iw / ih) > 0.01) { this.robotCam.aspect = iw / ih; this.robotCam.updateProjectionMatrix(); }
       const R = this.robot;
       const helpers = [R.fov, R.headArrow, this.northArrow, this.compassGroup];
       helpers.forEach((o) => o && (o.visible = false));
@@ -792,7 +825,7 @@
       Object.assign(detBoxEl.style, { left: x0 + 'px', top: y0 + 'px', width: (x1 - x0) + 'px', height: (y1 - y0) + 'px' });
       detLabelEl.textContent = this.ballMesh
         ? `red block  x=${detection.x}  w=${detection.size}`
-        : `${detection.color} block  ${detection.confidence}%`;
+        : `AprilTag ${detection.tag}  ${detection.confidence}%`;
       detBoxEl.hidden = false;
     }
   }

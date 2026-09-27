@@ -61,6 +61,7 @@
     els.play.querySelector('span').textContent = s === 'paused' ? 'Resume' : 'Run';
     els.pause.disabled = s !== 'running';
     els.stop.disabled = s === 'idle';
+    $('btnRunMini').textContent = s === 'running' ? '⏸ Pause' : s === 'paused' ? '▶ Resume' : '▶ Run';
   }
 
   function play() {
@@ -69,10 +70,6 @@
     if (state === 'running') return;
     if (state === 'done') resetRun();
     view.clearMarks();
-    if (demo.world !== 'stage' && !scene.follow) {
-      scene.follow = true;
-      els.follow.setAttribute('aria-pressed', true);
-    }
     setState('running');
     interp.start({ scripts: demo.scripts });
   }
@@ -94,12 +91,24 @@
   }
 
   /* ---------- session picker ---------- */
+  const BUILD_DEMO = {
+    id: 'build', session: 1, title: 'Build Day', emoji: '🔧', world: 'stage', camera: false, level: 0,
+    scripts: [],
+    summary: 'Unbox the kit, check every part, and build your own mBot2 step by step. Spin the 3D model to see where each part goes.',
+    concepts: ['Parts & tools', 'Following instructions', 'Teamwork'],
+    challenge: 'Finish all 11 steps, then press button A on CyberPi to say hello to your new robot!',
+  };
+
   function selectDemo(id) {
     resetRun();
-    demo = demos.find((d) => d.id === id);
+    demo = id === 'build' ? BUILD_DEMO : demos.find((d) => d.id === id);
+    const isBuild = id === 'build';
+    document.body.classList.toggle('build-mode', isBuild);
+    scene.turntable = isBuild;
     core.setWorld(demo.world);
     view.render(demo);
     scene.loadWorld(demo.world, demo.camera);
+    if (isBuild) scene.animateTo(new THREE.Vector3(0, 32, 46), new THREE.Vector3(0, 6, 0), 0.01);
     els.inset.hidden = !demo.camera;
     els.detBox.hidden = true;
 
@@ -133,7 +142,7 @@
     if (w === 'line' || w === 'train') add('line', 'Quad RGB line sensors');
     if (w === 'traffic' || w === 'train') add('color', 'Quad RGB color');
     if (WARN[w]) add('dist', 'Ultrasonic sensor 2');
-    if (demo.camera) add('cam', 'Smart camera');
+    if (demo.camera) add('cam', 'AI Camera 2.0');
     if (JSON.stringify(demo.scripts).includes('"set_var"')) add('vars', 'Variables');
     add('wheels', 'Encoder motors EM1 / EM2');
     add('heading', 'Robot heading (gyro)');
@@ -149,7 +158,7 @@
     [...els.cpLeds].forEach((el, i) => {
       el.style.background = r.led === 'rainbow'
         ? `hsl(${((t * 0.6 + i / 5) % 1) * 360} 90% 55%)`
-        : (LED_CSS[r.led] || '#d7dce3');
+        : (LED_CSS[r.led] || (r.led && r.led.startsWith('rgb') ? r.led : '#d7dce3'));
     });
     if (ro.line) {
       const l = sensors.line, names = ['L2', 'L1', 'R1', 'R2'];
@@ -167,7 +176,9 @@
     if (ro.cam) {
       const c = sensors.camera;
       ro.cam.innerHTML = c
-        ? `<span class="swatch" style="background:${LED_CSS[c.color]}"></span>${c.color}${demo.world === 'ball' ? ` <small>x ${c.x} · w ${c.size}</small>` : ` <small>${c.dist.toFixed(0)} cm</small>`}`
+        ? (demo.world === 'ball'
+          ? `<span class="swatch" style="background:#e11d2e"></span>red blob <small>x ${c.x} · w ${c.size}</small>`
+          : `AprilTag ${c.tag} <small>${c.dist.toFixed(0)} cm</small>`)
         : 'nothing <small>searching</small>';
     }
     if (ro.vars) {
@@ -196,8 +207,8 @@
     const side = deg < 0 ? '↰ Turning left' : '↱ Turning right';
     els.toast.innerHTML =
       `<b>${side} ${Math.abs(deg)}°</b><br>` +
-      `${S.dirName(from)} → <b>${S.dirName(to)}</b><br>` +
-      `🧭 Now north is <b>${S.northRel(to)}</b> of the robot`;
+      `${S.dirName(from)} → <b>${S.dirName(to)}</b><br class="extra">` +
+      `<span class="extra">🧭 Now north is <b>${S.northRel(to)}</b> of the robot</span>`;
     els.toast.classList.add('show');
     els.compass.classList.add('flash');
     clearTimeout(toastTimer);
@@ -257,6 +268,7 @@
 
   /* ---------- controls ---------- */
   els.play.onclick = play;
+  $('btnRunMini').onclick = () => (state === 'running' ? pause() : play());
   els.pause.onclick = pause;
   els.stop.onclick = stop;
   els.speed.onchange = () => { speed = parseFloat(els.speed.value); };
@@ -287,6 +299,10 @@
     b.onclick = async (e) => {
       e.stopPropagation();
       closeMenu();
+      if (b.dataset.x === 'mblock') {
+        const r = MblockExport.exportMblock(demo);
+        if (!r.ok) showMissing(r.missing);
+      }
       if (b.dataset.x === 'py') Exporter.exportPython(demo, course);
       if (b.dataset.x === 'json') Exporter.exportJSON(demo);
       if (b.dataset.x === 'png') {
@@ -295,6 +311,21 @@
       }
     };
   });
+
+  function showMissing(list) {
+    const dlg = $('missingDlg');
+    $('missingList').innerHTML = list.map((m) => `<li>${m.replace(/</g, '&lt;')}</li>`).join('');
+    dlg.showModal();
+  }
+  $('missingClose').onclick = () => $('missingDlg').close();
+
+  // show / hide the block program (more room for the robot)
+  $('btnBlocks').onclick = () => {
+    const hidden = document.body.classList.toggle('blocks-hidden');
+    $('btnBlocks').setAttribute('aria-pressed', !hidden);
+    $('btnBlocks').textContent = hidden ? '🧩 Show blocks' : '🧩 Hide blocks';
+    setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
+  };
 
   els.follow.onclick = () => {
     scene.follow = !scene.follow;
@@ -326,6 +357,70 @@
     if (e.code === 'Escape') { stop(); closeMenu(); }
   });
 
+  /* ---------- Session 1: Build Day guide ---------- */
+  function buildGuide(g) {
+    if (!g) return;
+    const tabs = $('buildTabs'), body = $('buildBody');
+    const KEY = 'mbot2-build-progress';
+    let done = {};
+    try { done = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { done = {}; }
+    const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) { /* ignore */ } };
+    const pages = [{ key: 'parts', label: 'Parts list' }]
+      .concat(g.steps.map((img, i) => ({ key: 'step' + (i + 1), label: 'Step ' + (i + 1), img })))
+      .concat([{ key: 'done', label: 'Completed', img: g.completed }]);
+    let cur = 0;
+
+    function progress() {
+      const n = g.steps.filter((_, i) => done['step' + (i + 1)]).length;
+      $('buildProgress').style.width = (n / g.steps.length) * 100 + '%';
+      $('buildCount').textContent = `${n} / ${g.steps.length} steps done`;
+      [...tabs.children].forEach((t, i) => t.classList.toggle('done', !!done[pages[i].key]));
+    }
+
+    function show(i) {
+      cur = i;
+      const pg = pages[i];
+      [...tabs.children].forEach((t, j) => t.setAttribute('aria-selected', j === i));
+      tabs.children[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      if (pg.key === 'parts') {
+        const found = g.parts.filter((p) => done['part:' + p[0]]).length;
+        body.innerHTML = `<p class="bg-lead">Check that you have every part before you start. Tap a part when you find it. <b>${found} / ${g.parts.length}</b> found.</p>
+          <div class="parts">${g.parts.map((p) => `
+            <button class="part ${done['part:' + p[0]] ? 'found' : ''}" data-part="${p[0]}">
+              <img src="${g.img_base}${p[1]}" alt="${p[0]}" loading="lazy" referrerpolicy="no-referrer">
+              <span>${p[0]}</span></button>`).join('')}</div>`;
+        body.querySelectorAll('.part').forEach((b) => {
+          b.onclick = () => { done['part:' + b.dataset.part] = !done['part:' + b.dataset.part]; save(); show(0); };
+        });
+      } else {
+        const isDone = pg.key === 'done';
+        body.innerHTML = `
+          <div class="bg-step-head"><h3>${isDone ? '🎉 Completed!' : pg.label + ' of ' + g.steps.length}</h3>
+            ${isDone ? '' : `<label class="bg-check"><input type="checkbox" ${done[pg.key] ? 'checked' : ''}> I finished this step</label>`}</div>
+          <div class="bg-img"><img src="${g.img_base}${pg.img}" alt="${pg.label}" referrerpolicy="no-referrer"
+            onerror="this.outerHTML='<div class=&quot;bg-fallback&quot;>Picture could not load here. <a href=&quot;${g.source}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Open ${pg.label} in the official guide ↗</a></div>'"></div>
+          ${isDone ? '<p class="bg-lead">Great job! Turn on CyberPi, connect it to mBlock 5, and get ready for Session 2.</p>' : ''}`;
+        const cb = body.querySelector('input');
+        if (cb) cb.onchange = () => { done[pg.key] = cb.checked; save(); progress(); if (cb.checked && i < pages.length - 1) setTimeout(() => show(i + 1), 350); };
+      }
+      $('buildPrev').disabled = i === 0;
+      $('buildNext').disabled = i === pages.length - 1;
+      progress();
+    }
+
+    tabs.innerHTML = '';
+    pages.forEach((pg, i) => {
+      const t = document.createElement('button');
+      t.className = 'btab'; t.textContent = pg.label; t.setAttribute('role', 'tab');
+      t.onclick = () => show(i);
+      tabs.appendChild(t);
+    });
+    $('buildPrev').onclick = () => show(Math.max(0, cur - 1));
+    $('buildNext').onclick = () => show(Math.min(pages.length - 1, cur + 1));
+    $('buildSource').href = g.source;
+    show(0);
+  }
+
   /* ---------- start ---------- */
   Promise.resolve(window.MBOT_DATA)
     .then((data) => {
@@ -335,21 +430,22 @@
       $('courseTitle').textContent = course;
       document.title = course;
       data.curriculum.forEach((c) => {
-        const d = demos.find((x) => x.id === c.demo);
+        const d = c.demo === 'build' ? BUILD_DEMO : demos.find((x) => x.id === c.demo);
         const li = document.createElement('li');
         const b = document.createElement('button');
         b.className = 'sess';
         b.title = c.desc;
         const icon = d ? d.emoji : c.n === 1 ? '🔧' : '🚀';
-        const stars = d ? '★'.repeat(d.level) + '☆'.repeat(5 - d.level) : c.n === 1 ? 'hands-on build' : 'your idea';
+        const stars = d && d.level ? '★'.repeat(d.level) + '☆'.repeat(5 - d.level) : c.n === 1 ? 'hands-on build' : 'your idea';
         b.innerHTML = `<span class="n"><span>Session ${c.n}</span><span>${icon}</span></span><span class="t">${c.title}</span><span class="lv">${stars}</span>`;
         if (d) { b.dataset.id = d.id; b.onclick = () => selectDemo(d.id); }
         else b.disabled = true;
         li.appendChild(b);
         els.rail.appendChild(li);
       });
+      buildGuide(data.build);
       const want = location.hash.slice(1);
-      selectDemo(demos.some((d) => d.id === want) ? want : demos[0].id);
+      selectDemo(want === 'build' || demos.some((d) => d.id === want) ? want : demos[0].id);
       requestAnimationFrame(frame);
     })
     .catch((err) => {

@@ -67,7 +67,8 @@
         <div class="export">
           <button id="btnExport" class="tbtn" aria-haspopup="true" aria-expanded="false">⬇ <span>Export</span></button>
           <div class="export-menu" id="exportMenu" hidden>
-            <button data-x="py"><b>mBlock Python (.py)</b><small>Upload to the real mBot2 from mBlock 5</small></button>
+            <button data-x="mblock"><b>mBlock 5 project (.mblock)</b><small>Open directly in mBlock 5 with real blocks</small></button>
+            <button data-x="py"><b>mBlock Python (.py)</b><small>For the Python tab in mBlock 5</small></button>
             <button data-x="png"><b>Block sheet (.png)</b><small>Printable picture of these blocks</small></button>
             <button data-x="json"><b>Program data (.json)</b><small>This demo's program, for editing</small></button>
           </div>
@@ -89,12 +90,27 @@
         </div>
         <div class="readouts" id="readouts"></div>
       </div>
+      <div class="build-panel" id="buildPanel">
+        <div class="bg-top">
+          <div class="bg-progress"><i id="buildProgress"></i></div>
+          <span id="buildCount"></span>
+        </div>
+        <div class="btabs" id="buildTabs" role="tablist"></div>
+        <div class="bg-body" id="buildBody"></div>
+        <div class="bg-nav">
+          <button id="buildPrev" class="tbtn">← Back</button>
+          <a id="buildSource" class="bg-credit" target="_blank" rel="noopener">Pictures: Makeblock official assembly guide ↗</a>
+          <button id="buildNext" class="tbtn play">Next →</button>
+        </div>
+      </div>
     </section>
 
     <!-- right: 3D world -->
     <section class="panel view-panel" aria-label="3D simulation">
       <div id="viewport" class="viewport">
         <div class="view-tools">
+          <button id="btnRunMini" class="vbtn run-mini" title="Run / Pause">▶ Run</button>
+          <button id="btnBlocks" class="vbtn" aria-pressed="true" title="Show or hide the block program">🧩 Hide blocks</button>
           <button id="btnFollow" class="vbtn" aria-pressed="false" title="Camera follows the robot">🎯 Follow</button>
           <button id="btnTop" class="vbtn" title="Look straight down">⬇ Top view</button>
           <button id="btnReset" class="vbtn" title="Back to the starting view">↺ Reset view</button>
@@ -133,6 +149,14 @@
     </section>
   </main>
 
+  <dialog id="missingDlg" class="dlg">
+    <h3>This session can't be saved as .mblock yet</h3>
+    <p>These blocks need their mBlock ID. Build one mBlock 5 project that contains each of them, save it, and share it so they can be added:</p>
+    <ul id="missingList"></ul>
+    <p class="dlg-note">Tip: use <b>Export → mBlock Python</b> or <b>Block sheet</b> for this session today.</p>
+    <button id="missingClose" class="tbtn play">OK</button>
+  </dialog>
+
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script src="data/demos.js"></script>
@@ -141,6 +165,8 @@
   <script src="js/blocks.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/export.js"></script>
+  <script src="js/mblock-template.js"></script>
+  <script src="js/mblock.js"></script>
   <script src="js/scene3d.js"></script>
   <script src="js/app.js"></script>
 </body>

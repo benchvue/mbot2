@@ -53,9 +53,15 @@
     return 440 * Math.pow(2, (midi - 69) / 12);
   }
 
+  const ALIAS = { hi: 'hello', beeps: 'beep', warning: 'alert', ring: 'ding', magic: 'success', 'level-up': 'success' };
+
   G.RobotAudio = {
-    play(name) { if (enabled && SOUNDS[name]) { try { SOUNDS[name](); } catch (e) { /* ignore */ } } },
-    note(n, sec) { if (enabled) { try { tone(noteFreq(n), 0, sec * 0.9, 'triangle', 0.12); } catch (e) { /* ignore */ } } },
+    play(name) {
+      name = ALIAS[name] || name; if (enabled && SOUNDS[name]) { try { SOUNDS[name](); } catch (e) { /* ignore */ } } },
+    note(n, sec) {
+      const f = typeof n === 'number' ? 440 * Math.pow(2, (n - 69) / 12) : noteFreq(n);
+      if (enabled) { try { tone(f, 0, sec * 0.9, 'triangle', 0.12); } catch (e) { /* ignore */ } }
+    },
     unlock() { try { ac(); } catch (e) { /* ignore */ } },
     set enabled(v) { enabled = v; },
     get enabled() { return enabled; },

@@ -8,7 +8,7 @@ Left: mBlock-style block code that highlights the running block. Right: a 3D mBo
 ## Sessions
 | # | Demo | Concepts |
 |---|---|---|
-| 1 | Build Day | Assemble mBot2 (no demo) |
+| 1 | Build Day | Parts checklist + 11 assembly steps with progress |
 | 2 | Hello, mBot2! | Sequence |
 | 3 | Shape Artist | Repeat loops, angles |
 | 4 | Traffic Light Robot | If / else, color sensor |
@@ -16,10 +16,14 @@ Left: mBlock-style block code that highlights the running block. Right: a 3D mBo
 | 6 | Parking Assistant | Variables, sensor math |
 | 7 | Obstacle Avoider | Comparison, random numbers |
 | 8 | Music & Light Show | My Blocks, parallel scripts |
-| 9 | Ball Chaser | AI vision: tracking |
-| 10 | AI Sign Explorer | AI vision: recognition |
+| 9 | Ball Chaser | AI Camera 2.0: color blob tracking |
+| 10 | AI Tag Explorer | AI Camera 2.0: AprilTags |
 | 11 | Robot Train Mission | Combine everything |
 | 12 | Project Day | Student projects (no demo) |
+
+## Phones
+On narrow screens the 3D view comes first, with a small Run button inside it.
+**🧩 Hide blocks** gives the robot the whole screen. Turn tips appear as a small bar at the bottom edge.
 
 ## Run
 Static site, no server needed.
@@ -39,8 +43,18 @@ python build_data.py   # rewrites data/demos.js
 ```
 Commit `data/demos.js` afterwards. Python is only needed for editing, not for hosting.
 
+## Blocks
+All demos use the real mBlock 5 blocks (CyberPi, mBot2 chassis, quad RGB sensor, ultrasonic 2, AI Camera 2.0)
+with mBlock's wording, colors and device icons. Programs start with **when button A pressed**.
+Note: in the encoder-motor block, EM2 is mirrored, so driving forward means EM2 gets a negative RPM.
+
 ## Export (toolbar → Export)
-- **mBlock Python (.py)** – paste into mBlock 5 → Upload mode → Python tab. Check smart-camera calls on your firmware.
+- **mBlock 5 project (.mblock)** – opens in mBlock 5 with real blocks. Built from a project saved by mBlock 5.6.0.
+  Works now for Sessions 2 and 3. Other sessions show which blocks still need their mBlock ID
+  (moves at RPM, encoder motor EM1/EM2, stop encoder motor, play note, LED R G B, quad RGB line/color,
+  ultrasonic distance, AI Camera 2.0 blocks). Save one mBlock project containing each of those blocks
+  (plus a "turns right" block) and send it to finish the export for all sessions.
+- **mBlock Python (.py)** – for the Python tab in mBlock 5 (AI Camera 2.0 calls are left as helper stubs).
 - **Block sheet (.png)** – printable picture of the blocks
 - **Program data (.json)**
 
@@ -54,6 +68,8 @@ js/interpreter.js      block runner (variables, My Blocks, parallel scripts)
 js/blocks.js           block drawing + yellow highlight
 js/scene3d.js          three.js world and mBot2 model
 js/export.js           Python / PNG / JSON export
+js/mblock.js           .mblock export (zip writer + verified block IDs)
+js/mblock-template.js  Stage/Panda/device template from mBlock 5.6.0
 js/audio.js            sounds and notes
 js/app.js              UI, compass, sensor panel
 tools/demos.py         demo source
