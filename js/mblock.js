@@ -53,7 +53,7 @@
     'stop_move', 'wait', 'repeat', 'forever', 'if', 'repeat_until', 'stop_all', 'set_var', 'change_var', 'call',
     'define', 'pen', 'tag_size']);
   const CONDS = new Set(['cmp', 'line', 'floor_color']);
-  const EXPRS = new Set(['var', 'join', 'add', 'sub', 'mul', 'div', 'rand', 'distance', 'blob_count', 'blob_x', 'blob_w']);
+  const EXPRS = new Set(['var', 'join', 'add', 'sub', 'mul', 'div', 'rand', 'distance', 'blob_count', 'blob_x', 'blob_w', 'tag_id']);
   const CAM_MODES = { 'QR Code': '1', Barcode: '2', AprilTag: '3' };
   const opOK = (b) => (b.op === 'move' ? true
     : b.op === 'cam_mode' ? CAM_MODES[b.args.mode] !== undefined : OPS.has(b.op));
@@ -126,7 +126,9 @@
       const id = nid();
       const bin = { add: 'operator_add', sub: 'operator_subtract', mul: 'operator_multiply', div: 'operator_divide' };
       const CAM = 'mbuild_ai_camera_cyberpi.';
-      if (e.k === 'blob_count') {
+      if (e.k === 'tag_id') {
+        add(id, CAM + 'label_get_info2', parent, { fields: { feature: ['1', null] } }); // identify result, Middle position
+      } else if (e.k === 'blob_count') {
         add(id, CAM + 'color_block_count', parent, { fields: { block: ['1', null] } }); // learned color 1
       } else if (e.k === 'blob_x' || e.k === 'blob_w') {
         // attribute: 1 = X Coordinate, 3 = Width; feature: 1 = Middle position
