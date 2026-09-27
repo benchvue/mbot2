@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Robotics with mBot2: AI Vision &amp; Programming</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40"><rect x="6" y="12" width="28" height="16" rx="4" fill="#1f6fd1"/><circle cx="15" cy="20" r="4" fill="#fff"/><circle cx="25" cy="20" r="4" fill="#fff"/><circle cx="15" cy="20" r="1.8" fill="#1f2a37"/><circle cx="25" cy="20" r="1.8" fill="#1f2a37"/><rect x="2" y="24" width="7" height="10" rx="3" fill="#1f2a37"/><rect x="31" y="24" width="7" height="10" rx="3" fill="#1f2a37"/></svg>
+      </div>
+      <div>
+        <h1 id="courseTitle">Robotics with mBot2: AI Vision &amp; Programming</h1>
+        <p>12 sessions · 1 hour each · pick a session to see what you will build</p>
+      </div>
+    </div>
+  </header>
+
+  <nav class="rail" aria-label="Sessions">
+    <ol id="rail"></ol>
+  </nav>
+
+  <section class="intro" id="intro">
+    <div class="intro-main">
+      <h2 id="demoTitle"></h2>
+      <p id="demoSummary"></p>
+      <div id="demoConcepts" class="concepts"></div>
+    </div>
+    <div class="challenge" id="challenge">
+      <div class="ch-label">🎯 Your challenge</div>
+      <p id="challengeText"></p>
+    </div>
+  </section>
+
+  <main class="layout">
+    <!-- left: mBlock blocks -->
+    <section class="panel code-panel" aria-label="Block code">
+      <div class="toolbar">
+        <button id="btnPlay" class="tbtn play" title="Run (Space)">
+          <svg viewBox="0 0 24 24"><path d="M7 4.5v15l13-7.5z"/></svg><span>Run</span>
+        </button>
+        <button id="btnPause" class="tbtn pause" title="Pause (Space)" disabled>
+          <svg viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1"/><rect x="14" y="4.5" width="4" height="15" rx="1"/></svg><span>Pause</span>
+        </button>
+        <button id="btnStop" class="tbtn stop" title="Stop and go back to start (Esc)" disabled>
+          <svg viewBox="0 0 24 24"><rect x="5.5" y="5.5" width="13" height="13" rx="2"/></svg><span>Stop</span>
+        </button>
+        <div class="tb-sep"></div>
+        <label class="speed">Speed
+          <select id="speedSel">
+            <option value="0.25">0.25×</option>
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+          </select>
+        </label>
+        <button id="btnSound" class="tbtn icon" title="Sound on/off" aria-pressed="true">🔊</button>
+        <div class="zoom" role="group" aria-label="Block size">
+          <button id="zoomOut" class="tbtn icon" title="Smaller blocks">−</button>
+          <span id="zoomVal">90%</span>
+          <button id="zoomIn" class="tbtn icon" title="Bigger blocks">+</button>
+        </div>
+        <div class="export">
+          <button id="btnExport" class="tbtn" aria-haspopup="true" aria-expanded="false">⬇ Export</button>
+          <div class="export-menu" id="exportMenu" hidden>
+            <button data-x="py"><b>mBlock Python (.py)</b><small>Upload to the real mBot2 from mBlock 5</small></button>
+            <button data-x="png"><b>Block sheet (.png)</b><small>Printable picture of these blocks</small></button>
+            <button data-x="json"><b>Program data (.json)</b><small>This demo's program, for editing</small></button>
+          </div>
+        </div>
+        <span id="statusPill" class="status idle">Ready</span>
+      </div>
+
+      <div class="workspace" id="workspace">
+        <div id="blocks" class="blocks"></div>
+      </div>
+
+      <div class="sensors" id="sensors">
+        <div class="cyberpi">
+          <div class="cp-label">CyberPi screen</div>
+          <div class="cp-screen" id="cpScreen">…</div>
+          <div class="cp-leds" id="cpLeds"><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="readouts" id="readouts"></div>
+      </div>
+    </section>
+
+    <!-- right: 3D world -->
+    <section class="panel view-panel" aria-label="3D simulation">
+      <div id="viewport" class="viewport">
+        <div class="view-tools">
+          <button id="btnFollow" class="vbtn" aria-pressed="false" title="Camera follows the robot">🎯 Follow</button>
+          <button id="btnTop" class="vbtn" title="Look straight down">⬇ Top view</button>
+          <button id="btnReset" class="vbtn" title="Back to the starting view">↺ Reset view</button>
+          <button id="btnMode" class="vbtn" title="Change how the mouse moves the view">🖱 Mouse: 3D orbit</button>
+        </div>
+
+        <button id="compass" class="compass" title="Click to turn the view so north points up">
+          <svg viewBox="-50 -50 100 100" aria-hidden="true">
+            <g id="compassRose">
+              <circle r="46" fill="#fff" stroke="#d5dbe3" stroke-width="2"/>
+              <g id="compassTicks"></g>
+              <path d="M0 -40 L6 -24 L0 -28 L-6 -24 Z" fill="#e0342b"/>
+              <text x="0" y="-12" class="c-n">N</text>
+              <text x="31" y="4" class="c-l">E</text>
+              <text x="0" y="40" class="c-l">S</text>
+              <text x="-31" y="4" class="c-l">W</text>
+            </g>
+            <g id="robotNeedle">
+              <path d="M0 -26 L7 6 L0 1 L-7 6 Z" fill="#1f6fd1" stroke="#fff" stroke-width="1.5"/>
+            </g>
+            <circle r="3" fill="#1f2a37"/>
+          </svg>
+          <div class="compass-read" id="compassRead">Robot 000° N</div>
+          <div class="compass-north" id="compassNorth">North is in front</div>
+        </button>
+
+        <div id="turnToast" class="turn-toast" role="status" aria-live="polite"></div>
+
+        <div id="camInset" class="cam-inset" hidden>
+          <div class="inset-label">📷 What the smart camera sees</div>
+          <div id="detBox" class="det-box" hidden><span id="detLabel"></span></div>
+        </div>
+
+        <div class="hint" id="hint"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="data/demos.js"></script>
+  <script src="js/sim-core.js"></script>
+  <script src="js/interpreter.js"></script>
+  <script src="js/blocks.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/export.js"></script>
+  <script src="js/scene3d.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
