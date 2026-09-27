@@ -1715,96 +1715,96 @@ window.MBOT_DATA = {
  "curriculum": [
   {
    "n": 1,
+   "short": "Build Day",
    "date": "2026-10-25",
-   "codebridge": true,
    "title": "Build Day",
    "desc": "Assemble mBot2 and AI Camera 2.0",
    "demo": "build"
   },
   {
    "n": 2,
+   "short": "Hello mBot2",
    "date": "2026-11-01",
-   "codebridge": true,
    "title": "Hello, mBot2!",
    "desc": "Sequence: move, light, sound",
    "demo": "hello"
   },
   {
    "n": 3,
+   "short": "Shapes",
    "date": "2026-11-08",
-   "codebridge": true,
    "title": "Shape Artist",
    "desc": "Repeat loops and angles",
    "demo": "shapes"
   },
   {
    "n": 4,
+   "short": "Wall Bounce",
    "date": "2026-11-15",
-   "codebridge": true,
    "title": "Wall Bounce",
    "desc": "Ultrasonic distance and if / else",
    "demo": "wall"
   },
   {
    "n": 5,
+   "short": "Line Follow",
    "date": "2026-11-22",
-   "codebridge": true,
    "title": "Line Follower",
    "desc": "Line sensor and steering",
    "demo": "line"
   },
   {
    "n": 6,
+   "short": "Traffic Light",
    "date": "2026-12-06",
-   "codebridge": true,
    "title": "Traffic Light Robot",
    "desc": "Color sensor decisions",
    "demo": "traffic"
   },
   {
    "n": 7,
+   "short": "Color Guard",
    "date": "2026-12-13",
-   "codebridge": true,
    "title": "AI Color Guard",
    "desc": "AI Camera 2.0: learn and find a color",
    "demo": "guard"
   },
   {
    "n": 8,
+   "short": "Ball Chaser",
    "date": "2026-12-20",
-   "codebridge": true,
    "title": "Ball Chaser",
    "desc": "AI Camera 2.0: track with x-coordinates",
    "demo": "ball"
   },
   {
    "n": 9,
+   "short": "AprilTags",
    "date": "2027-01-03",
-   "codebridge": false,
    "title": "AprilTag Explorer",
    "desc": "AI Camera 2.0: read tags and navigate",
    "demo": "signs"
   },
   {
    "n": 10,
+   "short": "Follow Me",
    "date": "2027-01-10",
-   "codebridge": false,
    "title": "Follow Me",
    "desc": "AI Camera 2.0: posture recognition + ultrasonic",
    "demo": "follow"
   },
   {
    "n": 11,
+   "short": "Train",
    "date": "2027-01-24",
-   "codebridge": false,
    "title": "Robot Train Mission",
    "desc": "Combine everything into one mission",
    "demo": "train"
   },
   {
    "n": 12,
+   "short": "Projects",
    "date": "2027-01-31",
-   "codebridge": false,
    "title": "Project Day",
    "desc": "Design, build and present your own robot program",
    "demo": "project"

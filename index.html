@@ -13,10 +13,7 @@
       <div class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 40 40"><rect x="6" y="12" width="28" height="16" rx="4" fill="#1f6fd1"/><circle cx="15" cy="20" r="4" fill="#fff"/><circle cx="25" cy="20" r="4" fill="#fff"/><circle cx="15" cy="20" r="1.8" fill="#1f2a37"/><circle cx="25" cy="20" r="1.8" fill="#1f2a37"/><rect x="2" y="24" width="7" height="10" rx="3" fill="#1f2a37"/><rect x="31" y="24" width="7" height="10" rx="3" fill="#1f2a37"/></svg>
       </div>
-      <div>
-        <h1 id="courseTitle">Robotics with mBot2: AI Vision &amp; Programming</h1>
-        <p>12 sessions · 1 hour each · pick a session to see what you will build</p>
-      </div>
+      <h1 id="courseTitle">Robotics with mBot2: AI Vision &amp; Programming</h1>
     </div>
   </header>
 
@@ -33,11 +30,11 @@
     <div class="intro-main">
       <h2 id="demoTitle"></h2>
       <p id="demoSummary"></p>
-      <div id="demoConcepts" class="concepts"></div>
+      <div id="demoConcepts" class="concepts" hidden></div>
     </div>
     <div class="challenge" id="challenge">
-      <div class="ch-label">Your challenge</div>
-      <p id="challengeText"></p>
+      <span class="ch-label">Challenge:</span>
+      <span id="challengeText"></span>
     </div>
   </section>
 
@@ -87,7 +84,10 @@
         <span id="statusPill" class="status idle">Ready</span>
       </div>
 
-      <div class="sensors" id="sensors">
+      <button class="sensor-toggle" id="sensorToggle" aria-expanded="false" aria-controls="sensors" title="Show / hide robot sensors">
+        <svg class="chev" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Robot &amp; sensors</span><small id="sensorMini"></small>
+      </button>
+      <div class="sensors" id="sensors" hidden>
         <div class="cyberpi">
           <div class="cp-label">CyberPi screen</div>
           <div class="cp-screen" id="cpScreen">…</div>
@@ -110,6 +110,8 @@
       </div>
       <div class="project-panel" id="projectPanel"></div>
     </section>
+
+    <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-label="Resize code and 3D view" tabindex="0" title="Drag to resize · double-click to reset"></div>
 
     <!-- right: 3D world -->
     <section class="panel view-panel" aria-label="3D simulation">

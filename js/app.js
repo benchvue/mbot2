@@ -124,13 +124,15 @@
     if ($('railSel').options.length) $('railSel').value = id;
     els.title.textContent = `Session ${demo.session} · ${demo.title}`;
     els.summary.textContent = demo.summary;
+    els.summary.title = demo.summary;
+    $('challenge').title = demo.challenge;
     els.challenge.textContent = demo.challenge;
     els.concepts.innerHTML = '';
     const cd = dateOf(id);
     if (cd) {
       const chip = document.createElement('span');
       chip.className = 'date-chip';
-      chip.textContent = `${fmtDate(cd.date, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}${cd.codebridge ? ' · CodeBridge' : ''}`;
+      chip.textContent = `${fmtDate(cd.date, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}`;
       els.concepts.appendChild(chip);
     }
     demo.concepts.forEach((c) => {
@@ -204,6 +206,13 @@
         : '<small>not set yet</small>';
     }
     ro.wheels.innerHTML = `${Math.round(r.rpmL)} / ${Math.round(r.rpmR)}<small>RPM</small>`;
+    if (sensBox.hidden) {
+      const bits = [`${String(Math.round(r.h) % 360).padStart(3, '0')}° ${S.dirShort(r.h)}`];
+      if (ro.dist) bits.push(`${sensors.distance >= 300 ? '300+' : sensors.distance.toFixed(0)} cm`);
+      if (ro.cam) bits.push(sensors.camera ? 'camera: sees it' : 'camera: searching');
+      if (r.display) bits.push(`screen: "${r.display}"`);
+      $('sensorMini').textContent = bits.join('  ·  ');
+    }
     ro.heading.innerHTML = `${String(Math.round(r.h) % 360).padStart(3, '0')}°<small>${S.dirName(r.h)}</small>`;
     if (ro.odo) ro.odo.innerHTML = `${(r.odometer / 100).toFixed(2)}<small>m</small>`;
   }
@@ -281,6 +290,48 @@
     updateHud(sensors, now);
     scene.render(sensors.camera, els.inset, els.detBox, els.detLabel);
   }
+
+  /* ---------- collapsible sensor panel (collapsed by default) ---------- */
+  const sensToggle = $('sensorToggle'), sensBox = $('sensors');
+  function setSensors(open) {
+    sensBox.hidden = !open;
+    sensToggle.setAttribute('aria-expanded', open);
+    try { localStorage.setItem('mbot2-sensors-open', open ? '1' : '0'); } catch (e) { /* ignore */ }
+  }
+  sensToggle.onclick = () => setSensors(sensBox.hidden);
+  setSensors((() => { try { return localStorage.getItem('mbot2-sensors-open') === '1'; } catch (e) { return false; } })());
+
+  /* ---------- splitter: code pane | 3D view (default 40 : 60) ---------- */
+  const layout = document.querySelector('.layout'), splitter = $('splitter');
+  const setSplit = (pct) => {
+    pct = Math.min(75, Math.max(22, pct));
+    layout.style.setProperty('--split', pct + '%');
+    try { localStorage.setItem('mbot2-split', String(pct)); } catch (e) { /* ignore */ }
+  };
+  setSplit((() => { try { return parseFloat(localStorage.getItem('mbot2-split')) || 40; } catch (e) { return 40; } })());
+  splitter.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    splitter.setPointerCapture(e.pointerId);
+    document.body.classList.add('resizing');
+    const move = (ev) => {
+      const r = layout.getBoundingClientRect();
+      setSplit(((ev.clientX - r.left) / r.width) * 100);
+    };
+    const up = () => {
+      document.body.classList.remove('resizing');
+      splitter.removeEventListener('pointermove', move);
+      splitter.removeEventListener('pointerup', up);
+      window.dispatchEvent(new Event('resize'));
+    };
+    splitter.addEventListener('pointermove', move);
+    splitter.addEventListener('pointerup', up);
+  });
+  splitter.ondblclick = () => setSplit(40);
+  splitter.onkeydown = (e) => {
+    const cur = parseFloat(layout.style.getPropertyValue('--split')) || 40;
+    if (e.key === 'ArrowLeft') { setSplit(cur - 2); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { setSplit(cur + 2); e.preventDefault(); }
+  };
 
   /* ---------- controls ---------- */
   els.play.onclick = play;
@@ -624,7 +675,7 @@
         const li = document.createElement('li');
         if (it.kind === 'off') {
           li.className = 'off';
-          li.innerHTML = `<div class="nocls" title="No class: ${it.h.name} weekend"><b>No class</b><span>${it.h.name}</span><small>${fmt(it.date, { month: 'short', day: 'numeric' })}</small></div>`;
+          li.innerHTML = `<div class="nocls" title="No class: ${it.h.name} weekend (${fmt(it.date, { month: 'long', day: 'numeric' })})"><b>No<br>class</b><small>${fmt(it.date, { month: 'numeric', day: 'numeric' })}</small></div>`;
           els.rail.appendChild(li);
           return;
         }
@@ -632,10 +683,10 @@
         const d = c.demo === 'build' ? BUILD_DEMO : c.demo === 'project' ? PROJECT_DEMO : demos.find((x) => x.id === c.demo);
         const b = document.createElement('button');
         b.className = 'sess' + (toDate(c.date) < today ? ' past' : '') + (c === next ? ' next' : '');
-        b.title = `${c.desc} — ${fmt(c.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`;
+        b.title = `Session ${c.n}: ${c.title} — ${c.desc} — ${fmt(c.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`;
         const tag = c === next ? '<em class="nx">NEXT</em>' : toDate(c.date) < today ? '<em class="dn">✓</em>' : '';
-        b.innerHTML = `<span class="n"><span>Session ${c.n}</span></span><span class="t">${c.title}</span>` +
-          `<span class="dt">${fmt(c.date)}${c.codebridge ? ' · <i class="cb">CodeBridge</i>' : ''}${tag}</span>`;
+        b.innerHTML = `<span class="t"><b>${c.n}</b> ${c.short || c.title}</span>` +
+          `<span class="dt">${fmt(c.date)}${tag}</span>`;
         if (d) { b.dataset.id = d.id; b.onclick = () => selectDemo(d.id); }
         else b.disabled = true;
         li.appendChild(b);

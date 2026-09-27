@@ -461,7 +461,7 @@ BUILD_GUIDE = {
     "img_base": IMG,
 }
 
-# Class dates: 10/25/26 - 1/31/27 (Sundays).  CodeBridge: 10/25/26 - 12/20/26 (sessions 1-8).
+# Class dates: 10/25/26 - 1/31/27 (Sundays).
 NO_CLASS = [
     {"date": "2026-11-29", "name": "Thanksgiving"},
     {"date": "2026-12-27", "name": "Christmas"},
@@ -469,18 +469,18 @@ NO_CLASS = [
 ]
 
 CURRICULUM = [
-    {"n": 1, "date": "2026-10-25", "codebridge": True, "title": "Build Day", "desc": "Assemble mBot2 and AI Camera 2.0", "demo": "build"},
-    {"n": 2, "date": "2026-11-01", "codebridge": True, "title": "Hello, mBot2!", "desc": "Sequence: move, light, sound", "demo": "hello"},
-    {"n": 3, "date": "2026-11-08", "codebridge": True, "title": "Shape Artist", "desc": "Repeat loops and angles", "demo": "shapes"},
-    {"n": 4, "date": "2026-11-15", "codebridge": True, "title": "Wall Bounce", "desc": "Ultrasonic distance and if / else", "demo": "wall"},
-    {"n": 5, "date": "2026-11-22", "codebridge": True, "title": "Line Follower", "desc": "Line sensor and steering", "demo": "line"},
-    {"n": 6, "date": "2026-12-06", "codebridge": True, "title": "Traffic Light Robot", "desc": "Color sensor decisions", "demo": "traffic"},
-    {"n": 7, "date": "2026-12-13", "codebridge": True, "title": "AI Color Guard", "desc": "AI Camera 2.0: learn and find a color", "demo": "guard"},
-    {"n": 8, "date": "2026-12-20", "codebridge": True, "title": "Ball Chaser", "desc": "AI Camera 2.0: track with x-coordinates", "demo": "ball"},
-    {"n": 9, "date": "2027-01-03", "codebridge": False, "title": "AprilTag Explorer", "desc": "AI Camera 2.0: read tags and navigate", "demo": "signs"},
-    {"n": 10, "date": "2027-01-10", "codebridge": False, "title": "Follow Me", "desc": "AI Camera 2.0: posture recognition + ultrasonic", "demo": "follow"},
-    {"n": 11, "date": "2027-01-24", "codebridge": False, "title": "Robot Train Mission", "desc": "Combine everything into one mission", "demo": "train"},
-    {"n": 12, "date": "2027-01-31", "codebridge": False, "title": "Project Day", "desc": "Design, build and present your own robot program", "demo": "project"},
+    {"n": 1, "short": "Build Day", "date": "2026-10-25", "title": "Build Day", "desc": "Assemble mBot2 and AI Camera 2.0", "demo": "build"},
+    {"n": 2, "short": "Hello mBot2", "date": "2026-11-01", "title": "Hello, mBot2!", "desc": "Sequence: move, light, sound", "demo": "hello"},
+    {"n": 3, "short": "Shapes", "date": "2026-11-08", "title": "Shape Artist", "desc": "Repeat loops and angles", "demo": "shapes"},
+    {"n": 4, "short": "Wall Bounce", "date": "2026-11-15", "title": "Wall Bounce", "desc": "Ultrasonic distance and if / else", "demo": "wall"},
+    {"n": 5, "short": "Line Follow", "date": "2026-11-22", "title": "Line Follower", "desc": "Line sensor and steering", "demo": "line"},
+    {"n": 6, "short": "Traffic Light", "date": "2026-12-06", "title": "Traffic Light Robot", "desc": "Color sensor decisions", "demo": "traffic"},
+    {"n": 7, "short": "Color Guard", "date": "2026-12-13", "title": "AI Color Guard", "desc": "AI Camera 2.0: learn and find a color", "demo": "guard"},
+    {"n": 8, "short": "Ball Chaser", "date": "2026-12-20", "title": "Ball Chaser", "desc": "AI Camera 2.0: track with x-coordinates", "demo": "ball"},
+    {"n": 9, "short": "AprilTags", "date": "2027-01-03", "title": "AprilTag Explorer", "desc": "AI Camera 2.0: read tags and navigate", "demo": "signs"},
+    {"n": 10, "short": "Follow Me", "date": "2027-01-10", "title": "Follow Me", "desc": "AI Camera 2.0: posture recognition + ultrasonic", "demo": "follow"},
+    {"n": 11, "short": "Train", "date": "2027-01-24", "title": "Robot Train Mission", "desc": "Combine everything into one mission", "demo": "train"},
+    {"n": 12, "short": "Projects", "date": "2027-01-31", "title": "Project Day", "desc": "Design, build and present your own robot program", "demo": "project"},
 ]
 
 
