@@ -6,7 +6,6 @@ window.MBOT_DATA = {
    "session": 2,
    "id": "hello",
    "title": "Hello, mBot2!",
-   "emoji": "👋",
    "world": "arena",
    "camera": false,
    "level": 1,
@@ -108,7 +107,6 @@ window.MBOT_DATA = {
    "session": 3,
    "id": "shapes",
    "title": "Shape Artist",
-   "emoji": "🎨",
    "world": "arena",
    "camera": false,
    "level": 1,
@@ -140,7 +138,7 @@ window.MBOT_DATA = {
      {
       "op": "pen",
       "cat": "pen",
-      "text": "🖍 marker down \\(simulator only\\)",
+      "text": "marker down \\(simulator only\\)",
       "args": {
        "down": true
       }
@@ -179,7 +177,7 @@ window.MBOT_DATA = {
      {
       "op": "pen",
       "cat": "pen",
-      "text": "🖍 marker up \\(simulator only\\)",
+      "text": "marker up \\(simulator only\\)",
       "args": {
        "down": false
       }
@@ -199,7 +197,6 @@ window.MBOT_DATA = {
    "session": 4,
    "id": "wall",
    "title": "Wall Bounce",
-   "emoji": "📏",
    "world": "corridor",
    "camera": false,
    "level": 2,
@@ -295,7 +292,6 @@ window.MBOT_DATA = {
    "session": 5,
    "id": "line",
    "title": "Line Follower",
-   "emoji": "🛤️",
    "world": "line",
    "camera": false,
    "level": 2,
@@ -419,7 +415,6 @@ window.MBOT_DATA = {
    "session": 6,
    "id": "traffic",
    "title": "Traffic Light Robot",
-   "emoji": "🚦",
    "world": "traffic",
    "camera": false,
    "level": 2,
@@ -577,7 +572,6 @@ window.MBOT_DATA = {
    "session": 7,
    "id": "guard",
    "title": "AI Color Guard",
-   "emoji": "🛡️",
    "world": "guard",
    "camera": true,
    "level": 3,
@@ -694,7 +688,6 @@ window.MBOT_DATA = {
    "session": 8,
    "id": "ball",
    "title": "Ball Chaser",
-   "emoji": "⚽",
    "world": "ball",
    "camera": true,
    "level": 3,
@@ -892,7 +885,6 @@ window.MBOT_DATA = {
    "session": 9,
    "id": "signs",
    "title": "AprilTag Explorer",
-   "emoji": "🏷️",
    "world": "camera",
    "camera": true,
    "level": 4,
@@ -1117,7 +1109,6 @@ window.MBOT_DATA = {
    "session": 10,
    "id": "follow",
    "title": "Follow Me",
-   "emoji": "🚶",
    "world": "person",
    "camera": true,
    "level": 4,
@@ -1350,7 +1341,6 @@ window.MBOT_DATA = {
    "session": 11,
    "id": "train",
    "title": "Robot Train Mission",
-   "emoji": "🚂",
    "world": "train",
    "camera": false,
    "level": 5,
@@ -1725,75 +1715,99 @@ window.MBOT_DATA = {
  "curriculum": [
   {
    "n": 1,
+   "date": "2026-10-25",
+   "codebridge": true,
    "title": "Build Day",
    "desc": "Assemble mBot2 and AI Camera 2.0",
    "demo": "build"
   },
   {
    "n": 2,
+   "date": "2026-11-01",
+   "codebridge": true,
    "title": "Hello, mBot2!",
    "desc": "Sequence: move, light, sound",
    "demo": "hello"
   },
   {
    "n": 3,
+   "date": "2026-11-08",
+   "codebridge": true,
    "title": "Shape Artist",
    "desc": "Repeat loops and angles",
    "demo": "shapes"
   },
   {
    "n": 4,
+   "date": "2026-11-15",
+   "codebridge": true,
    "title": "Wall Bounce",
    "desc": "Ultrasonic distance and if / else",
    "demo": "wall"
   },
   {
    "n": 5,
+   "date": "2026-11-22",
+   "codebridge": true,
    "title": "Line Follower",
    "desc": "Line sensor and steering",
    "demo": "line"
   },
   {
    "n": 6,
+   "date": "2026-12-06",
+   "codebridge": true,
    "title": "Traffic Light Robot",
    "desc": "Color sensor decisions",
    "demo": "traffic"
   },
   {
    "n": 7,
+   "date": "2026-12-13",
+   "codebridge": true,
    "title": "AI Color Guard",
    "desc": "AI Camera 2.0: learn and find a color",
    "demo": "guard"
   },
   {
    "n": 8,
+   "date": "2026-12-20",
+   "codebridge": true,
    "title": "Ball Chaser",
    "desc": "AI Camera 2.0: track with x-coordinates",
    "demo": "ball"
   },
   {
    "n": 9,
+   "date": "2027-01-03",
+   "codebridge": false,
    "title": "AprilTag Explorer",
    "desc": "AI Camera 2.0: read tags and navigate",
    "demo": "signs"
   },
   {
    "n": 10,
+   "date": "2027-01-10",
+   "codebridge": false,
    "title": "Follow Me",
    "desc": "AI Camera 2.0: posture recognition + ultrasonic",
    "demo": "follow"
   },
   {
    "n": 11,
+   "date": "2027-01-24",
+   "codebridge": false,
    "title": "Robot Train Mission",
    "desc": "Combine everything into one mission",
    "demo": "train"
   },
   {
    "n": 12,
+   "date": "2027-01-31",
+   "codebridge": false,
    "title": "Project Day",
    "desc": "Design, build and present your own robot program",
-   "demo": null
+   "demo": "project"
   }
  ],
  "build": {
@@ -1892,5 +1906,200 @@ window.MBOT_DATA = {
   "completed": "4412039642903",
   "camera_guide": "https://support.makeblock.com/hc/en-us/articles/35026070429463-Assemble-AI-Camera-2-0-to-mBot2",
   "img_base": "https://support.makeblock.com/hc/article_attachments/"
- }
+ },
+ "no_class": [
+  {
+   "date": "2026-11-29",
+   "name": "Thanksgiving"
+  },
+  {
+   "date": "2026-12-27",
+   "name": "Christmas"
+  },
+  {
+   "date": "2027-01-17",
+   "name": "MLK Jr. Day"
+  }
+ ],
+ "skills": [
+  {
+   "id": "move",
+   "label": "Move & turn",
+   "s": 2,
+   "color": "#189ff2"
+  },
+  {
+   "id": "fx",
+   "label": "LEDs & sound",
+   "s": 2,
+   "color": "#9a24d9"
+  },
+  {
+   "id": "loop",
+   "label": "Repeat loops",
+   "s": 3,
+   "color": "#ffab19"
+  },
+  {
+   "id": "dist",
+   "label": "Distance sensor",
+   "s": 4,
+   "color": "#16a085"
+  },
+  {
+   "id": "line",
+   "label": "Line sensor",
+   "s": 5,
+   "color": "#111827"
+  },
+  {
+   "id": "color",
+   "label": "Color sensor",
+   "s": 6,
+   "color": "#e11d2e"
+  },
+  {
+   "id": "aicolor",
+   "label": "AI: find a color",
+   "s": 7,
+   "color": "#2f9b5c"
+  },
+  {
+   "id": "track",
+   "label": "AI: track a ball",
+   "s": 8,
+   "color": "#0f9d8a"
+  },
+  {
+   "id": "tag",
+   "label": "AI: AprilTags",
+   "s": 9,
+   "color": "#16a53a"
+  },
+  {
+   "id": "pose",
+   "label": "AI: posture",
+   "s": 10,
+   "color": "#9b22d8"
+  }
+ ],
+ "ideas": [
+  {
+   "title": "Robot Vacuum",
+   "level": "Easy",
+   "skills": [
+    "move",
+    "dist",
+    "loop"
+   ],
+   "idea": "Drive around a room. At a wall, back up and turn 90° instead of 180°.",
+   "hint": [
+    "forever",
+    "if distance < 15 → turns right 90°",
+    "else → moves forward"
+   ]
+  },
+  {
+   "title": "Dance Party",
+   "level": "Easy",
+   "skills": [
+    "pose",
+    "fx",
+    "loop"
+   ],
+   "idea": "When the camera sees a person, the robot dances with rainbow lights.",
+   "hint": [
+    "if posture X > 0",
+    "repeat 4: turn left 45°, turn right 45°",
+    "play LED animation rainbow"
+   ]
+  },
+  {
+   "title": "Robot Pet",
+   "level": "Medium",
+   "skills": [
+    "pose",
+    "dist",
+    "fx"
+   ],
+   "idea": "Your robot puppy follows you, stops close to you and 'barks' hello.",
+   "hint": [
+    "Start from Session 10 Follow Me",
+    "if distance < 30 → play sound + green LEDs"
+   ]
+  },
+  {
+   "title": "Police Patrol",
+   "level": "Medium",
+   "skills": [
+    "line",
+    "aicolor",
+    "fx"
+   ],
+   "idea": "Patrol along a line. When the red 'thief' ball appears, stop and flash red/blue lights.",
+   "hint": [
+    "Line Follower blocks",
+    "if Number of color blocks > 0 → stop",
+    "repeat: LED red, LED blue"
+   ]
+  },
+  {
+   "title": "Color Art Bot",
+   "level": "Medium",
+   "skills": [
+    "loop",
+    "color",
+    "move"
+   ],
+   "idea": "Draw a pattern. The floor color decides which shape to draw next.",
+   "hint": [
+    "if detects red → square (repeat 4)",
+    "if detects blue → star (repeat 5, 144°)"
+   ]
+  },
+  {
+   "title": "Smart Car",
+   "level": "Medium",
+   "skills": [
+    "color",
+    "dist",
+    "move"
+   ],
+   "idea": "Obey traffic lights AND never crash: stop for red or for a car in front.",
+   "hint": [
+    "if detects red OR distance < 20 → stop",
+    "else → moves forward"
+   ]
+  },
+  {
+   "title": "Pizza Delivery",
+   "level": "Challenge",
+   "skills": [
+    "line",
+    "tag",
+    "fx"
+   ],
+   "idea": "Follow the road and stop only at the house with the right AprilTag number.",
+   "hint": [
+    "set house to 2",
+    "if tag = house → stop, play sound",
+    "else → follow line"
+   ]
+  },
+  {
+   "title": "Robot Soccer",
+   "level": "Challenge",
+   "skills": [
+    "track",
+    "tag",
+    "move"
+   ],
+   "idea": "Chase the ball, then push it toward the goal marked with an AprilTag.",
+   "hint": [
+    "Ball Chaser blocks",
+    "when the ball is close → find the goal tag",
+    "then drive forward to push"
+   ]
+  }
+ ]
 };

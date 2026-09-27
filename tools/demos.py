@@ -196,7 +196,7 @@ def change_var(name, value):
 
 
 def pen(down):
-    return blk("pen", "pen", "🖍 marker " + ("down" if down else "up") + " \\(simulator only\\)", down=down)
+    return blk("pen", "pen", "marker " + ("down" if down else "up") + " \\(simulator only\\)", down=down)
 
 
 def cam_mode(mode):
@@ -231,7 +231,7 @@ def cmp(a, op, b):
 # Sessions 2-6: basics with few blocks.  Sessions 7-10: AI Camera 2.0.  Session 11: mission.
 
 S2 = {
-    "session": 2, "id": "hello", "title": "Hello, mBot2!", "emoji": "👋",
+    "session": 2, "id": "hello", "title": "Hello, mBot2!",
     "world": "arena", "camera": False, "level": 1,
     "summary": "Your first program: blocks run one after another, from top to bottom.",
     "concepts": ["Sequence", "Motors", "LEDs & sound"],
@@ -250,7 +250,7 @@ S2 = {
 }
 
 S3 = {
-    "session": 3, "id": "shapes", "title": "Shape Artist", "emoji": "🎨",
+    "session": 3, "id": "shapes", "title": "Shape Artist",
     "world": "arena", "camera": False, "level": 1,
     "summary": "Tape a marker to mBot2. One repeat loop draws a whole square.",
     "concepts": ["Repeat loops", "Angles"],
@@ -266,7 +266,7 @@ S3 = {
 }
 
 S4 = {
-    "session": 4, "id": "wall", "title": "Wall Bounce", "emoji": "📏",
+    "session": 4, "id": "wall", "title": "Wall Bounce",
     "world": "corridor", "camera": False, "level": 2,
     "summary": "The ultrasonic sensor shows the distance to the wall. Too close? Turn around 180°!",
     "concepts": ["Ultrasonic sensor", "If / else", "Forever loop"],
@@ -283,7 +283,7 @@ S4 = {
 }
 
 S5 = {
-    "session": 5, "id": "line", "title": "Line Follower", "emoji": "🛤️",
+    "session": 5, "id": "line", "title": "Line Follower",
     "world": "line", "camera": False, "level": 2,
     "summary": "Two light sensors watch the black line. The robot steers to keep the line between them.",
     "concepts": ["Line sensor", "Nested if", "Steering"],
@@ -301,7 +301,7 @@ S5 = {
 }
 
 S6 = {
-    "session": 6, "id": "traffic", "title": "Traffic Light Robot", "emoji": "🚦",
+    "session": 6, "id": "traffic", "title": "Traffic Light Robot",
     "world": "traffic", "camera": False, "level": 2,
     "summary": "The color sensor reads the road: red means stop, blue means finish line.",
     "concepts": ["Color sensor", "If / else if", "Stop"],
@@ -319,7 +319,7 @@ S6 = {
 }
 
 S7 = {
-    "session": 7, "id": "guard", "title": "AI Color Guard", "emoji": "🛡️",
+    "session": 7, "id": "guard", "title": "AI Color Guard",
     "world": "guard", "camera": True, "level": 3,
     "summary": "Meet AI Camera 2.0! Teach it the red ball as color 1. The guard robot turns until it spots the ball.",
     "concepts": ["AI Camera 2.0", "Learning a color", "Searching"],
@@ -335,7 +335,7 @@ S7 = {
 }
 
 S8 = {
-    "session": 8, "id": "ball", "title": "Ball Chaser", "emoji": "⚽",
+    "session": 8, "id": "ball", "title": "Ball Chaser",
     "world": "ball", "camera": True, "level": 3,
     "summary": "The camera tells WHERE the ball is (x from 0 to 320). Left, right or center? Steer to chase it!",
     "concepts": ["x-coordinate", "Tracking", "Blob width"],
@@ -356,7 +356,7 @@ S8 = {
 }
 
 S9 = {
-    "session": 9, "id": "signs", "title": "AprilTag Explorer", "emoji": "🏷️",
+    "session": 9, "id": "signs", "title": "AprilTag Explorer",
     "world": "camera", "camera": True, "level": 4,
     "summary": "AI Camera 2.0 reads AprilTag signs: tag 1 = turn left, tag 2 = turn right, tag 3 = goal!",
     "concepts": ["AprilTags", "Variables", "Navigation"],
@@ -378,7 +378,7 @@ S9 = {
 }
 
 S10 = {
-    "session": 10, "id": "follow", "title": "Follow Me", "emoji": "🚶",
+    "session": 10, "id": "follow", "title": "Follow Me",
     "world": "person", "camera": True, "level": 4,
     "summary": "Posture recognition finds a person. The robot follows them, and the ultrasonic sensor keeps a safe distance.",
     "concepts": ["Posture recognition", "AI + sensors", "Safe distance"],
@@ -400,7 +400,7 @@ S10 = {
 }
 
 S11 = {
-    "session": 11, "id": "train", "title": "Robot Train Mission", "emoji": "🚂",
+    "session": 11, "id": "train", "title": "Robot Train Mission",
     "world": "train", "camera": False, "level": 5,
     "summary": "Everything together: follow the track, stop at 3 stations, and wait for the cat to move!",
     "concepts": ["Combine sensors", "Counting variable", "My Blocks"],
@@ -461,17 +461,66 @@ BUILD_GUIDE = {
     "img_base": IMG,
 }
 
+# Class dates: 10/25/26 - 1/31/27 (Sundays).  CodeBridge: 10/25/26 - 12/20/26 (sessions 1-8).
+NO_CLASS = [
+    {"date": "2026-11-29", "name": "Thanksgiving"},
+    {"date": "2026-12-27", "name": "Christmas"},
+    {"date": "2027-01-17", "name": "MLK Jr. Day"},
+]
+
 CURRICULUM = [
-    {"n": 1, "title": "Build Day", "desc": "Assemble mBot2 and AI Camera 2.0", "demo": "build"},
-    {"n": 2, "title": "Hello, mBot2!", "desc": "Sequence: move, light, sound", "demo": "hello"},
-    {"n": 3, "title": "Shape Artist", "desc": "Repeat loops and angles", "demo": "shapes"},
-    {"n": 4, "title": "Wall Bounce", "desc": "Ultrasonic distance and if / else", "demo": "wall"},
-    {"n": 5, "title": "Line Follower", "desc": "Line sensor and steering", "demo": "line"},
-    {"n": 6, "title": "Traffic Light Robot", "desc": "Color sensor decisions", "demo": "traffic"},
-    {"n": 7, "title": "AI Color Guard", "desc": "AI Camera 2.0: learn and find a color", "demo": "guard"},
-    {"n": 8, "title": "Ball Chaser", "desc": "AI Camera 2.0: track with x-coordinates", "demo": "ball"},
-    {"n": 9, "title": "AprilTag Explorer", "desc": "AI Camera 2.0: read tags and navigate", "demo": "signs"},
-    {"n": 10, "title": "Follow Me", "desc": "AI Camera 2.0: posture recognition + ultrasonic", "demo": "follow"},
-    {"n": 11, "title": "Robot Train Mission", "desc": "Combine everything into one mission", "demo": "train"},
-    {"n": 12, "title": "Project Day", "desc": "Design, build and present your own robot program", "demo": None},
+    {"n": 1, "date": "2026-10-25", "codebridge": True, "title": "Build Day", "desc": "Assemble mBot2 and AI Camera 2.0", "demo": "build"},
+    {"n": 2, "date": "2026-11-01", "codebridge": True, "title": "Hello, mBot2!", "desc": "Sequence: move, light, sound", "demo": "hello"},
+    {"n": 3, "date": "2026-11-08", "codebridge": True, "title": "Shape Artist", "desc": "Repeat loops and angles", "demo": "shapes"},
+    {"n": 4, "date": "2026-11-15", "codebridge": True, "title": "Wall Bounce", "desc": "Ultrasonic distance and if / else", "demo": "wall"},
+    {"n": 5, "date": "2026-11-22", "codebridge": True, "title": "Line Follower", "desc": "Line sensor and steering", "demo": "line"},
+    {"n": 6, "date": "2026-12-06", "codebridge": True, "title": "Traffic Light Robot", "desc": "Color sensor decisions", "demo": "traffic"},
+    {"n": 7, "date": "2026-12-13", "codebridge": True, "title": "AI Color Guard", "desc": "AI Camera 2.0: learn and find a color", "demo": "guard"},
+    {"n": 8, "date": "2026-12-20", "codebridge": True, "title": "Ball Chaser", "desc": "AI Camera 2.0: track with x-coordinates", "demo": "ball"},
+    {"n": 9, "date": "2027-01-03", "codebridge": False, "title": "AprilTag Explorer", "desc": "AI Camera 2.0: read tags and navigate", "demo": "signs"},
+    {"n": 10, "date": "2027-01-10", "codebridge": False, "title": "Follow Me", "desc": "AI Camera 2.0: posture recognition + ultrasonic", "demo": "follow"},
+    {"n": 11, "date": "2027-01-24", "codebridge": False, "title": "Robot Train Mission", "desc": "Combine everything into one mission", "demo": "train"},
+    {"n": 12, "date": "2027-01-31", "codebridge": False, "title": "Project Day", "desc": "Design, build and present your own robot program", "demo": "project"},
+]
+
+
+# ------------------------------------------------------------ Session 12: Project Day ideas
+SKILLS = [
+    {"id": "move", "label": "Move & turn", "s": 2, "color": "#189ff2"},
+    {"id": "fx", "label": "LEDs & sound", "s": 2, "color": "#9a24d9"},
+    {"id": "loop", "label": "Repeat loops", "s": 3, "color": "#ffab19"},
+    {"id": "dist", "label": "Distance sensor", "s": 4, "color": "#16a085"},
+    {"id": "line", "label": "Line sensor", "s": 5, "color": "#111827"},
+    {"id": "color", "label": "Color sensor", "s": 6, "color": "#e11d2e"},
+    {"id": "aicolor", "label": "AI: find a color", "s": 7, "color": "#2f9b5c"},
+    {"id": "track", "label": "AI: track a ball", "s": 8, "color": "#0f9d8a"},
+    {"id": "tag", "label": "AI: AprilTags", "s": 9, "color": "#16a53a"},
+    {"id": "pose", "label": "AI: posture", "s": 10, "color": "#9b22d8"},
+]
+
+PROJECT_IDEAS = [
+    {"title": "Robot Vacuum", "level": "Easy", "skills": ["move", "dist", "loop"],
+     "idea": "Drive around a room. At a wall, back up and turn 90° instead of 180°.",
+     "hint": ["forever", "if distance < 15 → turns right 90°", "else → moves forward"]},
+    {"title": "Dance Party", "level": "Easy", "skills": ["pose", "fx", "loop"],
+     "idea": "When the camera sees a person, the robot dances with rainbow lights.",
+     "hint": ["if posture X > 0", "repeat 4: turn left 45°, turn right 45°", "play LED animation rainbow"]},
+    {"title": "Robot Pet", "level": "Medium", "skills": ["pose", "dist", "fx"],
+     "idea": "Your robot puppy follows you, stops close to you and 'barks' hello.",
+     "hint": ["Start from Session 10 Follow Me", "if distance < 30 → play sound + green LEDs"]},
+    {"title": "Police Patrol", "level": "Medium", "skills": ["line", "aicolor", "fx"],
+     "idea": "Patrol along a line. When the red 'thief' ball appears, stop and flash red/blue lights.",
+     "hint": ["Line Follower blocks", "if Number of color blocks > 0 → stop", "repeat: LED red, LED blue"]},
+    {"title": "Color Art Bot", "level": "Medium", "skills": ["loop", "color", "move"],
+     "idea": "Draw a pattern. The floor color decides which shape to draw next.",
+     "hint": ["if detects red → square (repeat 4)", "if detects blue → star (repeat 5, 144°)"]},
+    {"title": "Smart Car", "level": "Medium", "skills": ["color", "dist", "move"],
+     "idea": "Obey traffic lights AND never crash: stop for red or for a car in front.",
+     "hint": ["if detects red OR distance < 20 → stop", "else → moves forward"]},
+    {"title": "Pizza Delivery", "level": "Challenge", "skills": ["line", "tag", "fx"],
+     "idea": "Follow the road and stop only at the house with the right AprilTag number.",
+     "hint": ["set house to 2", "if tag = house → stop, play sound", "else → follow line"]},
+    {"title": "Robot Soccer", "level": "Challenge", "skills": ["track", "tag", "move"],
+     "idea": "Chase the ball, then push it toward the goal marked with an AprilTag.",
+     "hint": ["Ball Chaser blocks", "when the ball is close → find the goal tag", "then drive forward to push"]},
 ]

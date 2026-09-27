@@ -23,7 +23,7 @@ Left: mBlock-style block code that highlights the running block. Right: a 3D mBo
 
 ## Phones
 On narrow screens the 3D view comes first, with a small Run button inside it.
-**🧩 Hide blocks** gives the robot the whole screen. Turn tips appear as a small bar at the bottom edge.
+**Hide blocks** gives the robot the whole screen. Turn tips appear as a small bar at the bottom edge.
 
 ## Run
 Static site, no server needed.

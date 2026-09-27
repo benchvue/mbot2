@@ -24,6 +24,7 @@
   const WARN = { obstacle: 20, parking: 35, train: 15, corridor: 20, person: 30 };
 
   let course = document.title, demos = [], demo = null;
+  let dateOf = () => null, fmtDate = () => '';
   let state = 'idle'; // idle | running | paused | done
   let speed = 1, busy = false, simAcc = 0, last = performance.now();
 
@@ -61,7 +62,7 @@
     els.play.querySelector('span').textContent = s === 'paused' ? 'Resume' : 'Run';
     els.pause.disabled = s !== 'running';
     els.stop.disabled = s === 'idle';
-    $('btnRunMini').textContent = s === 'running' ? '⏸ Pause' : s === 'paused' ? '▶ Resume' : '▶ Run';
+    $('btnRunMini').textContent = s === 'running' ? 'Pause' : s === 'paused' ? 'Resume' : 'Run';
   }
 
   function play() {
@@ -92,18 +93,26 @@
 
   /* ---------- session picker ---------- */
   const BUILD_DEMO = {
-    id: 'build', session: 1, title: 'Build Day', emoji: '🔧', world: 'stage', camera: false, level: 0,
+    id: 'build', session: 1, title: 'Build Day', world: 'stage', camera: false, level: 0,
     scripts: [],
     summary: 'Unbox the kit, check every part, measure the screws, and build your own mBot2 step by step.',
     concepts: ['Parts & tools', 'Following instructions', 'Teamwork'],
     challenge: 'Finish all 11 steps, then press button A on CyberPi to say hello to your new robot!',
   };
 
+  const PROJECT_DEMO = {
+    id: 'project', session: 12, title: 'Project Day', world: 'stage', camera: false, level: 0, scripts: [],
+    summary: 'Mix skills you already know into your own robot. Pick an idea, or invent one, then plan it: SENSE, DECIDE, ACT.',
+    concepts: ['Combine skills', 'Plan first', 'Present your robot'],
+    challenge: 'Use at least one sensor and one AI Camera 2.0 skill. Show your robot and explain its blocks.',
+  };
+
   function selectDemo(id) {
     resetRun();
-    demo = id === 'build' ? BUILD_DEMO : demos.find((d) => d.id === id);
+    demo = id === 'build' ? BUILD_DEMO : id === 'project' ? PROJECT_DEMO : demos.find((d) => d.id === id);
     const isBuild = id === 'build';
-    document.body.classList.toggle('build-mode', isBuild);
+    document.body.classList.toggle('build-mode', isBuild || id === 'project');
+    document.body.classList.toggle('project-mode', id === 'project');
     scene.turntable = false;
     core.setWorld(demo.world);
     view.render(demo);
@@ -113,10 +122,17 @@
 
     els.rail.querySelectorAll('.sess').forEach((b) => b.setAttribute('aria-current', b.dataset.id === id));
     if ($('railSel').options.length) $('railSel').value = id;
-    els.title.textContent = `Session ${demo.session} · ${demo.emoji} ${demo.title}`;
+    els.title.textContent = `Session ${demo.session} · ${demo.title}`;
     els.summary.textContent = demo.summary;
     els.challenge.textContent = demo.challenge;
     els.concepts.innerHTML = '';
+    const cd = dateOf(id);
+    if (cd) {
+      const chip = document.createElement('span');
+      chip.className = 'date-chip';
+      chip.textContent = `${fmtDate(cd.date, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}${cd.codebridge ? ' · CodeBridge' : ''}`;
+      els.concepts.appendChild(chip);
+    }
     demo.concepts.forEach((c) => {
       const s = document.createElement('span'); s.textContent = c; els.concepts.appendChild(s);
     });
@@ -208,7 +224,7 @@
     els.toast.innerHTML =
       `<b>${side} ${Math.abs(deg)}°</b><br>` +
       `${S.dirName(from)} → <b>${S.dirName(to)}</b><br class="extra">` +
-      `<span class="extra">🧭 Now north is <b>${S.northRel(to)}</b> of the robot</span>`;
+      `<span class="extra">Now north is <b>${S.northRel(to)}</b> of the robot</span>`;
     els.toast.classList.add('show');
     els.compass.classList.add('flash');
     clearTimeout(toastTimer);
@@ -274,7 +290,7 @@
   els.speed.onchange = () => { speed = parseFloat(els.speed.value); };
   els.sound.onclick = () => {
     RobotAudio.enabled = !RobotAudio.enabled;
-    els.sound.textContent = RobotAudio.enabled ? '🔊' : '🔇';
+    els.sound.innerHTML = RobotAudio.enabled ? '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' : '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l6 6M22 9l-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
     els.sound.setAttribute('aria-pressed', RobotAudio.enabled);
   };
 
@@ -325,7 +341,7 @@
   $('btnBlocks').onclick = () => {
     const hidden = document.body.classList.toggle('blocks-hidden');
     $('btnBlocks').setAttribute('aria-pressed', !hidden);
-    $('btnBlocks').textContent = hidden ? '🧩 Show blocks' : '🧩 Hide blocks';
+    $('btnBlocks').textContent = hidden ? 'Show blocks' : 'Hide blocks';
     setTimeout(() => window.dispatchEvent(new Event('resize')), 50);
   };
 
@@ -347,7 +363,7 @@
   };
   function setMode(m) {
     scene.setMouseMode(m);
-    els.mode.textContent = m === 'map' ? '🖱 Mouse: map (Cesium)' : '🖱 Mouse: 3D orbit';
+    els.mode.textContent = m === 'map' ? 'Mouse: map (Cesium)' : 'Mouse: 3D orbit';
     els.hint.textContent = HINTS[m];
   }
   els.mode.onclick = () => setMode(scene.mouseMode === 'map' ? 'orbit' : 'map');
@@ -358,6 +374,87 @@
     if (e.code === 'Space') { e.preventDefault(); state === 'running' ? pause() : play(); }
     if (e.code === 'Escape') { stop(); closeMenu(); }
   });
+
+  /* ---------- Session 12: Project Day idea diagram ---------- */
+  function projectPage(skills, ideas) {
+    const el = $('projectPanel');
+    if (!el || !skills || !ideas) return;
+    const SK = Object.fromEntries(skills.map((k) => [k.id, k]));
+    const W = 1000, rowS = 46, rowI = 57, top = 34;
+    const H = Math.max(skills.length * rowS, ideas.length * rowI) + top + 10;
+    const sy = (i) => top + i * rowS, iy = (j) => top + j * rowI + (H - top - ideas.length * rowI) / 2;
+    let lines = '', nodes = '';
+    ideas.forEach((idea, j) => {
+      idea.skills.forEach((sid) => {
+        const i = skills.findIndex((k) => k.id === sid), k = SK[sid];
+        const x1 = 262, y1 = sy(i) + 17, x2 = 718, y2 = iy(j) + 22;
+        lines += `<path class="ln" data-i="${j}" data-s="${sid}" d="M${x1} ${y1} C${x1 + 200} ${y1}, ${x2 - 200} ${y2}, ${x2} ${y2}" stroke="${k.color}"/>`;
+      });
+    });
+    skills.forEach((k, i) => {
+      nodes += `<g class="sk" data-s="${k.id}" transform="translate(20 ${sy(i)})">
+        <rect width="242" height="34" rx="17" fill="#fff" stroke="${k.color}" stroke-width="2"/>
+        <circle cx="17" cy="17" r="11" fill="${k.color}"/><text x="17" y="21.5" text-anchor="middle" class="sn">${k.s}</text>
+        <text x="36" y="22" class="st">${k.label}</text></g>`;
+    });
+    const LV = { Easy: '#16a34a', Medium: '#d97706', Challenge: '#dc2626' };
+    ideas.forEach((idea, j) => {
+      nodes += `<g class="id" data-i="${j}" transform="translate(718 ${iy(j)})" tabindex="0" role="button">
+        <rect width="262" height="44" rx="10" fill="#fff" stroke="#cbd5e1" stroke-width="1.5"/>
+        <rect width="6" height="44" rx="3" fill="${LV[idea.level]}"/>
+        <text x="18" y="20" class="it">${idea.title}</text>
+        <text x="18" y="36" class="il" fill="${LV[idea.level]}">${idea.level} · ${idea.skills.length} skills</text></g>`;
+    });
+    el.innerHTML = `
+      <div class="pj-wrap">
+        <section class="pj-recipe">
+          <h3>Every robot project = SENSE + DECIDE + ACT</h3>
+          <div class="pj-flow">
+            <div class="pj-box"><b>1. SENSE</b><span>What does the robot notice?</span><small>distance · line · floor color · AI Camera (color, ball, tag, person)</small></div>
+            <div class="pj-arrow"></div>
+            <div class="pj-box"><b>2. DECIDE</b><span>Which rule does it follow?</span><small>if / else · forever · repeat · variables</small></div>
+            <div class="pj-arrow"></div>
+            <div class="pj-box"><b>3. ACT</b><span>What does it do?</span><small>move · turn · stop · LEDs · sound · screen</small></div>
+          </div>
+        </section>
+        <section>
+          <h3>Mix skills you learned into a new robot</h3>
+          <p class="bg-lead">Left: skills with their session number. Right: project ideas. Tap an idea to see which skills it mixes and a hint to start.</p>
+          <div class="pj-diagram"><svg viewBox="0 0 ${W} ${H}" id="pjSvg">
+            <text x="20" y="20" class="hd">SKILLS YOU LEARNED</text><text x="718" y="20" class="hd">PROJECT IDEAS</text>
+            ${lines}${nodes}</svg></div>
+          <div class="pj-detail" id="pjDetail"></div>
+        </section>
+        <section class="pj-plan">
+          <h3>Plan your project (5 minutes)</h3>
+          <ol>
+            <li><b>Name</b> your robot and say its job in one sentence.</li>
+            <li>Circle <b>2–3 skills</b> on the left that it needs.</li>
+            <li>Write your rule: <i>"If the robot senses ____, then it ____."</i></li>
+            <li>Start from the session program that is closest, then change it step by step.</li>
+            <li><b>Test, fix, test again.</b> Then show the class and explain one block.</li>
+          </ol>
+        </section>
+      </div>`;
+    const svg = el.querySelector('#pjSvg'), det = el.querySelector('#pjDetail');
+    const pick = (j) => {
+      svg.classList.add('focus');
+      svg.querySelectorAll('.ln').forEach((l) => l.classList.toggle('on', +l.dataset.i === j));
+      svg.querySelectorAll('.id').forEach((g) => g.classList.toggle('on', +g.dataset.i === j));
+      const idea = ideas[j];
+      svg.querySelectorAll('.sk').forEach((g) => g.classList.toggle('on', idea.skills.includes(g.dataset.s)));
+      det.innerHTML = `<div class="pj-card" style="border-left-color:${LV[idea.level]}">
+        <div class="pj-top"><h4>${idea.title}</h4><span class="pj-lv" style="background:${LV[idea.level]}">${idea.level}</span></div>
+        <p>${idea.idea}</p>
+        <div class="pj-mix">${idea.skills.map((sid) => `<span style="border-color:${SK[sid].color}"><i style="background:${SK[sid].color}">${SK[sid].s}</i>${SK[sid].label}</span>`).join('<b>+</b>')}</div>
+        <div class="pj-hint"><b>Hint to start</b>${idea.hint.map((h) => `<code>${h}</code>`).join('')}</div></div>`;
+    };
+    svg.querySelectorAll('.id').forEach((g) => {
+      g.onclick = () => pick(+g.dataset.i);
+      g.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(+g.dataset.i); } };
+    });
+    pick(0);
+  }
 
   /* ---------- real-size screw ruler ---------- */
   const SCREWS = [
@@ -437,9 +534,9 @@
     let done = {};
     try { done = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { done = {}; }
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) { /* ignore */ } };
-    const pages = [{ key: 'parts', label: 'Parts list' }, { key: 'ruler', label: '📏 Screw ruler' }]
+    const pages = [{ key: 'parts', label: 'Parts list' }, { key: 'ruler', label: 'Screw ruler' }]
       .concat(g.steps.map((img, i) => ({ key: 'step' + (i + 1), label: 'Step ' + (i + 1), img })))
-      .concat([{ key: 'done', label: 'Completed', img: g.completed }, { key: 'camera', label: '🎥 AI Camera 2.0' }]);
+      .concat([{ key: 'done', label: 'Completed', img: g.completed }, { key: 'camera', label: 'AI Camera 2.0' }]);
     let cur = 0;
 
     function progress() {
@@ -455,7 +552,7 @@
       [...tabs.children].forEach((t, j) => t.setAttribute('aria-selected', j === i));
       tabs.children[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
       if (pg.key === 'camera') {
-        body.innerHTML = `<div class="bg-step-head"><h3>🎥 Add AI Camera 2.0</h3></div>
+        body.innerHTML = `<div class="bg-step-head"><h3>Add AI Camera 2.0</h3></div>
           <p class="bg-lead">Your mBot2 is built. Now give it eyes! AI Camera 2.0 is used from Session 7 to Session 11.</p>
           <ol class="cam-steps">
             <li>Attach the block adapter to the camera.</li>
@@ -479,7 +576,7 @@
       } else {
         const isDone = pg.key === 'done';
         body.innerHTML = `
-          <div class="bg-step-head"><h3>${isDone ? '🎉 Completed!' : pg.label + ' of ' + g.steps.length}</h3>
+          <div class="bg-step-head"><h3>${isDone ? 'Completed!' : pg.label + ' of ' + g.steps.length}</h3>
             ${isDone ? '' : `<label class="bg-check"><input type="checkbox" ${done[pg.key] ? 'checked' : ''}> I finished this step</label>`}</div>
           <div class="bg-img"><img src="${g.img_base}${pg.img}" alt="${pg.label}" referrerpolicy="no-referrer"
             onerror="this.outerHTML='<div class=&quot;bg-fallback&quot;>Picture could not load here. <a href=&quot;${g.source}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Open ${pg.label} in the official guide ↗</a></div>'"></div>
@@ -513,15 +610,32 @@
       course = data.course || course;
       $('courseTitle').textContent = course;
       document.title = course;
-      data.curriculum.forEach((c) => {
-        const d = c.demo === 'build' ? BUILD_DEMO : demos.find((x) => x.id === c.demo);
+      // ----- session cards with dates (no-class weekends shown between them) -----
+      const toDate = (iso) => { const [y, m, d] = iso.split('-').map(Number); return new Date(y, m - 1, d); };
+      const fmt = (iso, opts) => toDate(iso).toLocaleDateString('en-US', opts || { weekday: 'short', month: 'short', day: 'numeric' });
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const next = data.curriculum.find((c) => toDate(c.date) >= today);
+      dateOf = (id) => data.curriculum.find((c) => c.demo === id);
+      fmtDate = fmt;
+      const items = data.curriculum.map((c) => ({ kind: 'sess', date: c.date, c }))
+        .concat((data.no_class || []).map((h) => ({ kind: 'off', date: h.date, h })))
+        .sort((a, b) => (a.date < b.date ? -1 : 1));
+      items.forEach((it) => {
         const li = document.createElement('li');
+        if (it.kind === 'off') {
+          li.className = 'off';
+          li.innerHTML = `<div class="nocls" title="No class: ${it.h.name} weekend"><b>No class</b><span>${it.h.name}</span><small>${fmt(it.date, { month: 'short', day: 'numeric' })}</small></div>`;
+          els.rail.appendChild(li);
+          return;
+        }
+        const c = it.c;
+        const d = c.demo === 'build' ? BUILD_DEMO : c.demo === 'project' ? PROJECT_DEMO : demos.find((x) => x.id === c.demo);
         const b = document.createElement('button');
-        b.className = 'sess';
-        b.title = c.desc;
-        const icon = d ? d.emoji : c.n === 1 ? '🔧' : '🚀';
-        const stars = d && d.level ? '★'.repeat(d.level) + '☆'.repeat(5 - d.level) : c.n === 1 ? 'hands-on build' : 'your idea';
-        b.innerHTML = `<span class="n"><span>Session ${c.n}</span><span>${icon}</span></span><span class="t">${c.title}</span><span class="lv">${stars}</span>`;
+        b.className = 'sess' + (toDate(c.date) < today ? ' past' : '') + (c === next ? ' next' : '');
+        b.title = `${c.desc} — ${fmt(c.date, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}`;
+        const tag = c === next ? '<em class="nx">NEXT</em>' : toDate(c.date) < today ? '<em class="dn">✓</em>' : '';
+        b.innerHTML = `<span class="n"><span>Session ${c.n}</span></span><span class="t">${c.title}</span>` +
+          `<span class="dt">${fmt(c.date)}${c.codebridge ? ' · <i class="cb">CodeBridge</i>' : ''}${tag}</span>`;
         if (d) { b.dataset.id = d.id; b.onclick = () => selectDemo(d.id); }
         else b.disabled = true;
         li.appendChild(b);
@@ -532,7 +646,7 @@
         const o = document.createElement('option');
         o.value = c.demo || '';
         o.disabled = !c.demo;
-        o.textContent = `Session ${c.n} · ${c.title}${c.demo ? '' : ' (no demo)'}`;
+        o.textContent = `${c.n}. ${c.title} — ${fmt(c.date, { month: 'short', day: 'numeric' })}${c.demo ? '' : ' (no demo)'}`;
         sel.appendChild(o);
       });
       sel.onchange = () => sel.value && selectDemo(sel.value);
@@ -546,7 +660,8 @@
       $('railNext').onclick = () => stepSess(1);
       buildGuide(data.build);
       const want = location.hash.slice(1);
-      selectDemo(want === 'build' || demos.some((d) => d.id === want) ? want : demos[0].id);
+      projectPage(data.skills, data.ideas);
+      selectDemo(want === 'build' || want === 'project' || demos.some((d) => d.id === want) ? want : demos[0].id);
       requestAnimationFrame(frame);
     })
     .catch((err) => {

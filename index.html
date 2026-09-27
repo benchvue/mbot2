@@ -36,7 +36,7 @@
       <div id="demoConcepts" class="concepts"></div>
     </div>
     <div class="challenge" id="challenge">
-      <div class="ch-label">🎯 Your challenge</div>
+      <div class="ch-label">Your challenge</div>
       <p id="challengeText"></p>
     </div>
   </section>
@@ -63,14 +63,14 @@
             <option value="2">2×</option>
           </select>
         </label>
-        <button id="btnSound" class="tbtn icon" title="Sound on/off" aria-pressed="true">🔊</button>
+        <button id="btnSound" class="tbtn icon" title="Sound on/off" aria-pressed="true"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
         <div class="zoom" role="group" aria-label="Block size">
           <button id="zoomOut" class="tbtn icon" title="Smaller blocks">−</button>
           <span id="zoomVal">90%</span>
           <button id="zoomIn" class="tbtn icon" title="Bigger blocks">+</button>
         </div>
         <div class="export">
-          <button id="btnExport" class="tbtn" aria-haspopup="true" aria-expanded="false">⬇ <span>Export</span></button>
+          <button id="btnExport" class="tbtn" aria-haspopup="true" aria-expanded="false"><span>Export</span></button>
           <div class="export-menu" id="exportMenu" hidden>
             <button data-x="mblock"><b>mBlock 5 project (.mblock)</b><small>Open directly in mBlock 5 with real blocks</small></button>
             <button data-x="py"><b>mBlock Python (.py)</b><small>For the Python tab in mBlock 5</small></button>
@@ -108,18 +108,19 @@
           <button id="buildNext" class="tbtn play">Next →</button>
         </div>
       </div>
+      <div class="project-panel" id="projectPanel"></div>
     </section>
 
     <!-- right: 3D world -->
     <section class="panel view-panel" aria-label="3D simulation">
       <div id="viewport" class="viewport">
         <div class="view-tools">
-          <button id="btnRunMini" class="vbtn run-mini" title="Run / Pause">▶ Run</button>
-          <button id="btnBlocks" class="vbtn" aria-pressed="true" title="Show or hide the block program">🧩 Hide blocks</button>
-          <button id="btnFollow" class="vbtn" aria-pressed="false" title="Camera follows the robot">🎯 Follow</button>
-          <button id="btnTop" class="vbtn" title="Look straight down">⬇ Top view</button>
+          <button id="btnRunMini" class="vbtn run-mini" title="Run / Pause">Run</button>
+          <button id="btnBlocks" class="vbtn" aria-pressed="true" title="Show or hide the block program">Hide blocks</button>
+          <button id="btnFollow" class="vbtn" aria-pressed="false" title="Camera follows the robot">Follow</button>
+          <button id="btnTop" class="vbtn" title="Look straight down">Top view</button>
           <button id="btnReset" class="vbtn" title="Back to the starting view">↺ Reset view</button>
-          <button id="btnMode" class="vbtn" title="Change how the mouse moves the view">🖱 Mouse: 3D orbit</button>
+          <button id="btnMode" class="vbtn" title="Change how the mouse moves the view">Mouse: 3D orbit</button>
         </div>
 
         <button id="compass" class="compass" title="Click to turn the view so north points up">
@@ -145,7 +146,7 @@
         <div id="turnToast" class="turn-toast" role="status" aria-live="polite"></div>
 
         <div id="camInset" class="cam-inset" hidden>
-          <div class="inset-label">📷 What the smart camera sees</div>
+          <div class="inset-label">What AI Camera 2.0 sees</div>
           <div id="detBox" class="det-box" hidden><span id="detLabel"></span></div>
         </div>
 

@@ -260,9 +260,6 @@
       m.rotation.x = -Math.PI / 2;
       m.position.set(0, 0.12, z);
       this.worldGroup.add(m);
-      const banner = textSprite('🏁', '#111', 18);
-      banner.position.set(0, 26, z - 4);
-      this.worldGroup.add(banner);
     }
 
     buildStage() {
@@ -355,9 +352,6 @@
       const tail = add(new THREE.CylinderGeometry(0.8, 0.8, 10, 8), fur, 0, 9, -8);
       tail.rotation.x = -0.6;
       for (const [x, z] of [[-2.5, -4.5], [2.5, -4.5], [-2.5, 4.5], [2.5, 4.5]]) add(new THREE.BoxGeometry(2, 3, 2), fur, x, 1.5, z);
-      const tag = textSprite('🐱', '#000', 10);
-      tag.position.set(0, 22, 0);
-      g.add(tag);
       g.rotation.y = -Math.PI / 2; // looking east, sitting across the track
       this.catMesh = g;
       this.worldGroup.add(g);
