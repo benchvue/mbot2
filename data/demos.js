@@ -1905,6 +1905,51 @@ window.MBOT_DATA = {
   ],
   "completed": "4412039642903",
   "camera_guide": "https://support.makeblock.com/hc/en-us/articles/35026070429463-Assemble-AI-Camera-2-0-to-mBot2",
+  "camera_steps": [
+   {
+    "title": "Attach the block adapter",
+    "imgs": [
+     "35026099842967",
+     "35026099843351"
+    ]
+   },
+   {
+    "title": "Install the bracket",
+    "imgs": [
+     "35026099843735",
+     "35026099844503"
+    ]
+   },
+   {
+    "title": "Connect AI Camera 2.0 with mBot2",
+    "imgs": [
+     "35026890516631",
+     "35026878410647",
+     "35026890517271"
+    ]
+   },
+   {
+    "title": "Connect the mBuild cable",
+    "imgs": [
+     "35026890518039",
+     "35026878412183"
+    ],
+    "note": "Check the connector: the front and back must face the right way. Never force it."
+   },
+   {
+    "title": "Unfold the camera (optional)",
+    "imgs": [
+     "35026890518807"
+    ]
+   },
+   {
+    "title": "Power on",
+    "imgs": [
+     "35026890519063"
+    ],
+    "note": "Turn on mBot2. The camera starts together with CyberPi."
+   }
+  ],
   "img_base": "https://support.makeblock.com/hc/article_attachments/"
  },
  "no_class": [

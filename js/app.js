@@ -95,9 +95,9 @@
   const BUILD_DEMO = {
     id: 'build', session: 1, title: 'Build Day', world: 'stage', camera: false, level: 0,
     scripts: [],
-    summary: 'Unbox the kit, check every part, measure the screws, and build your own mBot2 step by step.',
+    summary: 'Unbox the kit, check every part, measure the screws, build mBot2, then attach AI Camera 2.0.',
     concepts: ['Parts & tools', 'Following instructions', 'Teamwork'],
-    challenge: 'Finish all 11 steps, then press button A on CyberPi to say hello to your new robot!',
+    challenge: 'Finish all mBot2 and AI Camera 2.0 steps, then turn on your robot and say hello!',
   };
 
   const PROJECT_DEMO = {
@@ -587,13 +587,16 @@
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) { /* ignore */ } };
     const pages = [{ key: 'parts', label: 'Parts list' }, { key: 'ruler', label: 'Screw ruler' }]
       .concat(g.steps.map((img, i) => ({ key: 'step' + (i + 1), label: 'Step ' + (i + 1), img })))
-      .concat([{ key: 'done', label: 'Completed', img: g.completed }, { key: 'camera', label: 'AI Camera 2.0' }]);
+      .concat([{ key: 'done', label: 'mBot2 done', img: g.completed }])
+      .concat((g.camera_steps || []).map((c, i) => ({ key: 'cam' + (i + 1), label: 'Camera ' + (i + 1), cam: c, n: i + 1 })));
+    const nCam = (g.camera_steps || []).length;
+    const stepKeys = pages.filter((p) => /^(step|cam)\d+$/.test(p.key)).map((p) => p.key);
     let cur = 0;
 
     function progress() {
-      const n = g.steps.filter((_, i) => done['step' + (i + 1)]).length;
-      $('buildProgress').style.width = (n / g.steps.length) * 100 + '%';
-      $('buildCount').textContent = `${n} / ${g.steps.length} steps done`;
+      const n = stepKeys.filter((k) => done[k]).length;
+      $('buildProgress').style.width = (n / stepKeys.length) * 100 + '%';
+      $('buildCount').textContent = `${n} / ${stepKeys.length} steps done (mBot2 ${g.steps.length} + camera ${nCam})`;
       [...tabs.children].forEach((t, i) => t.classList.toggle('done', !!done[pages[i].key]));
     }
 
@@ -602,7 +605,18 @@
       const pg = pages[i];
       [...tabs.children].forEach((t, j) => t.setAttribute('aria-selected', j === i));
       tabs.children[i].scrollIntoView({ block: 'nearest', inline: 'nearest' });
-      if (pg.key === 'camera') {
+      if (pg.cam) {
+        const c = pg.cam;
+        body.innerHTML = `
+          <div class="bg-step-head"><h3><span class="cam-tag">AI Camera 2.0</span> Step ${pg.n} of ${nCam}: ${c.title}</h3>
+            <label class="bg-check"><input type="checkbox" ${done[pg.key] ? 'checked' : ''}> I finished this step</label></div>
+          ${c.note ? `<p class="cam-note">${c.note}</p>` : ''}
+          <div class="cam-imgs">${c.imgs.map((im) => `<div class="bg-img"><img src="${g.img_base}${im}" alt="${c.title}" referrerpolicy="no-referrer"
+            onerror="this.outerHTML='<div class=&quot;bg-fallback&quot;><a href=&quot;${g.camera_guide}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Open this step in the official camera guide</a></div>'"></div>`).join('')}</div>
+          ${pg.n === nCam ? '<p class="bg-lead"><b>All done!</b> Your mBot2 can now see. You will use AI Camera 2.0 from Session 7.</p>' : ''}`;
+        const cb = body.querySelector('input');
+        cb.onchange = () => { done[pg.key] = cb.checked; save(); progress(); if (cb.checked && i < pages.length - 1) setTimeout(() => show(i + 1), 350); };
+      } else if (pg.key === 'camera') {
         body.innerHTML = `<div class="bg-step-head"><h3>Add AI Camera 2.0</h3></div>
           <p class="bg-lead">Your mBot2 is built. Now give it eyes! AI Camera 2.0 is used from Session 7 to Session 11.</p>
           <ol class="cam-steps">
@@ -627,11 +641,11 @@
       } else {
         const isDone = pg.key === 'done';
         body.innerHTML = `
-          <div class="bg-step-head"><h3>${isDone ? 'Completed!' : pg.label + ' of ' + g.steps.length}</h3>
+          <div class="bg-step-head"><h3>${isDone ? 'mBot2 completed!' : pg.label + ' of ' + g.steps.length}</h3>
             ${isDone ? '' : `<label class="bg-check"><input type="checkbox" ${done[pg.key] ? 'checked' : ''}> I finished this step</label>`}</div>
           <div class="bg-img"><img src="${g.img_base}${pg.img}" alt="${pg.label}" referrerpolicy="no-referrer"
             onerror="this.outerHTML='<div class=&quot;bg-fallback&quot;>Picture could not load here. <a href=&quot;${g.source}&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Open ${pg.label} in the official guide ↗</a></div>'"></div>
-          ${isDone ? '<p class="bg-lead">Great job! Turn on CyberPi, connect it to mBlock 5, and get ready for Session 2.</p>' : ''}`;
+          ${isDone ? '<p class="bg-lead">Great job, your mBot2 is built! Next: give it eyes. Continue with <b>Camera 1</b>.</p>' : ''}`;
         const cb = body.querySelector('input');
         if (cb) cb.onchange = () => { done[pg.key] = cb.checked; save(); progress(); if (cb.checked && i < pages.length - 1) setTimeout(() => show(i + 1), 350); };
       }
@@ -644,12 +658,14 @@
     pages.forEach((pg, i) => {
       const t = document.createElement('button');
       t.className = 'btab'; t.textContent = pg.label; t.setAttribute('role', 'tab');
+      if (pg.cam) t.dataset.cam = '1';
       t.onclick = () => show(i);
       tabs.appendChild(t);
     });
     $('buildPrev').onclick = () => show(Math.max(0, cur - 1));
     $('buildNext').onclick = () => show(Math.min(pages.length - 1, cur + 1));
     $('buildSource').href = g.source;
+    $('buildSource').textContent = 'Pictures: Makeblock official guides (mBot2 and AI Camera 2.0)';
     show(0);
   }
 
